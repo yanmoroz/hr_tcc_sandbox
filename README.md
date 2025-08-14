@@ -54,6 +54,8 @@ flutter_hr_sandbox/
 ├── ios/             # iOS platform files
 ├── lib/             # Dart source code
 │   └── main.dart    # Entry point
+├── .cursor/         # Cursor IDE rules and guidelines
+│   └── rules/       # AI coding assistance rules
 ├── pubspec.yaml     # Dependencies and project config
 └── README.md        # This file
 ```
@@ -74,6 +76,7 @@ flutter_hr_sandbox/
 The project includes:
 - `analysis_options.yaml` - Dart analyzer configuration
 - `flutter_lints` - Code quality rules
+- `.cursor/rules/` - AI coding assistance rules and guidelines
 - Proper `.gitignore` for Flutter projects
 
 ## 📄 License

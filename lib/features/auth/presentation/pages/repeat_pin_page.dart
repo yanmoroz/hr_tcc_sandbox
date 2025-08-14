@@ -57,15 +57,6 @@ class _RepeatPinPageState extends State<RepeatPinPage> {
                 ),
               );
               // TODO: Navigate to biometric setup or main app
-            } else if (state is PinMismatch) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Код не совпадает'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-              // Reset PIN input immediately
-              context.read<PinBloc>().startPinConfirmation(widget.originalPin);
             } else if (state is PinError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -142,6 +133,20 @@ class _RepeatPinPageState extends State<RepeatPinPage> {
                             isLoading = true;
                           } else if (state is PinMismatch) {
                             isError = true;
+                            digitCount = 4; // Show all dots filled with red
+
+                            // Reset after showing error for a moment
+                            final pinBloc = context.read<PinBloc>();
+                            Future.delayed(
+                              const Duration(milliseconds: 2000),
+                              () {
+                                if (mounted) {
+                                  pinBloc.startPinConfirmation(
+                                    widget.originalPin,
+                                  );
+                                }
+                              },
+                            );
                           }
 
                           return Column(
@@ -152,6 +157,18 @@ class _RepeatPinPageState extends State<RepeatPinPage> {
                                 size: 16,
                                 isError: isError,
                               ),
+
+                              if (isError) ...[
+                                const SizedBox(height: 16),
+                                const Text(
+                                  'Код не совпадает',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
 
                               if (isLoading) ...[
                                 const SizedBox(height: 24),

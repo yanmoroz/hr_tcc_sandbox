@@ -72,10 +72,11 @@ class LeaveRequest {
 ```
 
 ### State Management for HR
-- **Employee State**: Current user and employee data
-- **Time State**: Clock in/out status and time entries
-- **Leave State**: Pending and approved leave requests
-- **Notification State**: System notifications and alerts
+- **Employee BLoC**: Current user and employee data management
+- **Time BLoC**: Clock in/out status and time entries
+- **Leave BLoC**: Pending and approved leave requests
+- **Notification BLoC**: System notifications and alerts
+- **Auth BLoC**: Authentication and authorization state
 
 ## API Integration
 

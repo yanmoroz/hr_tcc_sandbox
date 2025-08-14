@@ -127,14 +127,29 @@ class ExampleClass {
 
 ## State Management Structure
 
-### Provider Organization
+### BLoC Organization
 ```
-lib/presentation/providers/
-├── auth_provider.dart      # Authentication state
-├── employee_provider.dart  # Employee data state
-├── time_provider.dart      # Time tracking state
-├── leave_provider.dart     # Leave management state
-└── app_provider.dart       # App-wide state
+lib/presentation/blocs/
+├── auth/                   # Authentication BLoC
+│   ├── auth_bloc.dart
+│   ├── auth_event.dart
+│   └── auth_state.dart
+├── employee/               # Employee BLoC
+│   ├── employee_bloc.dart
+│   ├── employee_event.dart
+│   └── employee_state.dart
+├── time/                   # Time tracking BLoC
+│   ├── time_bloc.dart
+│   ├── time_event.dart
+│   └── time_state.dart
+├── leave/                  # Leave management BLoC
+│   ├── leave_bloc.dart
+│   ├── leave_event.dart
+│   └── leave_state.dart
+└── notification/           # Notification BLoC
+    ├── notification_bloc.dart
+    ├── notification_event.dart
+    └── notification_state.dart
 ```
 
 ### Widget Organization

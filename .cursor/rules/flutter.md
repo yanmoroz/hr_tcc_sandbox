@@ -34,10 +34,66 @@ import '../services/api_service.dart';
 
 ## State Management
 
-### Provider Pattern (Recommended)
-- Use `ChangeNotifierProvider` for simple state
-- Use `MultiProvider` for complex state hierarchies
-- Keep providers close to where they're used
+### BLoC Pattern (Recommended)
+- Use `BlocProvider` for state management
+- Use `MultiBlocProvider` for complex state hierarchies
+- Keep BLoCs focused on specific business logic
+- Use `BlocBuilder` for UI updates
+- Use `BlocListener` for side effects (navigation, dialogs, etc.)
+
+### BLoC Structure
+```dart
+// Event
+abstract class EmployeeEvent {}
+
+class LoadEmployee extends EmployeeEvent {
+  final String id;
+  LoadEmployee(this.id);
+}
+
+class UpdateEmployee extends EmployeeEvent {
+  final Employee employee;
+  UpdateEmployee(this.employee);
+}
+
+// State
+abstract class EmployeeState {}
+
+class EmployeeInitial extends EmployeeState {}
+class EmployeeLoading extends EmployeeState {}
+class EmployeeLoaded extends EmployeeState {
+  final Employee employee;
+  EmployeeLoaded(this.employee);
+}
+class EmployeeError extends EmployeeState {
+  final String message;
+  EmployeeError(this.message);
+}
+
+// BLoC
+class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
+  EmployeeBloc(this._repository) : super(EmployeeInitial()) {
+    on<LoadEmployee>(_onLoadEmployee);
+    on<UpdateEmployee>(_onUpdateEmployee);
+  }
+
+  final EmployeeRepository _repository;
+
+  Future<void> _onLoadEmployee(LoadEmployee event, Emitter<EmployeeState> emit) async {
+    emit(EmployeeLoading());
+    try {
+      final employee = await _repository.getEmployee(event.id);
+      emit(EmployeeLoaded(employee));
+    } catch (e) {
+      emit(EmployeeError(e.toString()));
+    }
+  }
+
+  Future<void> _onUpdateEmployee(UpdateEmployee event, Emitter<EmployeeState> emit) async {
+    // Implementation
+  }
+}
+```
 
 ### StatefulWidget Guidelines
 - Minimize the use of `StatefulWidget`

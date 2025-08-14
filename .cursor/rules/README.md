@@ -9,6 +9,7 @@ This directory contains AI coding assistance rules and guidelines for the Flutte
 - **[hr-app.md](./hr-app.md)** - HR application domain knowledge and requirements
 - **[project-structure.md](./project-structure.md)** - Project organization and file structure
 - **[coding-standards.md](./coding-standards.md)** - Coding standards and best practices
+- **[bloc-patterns.md](./bloc-patterns.md)** - BLoC patterns and testing guidelines
 
 ## 🎯 How to Use These Rules
 
@@ -37,13 +38,13 @@ These rules are automatically read by Cursor to provide context-aware suggestion
 ### Key Technologies
 - **Framework**: Flutter 3.x
 - **Language**: Dart
-- **State Management**: Provider
-- **Testing**: Flutter Test + Mockito
+- **State Management**: BLoC (flutter_bloc)
+- **Testing**: Flutter Test + Mockito + bloc_test
 - **Platform**: iOS & Android
 
 ### Common Patterns
 - **Widgets**: StatelessWidget preferred, StatefulWidget when needed
-- **State**: Provider pattern with ChangeNotifier
+- **State**: BLoC pattern with Events and States
 - **Data**: Repository pattern with local/remote data sources
 - **Navigation**: Named routes with GoRouter
 - **Error Handling**: Custom exceptions with user-friendly messages
@@ -52,7 +53,7 @@ These rules are automatically read by Cursor to provide context-aware suggestion
 
 ### 1. Flutter Development (`flutter.md`)
 - Widget organization and structure
-- State management patterns
+- BLoC state management patterns
 - UI/UX guidelines
 - Performance optimization
 - Platform-specific considerations
@@ -77,6 +78,12 @@ These rules are automatically read by Cursor to provide context-aware suggestion
 - Error handling patterns
 - Testing standards
 - Security considerations
+
+### 5. BLoC Patterns (`bloc-patterns.md`)
+- BLoC architecture and structure
+- Widget integration patterns
+- Unit and widget testing with bloc_test
+- Best practices and performance optimization
 
 ## 🔄 Updating Rules
 

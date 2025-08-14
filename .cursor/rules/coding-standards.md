@@ -95,31 +95,76 @@ class EmployeeCard extends StatelessWidget {
 
 ### State Management
 ```dart
-class EmployeeProvider extends ChangeNotifier {
-  EmployeeProvider(this._repository);
-  
+// Event
+abstract class EmployeeEvent {}
+
+class LoadEmployee extends EmployeeEvent {
+  final String id;
+  LoadEmployee(this.id);
+}
+
+class UpdateEmployee extends EmployeeEvent {
+  final Employee employee;
+  UpdateEmployee(this.employee);
+}
+
+// State
+abstract class EmployeeState {}
+
+class EmployeeInitial extends EmployeeState {}
+class EmployeeLoading extends EmployeeState {}
+class EmployeeLoaded extends EmployeeState {
+  final Employee employee;
+  EmployeeLoaded(this.employee);
+}
+class EmployeeError extends EmployeeState {
+  final String message;
+  EmployeeError(this.message);
+}
+
+// BLoC
+class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
+  EmployeeBloc(this._repository) : super(EmployeeInitial()) {
+    on<LoadEmployee>(_onLoadEmployee);
+    on<UpdateEmployee>(_onUpdateEmployee);
+  }
+
   final EmployeeRepository _repository;
-  Employee? _currentEmployee;
-  bool _isLoading = false;
-  String? _error;
 
-  Employee? get currentEmployee => _currentEmployee;
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-
-  Future<void> loadEmployee(String id) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
+  Future<void> _onLoadEmployee(LoadEmployee event, Emitter<EmployeeState> emit) async {
+    emit(EmployeeLoading());
     try {
-      _currentEmployee = await _repository.getEmployee(id);
+      final employee = await _repository.getEmployee(event.id);
+      emit(EmployeeLoaded(employee));
     } catch (e) {
-      _error = e.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      emit(EmployeeError(e.toString()));
     }
+  }
+
+  Future<void> _onUpdateEmployee(UpdateEmployee event, Emitter<EmployeeState> emit) async {
+    // Implementation
+  }
+}
+
+// Usage in Widget
+class EmployeePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => EmployeeBloc(context.read<EmployeeRepository>()),
+      child: BlocBuilder<EmployeeBloc, EmployeeState>(
+        builder: (context, state) {
+          if (state is EmployeeLoading) {
+            return CircularProgressIndicator();
+          } else if (state is EmployeeLoaded) {
+            return EmployeeCard(employee: state.employee);
+          } else if (state is EmployeeError) {
+            return ErrorWidget(message: state.message);
+          }
+          return Container();
+        },
+      ),
+    );
   }
 }
 ```

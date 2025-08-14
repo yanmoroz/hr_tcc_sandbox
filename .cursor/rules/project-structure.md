@@ -51,43 +51,43 @@ lib/
 │   │           ├── auth_bloc.dart
 │   │           ├── auth_event.dart
 │   │           └── auth_state.dart
-│   ├── employee/              # Employee management feature
-│   │   ├── data/             # Data layer for employee
-│   │   │   ├── datasources/  # Employee data sources
-│   │   │   ├── models/       # Employee data models
-│   │   │   └── repositories/ # Employee repository implementations
-│   │   ├── domain/           # Domain layer for employee
-│   │   │   ├── entities/     # Employee entities
-│   │   │   ├── repositories/ # Employee repository interfaces
-│   │   │   └── usecases/     # Employee use cases
-│   │   └── presentation/     # Presentation layer for employee
-│   │       ├── pages/        # Employee pages
-│   │       ├── widgets/      # Employee-specific widgets
-│   │       └── blocs/        # Employee BLoCs
-│   │           ├── employee_bloc.dart
-│   │           ├── employee_event.dart
-│   │           └── employee_state.dart
-│   ├── time_tracking/        # Time tracking feature
-│   │   ├── data/            # Data layer for time tracking
-│   │   ├── domain/          # Domain layer for time tracking
-│   │   └── presentation/    # Presentation layer for time tracking
-│   │       ├── pages/       # Time tracking pages
-│   │       ├── widgets/     # Time tracking widgets
-│   │       └── blocs/       # Time tracking BLoCs
-│   ├── leave_management/     # Leave management feature
-│   │   ├── data/           # Data layer for leave management
-│   │   ├── domain/         # Domain layer for leave management
-│   │   └── presentation/   # Presentation layer for leave management
-│   │       ├── pages/      # Leave management pages
-│   │       ├── widgets/    # Leave management widgets
-│   │       └── blocs/      # Leave management BLoCs
-│   └── dashboard/           # Dashboard feature
-│       ├── data/          # Data layer for dashboard
-│       ├── domain/        # Domain layer for dashboard
-│       └── presentation/  # Presentation layer for dashboard
-│           ├── pages/     # Dashboard pages
-│           ├── widgets/   # Dashboard widgets
-│           └── blocs/     # Dashboard BLoCs
+│   ├── user/                  # User management feature
+│   │   ├── data/             # Data layer for user
+│   │   │   ├── datasources/  # User data sources
+│   │   │   ├── models/       # User data models
+│   │   │   └── repositories/ # User repository implementations
+│   │   ├── domain/           # Domain layer for user
+│   │   │   ├── entities/     # User entities
+│   │   │   ├── repositories/ # User repository interfaces
+│   │   │   └── usecases/     # User use cases
+│   │   └── presentation/     # Presentation layer for user
+│   │       ├── pages/        # User pages
+│   │       ├── widgets/      # User-specific widgets
+│   │       └── blocs/        # User BLoCs
+│   │           ├── user_bloc.dart
+│   │           ├── user_event.dart
+│   │           └── user_state.dart
+│   ├── activity_tracking/    # Activity tracking feature
+│   │   ├── data/            # Data layer for activity tracking
+│   │   ├── domain/          # Domain layer for activity tracking
+│   │   └── presentation/    # Presentation layer for activity tracking
+│   │       ├── pages/       # Activity tracking pages
+│   │       ├── widgets/     # Activity tracking widgets
+│   │       └── blocs/       # Activity tracking BLoCs
+│   ├── request_management/   # Request management feature
+│   │   ├── data/           # Data layer for request management
+│   │   ├── domain/         # Domain layer for request management
+│   │   └── presentation/   # Presentation layer for request management
+│   │       ├── pages/      # Request management pages
+│   │       ├── widgets/    # Request management widgets
+│   │       └── blocs/      # Request management BLoCs
+│   └── analytics/           # Analytics feature
+│       ├── data/          # Data layer for analytics
+│       ├── domain/        # Domain layer for analytics
+│       └── presentation/  # Presentation layer for analytics
+│           ├── pages/     # Analytics pages
+│           ├── widgets/   # Analytics widgets
+│           └── blocs/     # Analytics BLoCs
 └── shared/                 # Shared components
     ├── widgets/           # Common widgets
     ├── services/          # Shared services
@@ -213,30 +213,30 @@ lib/features/
 │           ├── auth_bloc.dart
 │           ├── auth_event.dart
 │           └── auth_state.dart
-├── employee/
+├── user/
 │   └── presentation/
 │       └── blocs/
-│           ├── employee_bloc.dart
-│           ├── employee_event.dart
-│           └── employee_state.dart
-├── time_tracking/
+│           ├── user_bloc.dart
+│           ├── user_event.dart
+│           └── user_state.dart
+├── activity_tracking/
 │   └── presentation/
 │       └── blocs/
-│           ├── time_bloc.dart
-│           ├── time_event.dart
-│           └── time_state.dart
-├── leave_management/
+│           ├── activity_bloc.dart
+│           ├── activity_event.dart
+│           └── activity_state.dart
+├── request_management/
 │   └── presentation/
 │       └── blocs/
-│           ├── leave_bloc.dart
-│           ├── leave_event.dart
-│           └── leave_state.dart
-└── dashboard/
+│           ├── request_bloc.dart
+│           ├── request_event.dart
+│           └── request_state.dart
+└── analytics/
     └── presentation/
         └── blocs/
-            ├── dashboard_bloc.dart
-            ├── dashboard_event.dart
-            └── dashboard_state.dart
+            ├── analytics_bloc.dart
+            ├── analytics_event.dart
+            └── analytics_state.dart
 ```
 
 ### Feature-Based Widget Organization
@@ -248,28 +248,28 @@ lib/features/
 │           ├── login_form.dart
 │           ├── password_field.dart
 │           └── auth_button.dart
-├── employee/
+├── user/
 │   └── presentation/
 │       └── widgets/
-│           ├── employee_card.dart
-│           ├── employee_form.dart
-│           └── employee_list.dart
-├── time_tracking/
+│           ├── user_card.dart
+│           ├── user_form.dart
+│           └── user_list.dart
+├── activity_tracking/
 │   └── presentation/
 │       └── widgets/
-│           ├── clock_in_button.dart
-│           ├── time_entry_card.dart
-│           └── time_summary.dart
-├── leave_management/
+│           ├── activity_button.dart
+│           ├── activity_entry_card.dart
+│           └── activity_summary.dart
+├── request_management/
 │   └── presentation/
 │       └── widgets/
-│           ├── leave_request_form.dart
-│           ├── leave_card.dart
-│           └── leave_calendar.dart
-└── dashboard/
+│           ├── request_form.dart
+│           ├── request_card.dart
+│           └── request_calendar.dart
+└── analytics/
     └── presentation/
         └── widgets/
-            ├── dashboard_card.dart
+            ├── analytics_card.dart
             ├── stats_widget.dart
             └── quick_actions.dart
 
@@ -302,23 +302,23 @@ test/
 │       ├── auth/        # Auth feature tests
 │       │   ├── domain/  # Auth domain tests
 │       │   └── data/    # Auth data tests
-│       ├── employee/    # Employee feature tests
-│       ├── time_tracking/ # Time tracking tests
-│       ├── leave_management/ # Leave management tests
-│       └── dashboard/   # Dashboard tests
+│       ├── user/        # User feature tests
+│       ├── activity_tracking/ # Activity tracking tests
+│       ├── request_management/ # Request management tests
+│       └── analytics/   # Analytics tests
 ├── widget/              # Widget tests
 │   ├── shared/          # Shared widget tests
 │   └── features/        # Feature-specific widget tests
 │       ├── auth/        # Auth widget tests
-│       ├── employee/    # Employee widget tests
-│       ├── time_tracking/ # Time tracking widget tests
-│       ├── leave_management/ # Leave management widget tests
-│       └── dashboard/   # Dashboard widget tests
+│       ├── user/        # User widget tests
+│       ├── activity_tracking/ # Activity tracking widget tests
+│       ├── request_management/ # Request management widget tests
+│       └── analytics/   # Analytics widget tests
 └── integration/         # Integration tests
     ├── auth_flow_test.dart
-    ├── employee_flow_test.dart
-    ├── time_tracking_flow_test.dart
-    └── leave_management_flow_test.dart
+    ├── user_flow_test.dart
+    ├── activity_tracking_flow_test.dart
+    └── request_management_flow_test.dart
 ```
 
 ### Test File Naming

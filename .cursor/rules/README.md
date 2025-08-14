@@ -6,11 +6,13 @@ This directory contains AI coding assistance rules and guidelines for the Flutte
 
 ### Core Rules
 - **[flutter.md](./flutter.md)** - Flutter-specific development guidelines
-- **[hr-app.md](./hr-app.md)** - HR application domain knowledge and requirements
 - **[project-structure.md](./project-structure.md)** - Project organization and file structure
 - **[coding-standards.md](./coding-standards.md)** - Coding standards and best practices
 - **[bloc-patterns.md](./bloc-patterns.md)** - BLoC patterns and testing guidelines
 - **[feature-architecture.md](./feature-architecture.md)** - Feature-based architecture patterns
+
+### Domain-Specific Rules (To be updated as features are implemented)
+- **[hr-app.md](./hr-app.md)** - HR application domain knowledge and requirements
 
 ## 🎯 How to Use These Rules
 
@@ -33,8 +35,8 @@ These rules are automatically read by Cursor to provide context-aware suggestion
 ### Project Overview
 - **Platform**: iOS and Android only (mobile-first)
 - **Architecture**: Feature-based Clean Architecture with BLoC state management
-- **Domain**: Human Resources (HR) management system
-- **Focus**: Employee management, time tracking, leave management
+- **Domain**: Mobile application with modular feature structure
+- **Focus**: Scalable, maintainable mobile app development
 
 ### Key Technologies
 - **Framework**: Flutter 3.x
@@ -60,7 +62,7 @@ These rules are automatically read by Cursor to provide context-aware suggestion
 - Performance optimization
 - Platform-specific considerations
 
-### 2. HR Application (`hr-app.md`)
+### 2. HR Application (`hr-app.md`) - To be updated as features are implemented
 - HR domain knowledge and requirements
 - Data privacy and security
 - Common HR UI patterns

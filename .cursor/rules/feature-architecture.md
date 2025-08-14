@@ -58,7 +58,7 @@ feature_name/
         └── feature_state.dart
 ```
 
-## HR Features Breakdown
+## Example Features Breakdown
 
 ### 1. Authentication Feature (`auth/`)
 ```dart
@@ -103,109 +103,107 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 }
 ```
 
-### 2. Employee Management Feature (`employee/`)
+### 2. User Management Feature (`user/`)
 ```dart
 // Domain
-class Employee extends Equatable {
+class User extends Equatable {
   final String id;
   final String fullName;
   final String email;
-  final String department;
-  final String position;
-  final DateTime hireDate;
-  final EmployeeStatus status;
+  final String role;
+  final DateTime createdAt;
+  final UserStatus status;
   
-  const Employee({
+  const User({
     required this.id,
     required this.fullName,
     required this.email,
-    required this.department,
-    required this.position,
-    required this.hireDate,
+    required this.role,
+    required this.createdAt,
     required this.status,
   });
 }
 
 // Use Cases
-class GetEmployeesUseCase {
-  final EmployeeRepository repository;
+class GetUsersUseCase {
+  final UserRepository repository;
   
-  GetEmployeesUseCase(this.repository);
+  GetUsersUseCase(this.repository);
   
-  Future<List<Employee>> call() async {
-    return await repository.getEmployees();
+  Future<List<User>> call() async {
+    return await repository.getUsers();
   }
 }
 
-class UpdateEmployeeUseCase {
-  final EmployeeRepository repository;
+class UpdateUserUseCase {
+  final UserRepository repository;
   
-  UpdateEmployeeUseCase(this.repository);
+  UpdateUserUseCase(this.repository);
   
-  Future<Employee> call(Employee employee) async {
-    return await repository.updateEmployee(employee);
+  Future<User> call(User user) async {
+    return await repository.updateUser(user);
   }
 }
 ```
 
-### 3. Time Tracking Feature (`time_tracking/`)
+### 3. Activity Tracking Feature (`activity_tracking/`)
 ```dart
 // Domain
-class TimeEntry extends Equatable {
+class ActivityEntry extends Equatable {
   final String id;
-  final String employeeId;
-  final DateTime clockIn;
-  final DateTime? clockOut;
+  final String userId;
+  final DateTime startTime;
+  final DateTime? endTime;
   final String location;
-  final TimeEntryType type;
+  final ActivityType type;
   
-  const TimeEntry({
+  const ActivityEntry({
     required this.id,
-    required this.employeeId,
-    required this.clockIn,
-    this.clockOut,
+    required this.userId,
+    required this.startTime,
+    this.endTime,
     required this.location,
     required this.type,
   });
 }
 
 // Use Cases
-class ClockInUseCase {
-  final TimeTrackingRepository repository;
+class StartActivityUseCase {
+  final ActivityTrackingRepository repository;
   
-  ClockInUseCase(this.repository);
+  StartActivityUseCase(this.repository);
   
-  Future<TimeEntry> call(String employeeId, String location) async {
-    return await repository.clockIn(employeeId, location);
+  Future<ActivityEntry> call(String userId, String location) async {
+    return await repository.startActivity(userId, location);
   }
 }
 
-class ClockOutUseCase {
-  final TimeTrackingRepository repository;
+class EndActivityUseCase {
+  final ActivityTrackingRepository repository;
   
-  ClockOutUseCase(this.repository);
+  EndActivityUseCase(this.repository);
   
-  Future<TimeEntry> call(String timeEntryId) async {
-    return await repository.clockOut(timeEntryId);
+  Future<ActivityEntry> call(String activityEntryId) async {
+    return await repository.endActivity(activityEntryId);
   }
 }
 ```
 
-### 4. Leave Management Feature (`leave_management/`)
+### 4. Request Management Feature (`request_management/`)
 ```dart
 // Domain
-class LeaveRequest extends Equatable {
+class Request extends Equatable {
   final String id;
-  final String employeeId;
+  final String userId;
   final DateTime startDate;
   final DateTime endDate;
-  final LeaveType type;
+  final RequestType type;
   final String reason;
-  final LeaveStatus status;
+  final RequestStatus status;
   
-  const LeaveRequest({
+  const Request({
     required this.id,
-    required this.employeeId,
+    required this.userId,
     required this.startDate,
     required this.endDate,
     required this.type,
@@ -215,52 +213,52 @@ class LeaveRequest extends Equatable {
 }
 
 // Use Cases
-class RequestLeaveUseCase {
-  final LeaveRepository repository;
+class CreateRequestUseCase {
+  final RequestRepository repository;
   
-  RequestLeaveUseCase(this.repository);
+  CreateRequestUseCase(this.repository);
   
-  Future<LeaveRequest> call(LeaveRequest request) async {
-    return await repository.requestLeave(request);
+  Future<Request> call(Request request) async {
+    return await repository.createRequest(request);
   }
 }
 
-class ApproveLeaveUseCase {
-  final LeaveRepository repository;
+class ApproveRequestUseCase {
+  final RequestRepository repository;
   
-  ApproveLeaveUseCase(this.repository);
+  ApproveRequestUseCase(this.repository);
   
-  Future<LeaveRequest> call(String leaveId) async {
-    return await repository.approveLeave(leaveId);
+  Future<Request> call(String requestId) async {
+    return await repository.approveRequest(requestId);
   }
 }
 ```
 
-### 5. Dashboard Feature (`dashboard/`)
+### 5. Analytics Feature (`analytics/`)
 ```dart
 // Domain
-class DashboardData extends Equatable {
-  final int totalEmployees;
-  final int activeEmployees;
-  final int pendingLeaveRequests;
-  final double averageWorkHours;
+class AnalyticsData extends Equatable {
+  final int totalUsers;
+  final int activeUsers;
+  final int pendingRequests;
+  final double averageActivityHours;
   
-  const DashboardData({
-    required this.totalEmployees,
-    required this.activeEmployees,
-    required this.pendingLeaveRequests,
-    required this.averageWorkHours,
+  const AnalyticsData({
+    required this.totalUsers,
+    required this.activeUsers,
+    required this.pendingRequests,
+    required this.averageActivityHours,
   });
 }
 
 // Use Cases
-class GetDashboardDataUseCase {
-  final DashboardRepository repository;
+class GetAnalyticsDataUseCase {
+  final AnalyticsRepository repository;
   
-  GetDashboardDataUseCase(this.repository);
+  GetAnalyticsDataUseCase(this.repository);
   
-  Future<DashboardData> call() async {
-    return await repository.getDashboardData();
+  Future<AnalyticsData> call() async {
+    return await repository.getAnalyticsData();
   }
 }
 ```
@@ -296,20 +294,20 @@ void setupInjection() {
     ),
   );
   
-  // Employee feature
-  getIt.registerLazySingleton<EmployeeRepository>(
-    () => EmployeeRepositoryImpl(
-      remoteDataSource: getIt<EmployeeRemoteDataSource>(),
-      localDataSource: getIt<EmployeeLocalDataSource>(),
+  // User feature
+  getIt.registerLazySingleton<UserRepository>(
+    () => UserRepositoryImpl(
+      remoteDataSource: getIt<UserRemoteDataSource>(),
+      localDataSource: getIt<UserLocalDataSource>(),
     ),
   );
-  getIt.registerLazySingleton<GetEmployeesUseCase>(
-    () => GetEmployeesUseCase(getIt<EmployeeRepository>()),
+  getIt.registerLazySingleton<GetUsersUseCase>(
+    () => GetUsersUseCase(getIt<UserRepository>()),
   );
-  getIt.registerLazySingleton<EmployeeBloc>(
-    () => EmployeeBloc(
-      getEmployeesUseCase: getIt<GetEmployeesUseCase>(),
-      updateEmployeeUseCase: getIt<UpdateEmployeeUseCase>(),
+  getIt.registerLazySingleton<UserBloc>(
+    () => UserBloc(
+      getUsersUseCase: getIt<GetUsersUseCase>(),
+      updateUserUseCase: getIt<UpdateUserUseCase>(),
     ),
   );
 }
@@ -320,22 +318,22 @@ void setupInjection() {
 ### Cross-Feature Communication
 ```dart
 // Using events or callbacks
-class EmployeeListPage extends StatelessWidget {
-  final VoidCallback? onEmployeeSelected;
+class UserListPage extends StatelessWidget {
+  final VoidCallback? onUserSelected;
   
-  const EmployeeListPage({this.onEmployeeSelected});
+  const UserListPage({this.onUserSelected});
   
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EmployeeBloc, EmployeeState>(
+    return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
-        if (state is EmployeeLoaded) {
+        if (state is UserLoaded) {
           return ListView.builder(
-            itemCount: state.employees.length,
+            itemCount: state.users.length,
             itemBuilder: (context, index) {
-              return EmployeeCard(
-                employee: state.employees[index],
-                onTap: () => onEmployeeSelected?.call(),
+              return UserCard(
+                user: state.users[index],
+                onTap: () => onUserSelected?.call(),
               );
             },
           );
@@ -349,10 +347,10 @@ class EmployeeListPage extends StatelessWidget {
 // Using shared state
 class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc() : super(AppInitial()) {
-    on<EmployeeSelected>(_onEmployeeSelected);
+    on<UserSelected>(_onUserSelected);
   }
   
-  void _onEmployeeSelected(EmployeeSelected event, Emitter<AppState> emit) {
+  void _onUserSelected(UserSelected event, Emitter<AppState> emit) {
     // Handle cross-feature communication
   }
 }
@@ -362,62 +360,62 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
 ### Feature-Level Testing
 ```dart
-// test/unit/features/employee/domain/usecases/get_employees_test.dart
+// test/unit/features/user/domain/usecases/get_users_test.dart
 void main() {
-  group('GetEmployeesUseCase', () {
-    late GetEmployeesUseCase useCase;
-    late MockEmployeeRepository mockRepository;
+  group('GetUsersUseCase', () {
+    late GetUsersUseCase useCase;
+    late MockUserRepository mockRepository;
 
     setUp(() {
-      mockRepository = MockEmployeeRepository();
-      useCase = GetEmployeesUseCase(mockRepository);
+      mockRepository = MockUserRepository();
+      useCase = GetUsersUseCase(mockRepository);
     });
 
-    test('should return list of employees from repository', () async {
+    test('should return list of users from repository', () async {
       // arrange
-      final employees = [
-        Employee(id: '1', fullName: 'John Doe'),
-        Employee(id: '2', fullName: 'Jane Smith'),
+      final users = [
+        User(id: '1', fullName: 'John Doe'),
+        User(id: '2', fullName: 'Jane Smith'),
       ];
-      when(mockRepository.getEmployees())
-          .thenAnswer((_) async => employees);
+      when(mockRepository.getUsers())
+          .thenAnswer((_) async => users);
 
       // act
       final result = await useCase();
 
       // assert
-      expect(result, equals(employees));
-      verify(mockRepository.getEmployees()).called(1);
+      expect(result, equals(users));
+      verify(mockRepository.getUsers()).called(1);
     });
   });
 }
 
-// test/widget/features/employee/presentation/pages/employee_list_page_test.dart
+// test/widget/features/user/presentation/pages/user_list_page_test.dart
 void main() {
-  group('EmployeeListPage', () {
-    late MockEmployeeBloc mockEmployeeBloc;
+  group('UserListPage', () {
+    late MockUserBloc mockUserBloc;
 
     setUp(() {
-      mockEmployeeBloc = MockEmployeeBloc();
+      mockUserBloc = MockUserBloc();
     });
 
-    testWidgets('should display list of employees', (tester) async {
+    testWidgets('should display list of users', (tester) async {
       // arrange
-      final employees = [
-        Employee(id: '1', fullName: 'John Doe'),
-        Employee(id: '2', fullName: 'Jane Smith'),
+      final users = [
+        User(id: '1', fullName: 'John Doe'),
+        User(id: '2', fullName: 'Jane Smith'),
       ];
       whenListen(
-        mockEmployeeBloc,
-        Stream.fromIterable([EmployeeLoaded(employees)]),
+        mockUserBloc,
+        Stream.fromIterable([UserLoaded(users)]),
       );
 
       // act
       await tester.pumpWidget(
         MaterialApp(
-          home: BlocProvider<EmployeeBloc>.value(
-            value: mockEmployeeBloc,
-            child: EmployeeListPage(),
+          home: BlocProvider<UserBloc>.value(
+            value: mockUserBloc,
+            child: UserListPage(),
           ),
         ),
       );

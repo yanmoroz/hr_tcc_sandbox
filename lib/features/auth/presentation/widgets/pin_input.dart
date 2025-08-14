@@ -27,7 +27,6 @@ class PinInput extends StatefulWidget {
 class _PinInputState extends State<PinInput> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
-  late Animation<double> _shakeAnimation;
 
   @override
   void initState() {
@@ -41,13 +40,6 @@ class _PinInputState extends State<PinInput> with TickerProviderStateMixin {
       CurvedAnimation(
         parent: _animationController,
         curve: const Interval(0.0, 0.5, curve: Curves.easeInOut),
-      ),
-    );
-
-    _shakeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.0, 1.0, curve: Curves.easeInOut),
       ),
     );
   }
@@ -91,15 +83,9 @@ class _PinInputState extends State<PinInput> with TickerProviderStateMixin {
         return AnimatedBuilder(
           animation: _animationController,
           builder: (context, child) {
-            final shakeOffset = widget.isError
-                ? _shakeAnimation.value * 8.0 * (index % 2 == 0 ? 1 : -1)
-                : 0.0;
-
-            return Transform.translate(
-              offset: Offset(shakeOffset, 0),
-              child: Transform.scale(
-                scale: _scaleAnimation.value,
-                child: AnimatedContainer(
+            return Transform.scale(
+              scale: _scaleAnimation.value,
+              child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.easeInOut,
                   margin: EdgeInsets.only(left: index == 0 ? 0 : 16),
@@ -125,7 +111,6 @@ class _PinInputState extends State<PinInput> with TickerProviderStateMixin {
                         )
                       : null,
                 ),
-              ),
             );
           },
         );

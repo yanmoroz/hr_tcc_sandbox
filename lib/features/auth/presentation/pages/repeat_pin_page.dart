@@ -64,14 +64,8 @@ class _RepeatPinPageState extends State<RepeatPinPage> {
                   backgroundColor: Colors.red,
                 ),
               );
-              // Reset PIN input after a short delay to show the error animation
-              Future.delayed(const Duration(milliseconds: 800), () {
-                if (mounted) {
-                  context.read<PinBloc>().startPinConfirmation(
-                    widget.originalPin,
-                  );
-                }
-              });
+              // Reset PIN input immediately
+              context.read<PinBloc>().startPinConfirmation(widget.originalPin);
             } else if (state is PinError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

@@ -16,8 +16,12 @@ import 'features/profile/presentation/blocs/profile_bloc.dart';
 import 'features/profile/presentation/blocs/profile_event.dart';
 import 'features/profile/presentation/blocs/kpi_bloc.dart';
 
+// Auth feature imports
+import 'features/auth/presentation/blocs/auth_bloc.dart';
+
 // Router import
 import 'app/router/app_router.dart';
+import 'app/di/auth_injection.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -27,6 +31,9 @@ void main() {
 }
 
 void setupDependencies() {
+  // Setup auth dependencies
+  setupAuthDependencies(getIt);
+
   // Data sources
   getIt.registerLazySingleton<ProfileRemoteDataSource>(
     () => ProfileRemoteDataSourceImpl(),
@@ -58,6 +65,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
         BlocProvider<ProfileBloc>(
           create: (context) => ProfileBloc(
             getProfile: getIt<GetProfile>(),

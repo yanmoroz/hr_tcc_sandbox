@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/profile_kpi_page.dart';
 
 class AppRouter {
-  static const String profile = '/';
+  static const String login = '/';
+  static const String profile = '/profile';
   static const String profileKpi = '/profile/kpi';
 
   static GoRouter get router => GoRouter(
-    initialLocation: profile,
+    initialLocation: login,
     routes: [
+      GoRoute(
+        path: login,
+        name: 'login',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const LoginPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      ),
       GoRoute(
         path: profile,
         name: 'profile',
@@ -72,7 +85,7 @@ class AppRouter {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => context.go(profile),
+              onPressed: () => context.go(login),
               child: const Text('Вернуться на главную'),
             ),
           ],

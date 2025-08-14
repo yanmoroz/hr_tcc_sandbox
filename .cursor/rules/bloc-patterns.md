@@ -200,9 +200,9 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 
-import 'package:hr_sandbox/presentation/blocs/employee/employee_bloc.dart';
-import 'package:hr_sandbox/domain/entities/employee.dart';
-import 'package:hr_sandbox/domain/repositories/employee_repository.dart';
+import 'package:hr_sandbox/features/employee/presentation/blocs/employee_bloc.dart';
+import 'package:hr_sandbox/features/employee/domain/entities/employee.dart';
+import 'package:hr_sandbox/features/employee/domain/repositories/employee_repository.dart';
 
 @GenerateMocks([EmployeeRepository])
 import 'employee_bloc_test.mocks.dart';
@@ -289,9 +289,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:hr_sandbox/presentation/pages/employee_page.dart';
-import 'package:hr_sandbox/presentation/blocs/employee/employee_bloc.dart';
-import 'package:hr_sandbox/domain/entities/employee.dart';
+import 'package:hr_sandbox/features/employee/presentation/pages/employee_page.dart';
+import 'package:hr_sandbox/features/employee/presentation/blocs/employee_bloc.dart';
+import 'package:hr_sandbox/features/employee/domain/entities/employee.dart';
 
 class MockEmployeeBloc extends MockBloc<EmployeeEvent, EmployeeState>
     implements EmployeeBloc {}

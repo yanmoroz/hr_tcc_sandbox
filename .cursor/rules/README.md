@@ -10,6 +10,7 @@ This directory contains AI coding assistance rules and guidelines for the Flutte
 - **[project-structure.md](./project-structure.md)** - Project organization and file structure
 - **[coding-standards.md](./coding-standards.md)** - Coding standards and best practices
 - **[bloc-patterns.md](./bloc-patterns.md)** - BLoC patterns and testing guidelines
+- **[feature-architecture.md](./feature-architecture.md)** - Feature-based architecture patterns
 
 ## 🎯 How to Use These Rules
 
@@ -31,7 +32,7 @@ These rules are automatically read by Cursor to provide context-aware suggestion
 
 ### Project Overview
 - **Platform**: iOS and Android only (mobile-first)
-- **Architecture**: Clean Architecture with Provider state management
+- **Architecture**: Feature-based Clean Architecture with BLoC state management
 - **Domain**: Human Resources (HR) management system
 - **Focus**: Employee management, time tracking, leave management
 
@@ -46,6 +47,7 @@ These rules are automatically read by Cursor to provide context-aware suggestion
 - **Widgets**: StatelessWidget preferred, StatefulWidget when needed
 - **State**: BLoC pattern with Events and States
 - **Data**: Repository pattern with local/remote data sources
+- **Architecture**: Feature-based with Clean Architecture layers
 - **Navigation**: Named routes with GoRouter
 - **Error Handling**: Custom exceptions with user-friendly messages
 
@@ -66,9 +68,9 @@ These rules are automatically read by Cursor to provide context-aware suggestion
 - Compliance and legal considerations
 
 ### 3. Project Structure (`project-structure.md`)
-- Directory organization
+- Feature-based directory organization
 - File naming conventions
-- Code organization principles
+- Feature independence principles
 - Testing structure
 - Asset management
 
@@ -84,6 +86,13 @@ These rules are automatically read by Cursor to provide context-aware suggestion
 - Widget integration patterns
 - Unit and widget testing with bloc_test
 - Best practices and performance optimization
+
+### 6. Feature Architecture (`feature-architecture.md`)
+- Feature-based architecture principles
+- Feature independence and boundaries
+- Dependency injection patterns
+- Cross-feature communication
+- Feature-level testing strategies
 
 ## 🔄 Updating Rules
 

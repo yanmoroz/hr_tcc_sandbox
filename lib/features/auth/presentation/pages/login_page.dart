@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           if (state is AuthAuthenticated) {
             // Navigate to PIN setup using go_router
-            context.go('/create-pin');
+            context.push('/create-pin');
           }
         },
         child: SafeArea(

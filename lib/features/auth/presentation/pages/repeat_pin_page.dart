@@ -38,7 +38,7 @@ class _RepeatPinPageState extends State<RepeatPinPage> {
   }
 
   void _onBackPressed() {
-    context.go('/create-pin');
+    context.pop();
   }
 
   @override
@@ -49,14 +49,8 @@ class _RepeatPinPageState extends State<RepeatPinPage> {
         child: BlocListener<PinBloc, PinState>(
           listener: (context, state) {
             if (state is PinConfirmed) {
-              // Navigate to biometric setup or main app
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('PIN успешно создан!'),
-                  backgroundColor: Colors.green,
-                ),
-              );
-              // TODO: Navigate to biometric setup or main app
+              // Navigate to profile page
+              context.go('/profile');
             } else if (state is PinError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

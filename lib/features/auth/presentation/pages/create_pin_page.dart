@@ -36,7 +36,7 @@ class _CreatePinPageState extends State<CreatePinPage> {
   }
 
   void _onBackPressed() {
-    context.go('/');
+    context.pop();
   }
 
   @override
@@ -48,7 +48,7 @@ class _CreatePinPageState extends State<CreatePinPage> {
           listener: (context, state) {
             if (state is PinCreated) {
               // Navigate to repeat PIN page with the created PIN
-              context.go('/repeat-pin/${state.pin}');
+              context.push('/repeat-pin/${state.pin}');
             } else if (state is PinError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

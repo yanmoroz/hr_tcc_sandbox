@@ -6,6 +6,21 @@ import '../../features/auth/presentation/pages/repeat_pin_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/profile_kpi_page.dart';
 
+// Custom page transition that handles direction automatically
+class SlidePageTransition extends CustomTransitionPage {
+  SlidePageTransition({required super.key, required super.child})
+    : super(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(
+              Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero),
+            ),
+            child: child,
+          );
+        },
+      );
+}
+
 class AppRouter {
   static const String login = '/';
   static const String createPin = '/create-pin';
@@ -30,17 +45,9 @@ class AppRouter {
       GoRoute(
         path: createPin,
         name: 'createPin',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => SlidePageTransition(
           key: state.pageKey,
           child: const CreatePinPage(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return SlideTransition(
-              position: animation.drive(
-                Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero),
-              ),
-              child: child,
-            );
-          },
         ),
       ),
       GoRoute(
@@ -48,54 +55,24 @@ class AppRouter {
         name: 'repeatPin',
         pageBuilder: (context, state) {
           final pin = state.pathParameters['pin'] ?? '1234';
-          return CustomTransitionPage(
+          return SlidePageTransition(
             key: state.pageKey,
             child: RepeatPinPage(originalPin: pin),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-                  return SlideTransition(
-                    position: animation.drive(
-                      Tween<Offset>(
-                        begin: const Offset(1.0, 0.0),
-                        end: Offset.zero,
-                      ),
-                    ),
-                    child: child,
-                  );
-                },
           );
         },
       ),
       GoRoute(
         path: profile,
         name: 'profile',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const ProfilePage(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return SlideTransition(
-              position: animation.drive(
-                Tween<Offset>(begin: const Offset(-1.0, 0.0), end: Offset.zero),
-              ),
-              child: child,
-            );
-          },
-        ),
+        pageBuilder: (context, state) =>
+            SlidePageTransition(key: state.pageKey, child: const ProfilePage()),
       ),
       GoRoute(
         path: profileKpi,
         name: 'profileKpi',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => SlidePageTransition(
           key: state.pageKey,
           child: const ProfileKpiPage(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return SlideTransition(
-              position: animation.drive(
-                Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero),
-              ),
-              child: child,
-            );
-          },
         ),
       ),
     ],
@@ -128,7 +105,7 @@ class AppRouter {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => context.go(login),
+              onPressed: () => context.push(login),
               child: const Text('Вернуться на главную'),
             ),
           ],

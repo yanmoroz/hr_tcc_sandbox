@@ -18,6 +18,7 @@ import 'features/profile/presentation/blocs/kpi_bloc.dart';
 
 // Auth feature imports
 import 'features/auth/presentation/blocs/auth_bloc.dart';
+import 'features/auth/presentation/blocs/pin_bloc.dart';
 
 // Router import
 import 'app/router/app_router.dart';
@@ -66,6 +67,7 @@ class MainApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
+        BlocProvider<PinBloc>(create: (context) => getIt<PinBloc>()),
         BlocProvider<ProfileBloc>(
           create: (context) => ProfileBloc(
             getProfile: getIt<GetProfile>(),

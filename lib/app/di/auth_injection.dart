@@ -14,6 +14,7 @@ import '../../features/auth/domain/usecases/authenticate_with_biometric.dart';
 import '../../features/auth/domain/usecases/save_auth_settings.dart';
 import '../../features/auth/domain/usecases/get_auth_settings.dart';
 import '../../features/auth/presentation/blocs/auth_bloc.dart';
+import '../../features/auth/presentation/blocs/pin_bloc.dart';
 import '../../shared/services/secure_storage_service.dart';
 import '../../shared/services/biometric_service.dart';
 import '../../shared/services/network_service.dart';
@@ -83,6 +84,14 @@ void setupAuthDependencies(GetIt getIt) {
       loginUseCase: getIt<LoginUseCase>(),
       logoutUseCase: getIt<LogoutUseCase>(),
       getAuthSettingsUseCase: getIt<GetAuthSettingsUseCase>(),
+    ),
+  );
+
+  // Pin BLoC
+  getIt.registerFactory<PinBloc>(
+    () => PinBloc(
+      createPinUseCase: getIt<CreatePinUseCase>(),
+      validatePinUseCase: getIt<ValidatePinUseCase>(),
     ),
   );
 }

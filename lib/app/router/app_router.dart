@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/create_pin_page.dart';
+import '../../features/auth/presentation/pages/repeat_pin_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/profile_kpi_page.dart';
 
 class AppRouter {
   static const String login = '/';
+  static const String createPin = '/create-pin';
+  static const String repeatPin = '/repeat-pin';
   static const String profile = '/profile';
   static const String profileKpi = '/profile/kpi';
 
@@ -22,6 +26,45 @@ class AppRouter {
             return FadeTransition(opacity: animation, child: child);
           },
         ),
+      ),
+      GoRoute(
+        path: createPin,
+        name: 'createPin',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const CreatePinPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: animation.drive(
+                Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero),
+              ),
+              child: child,
+            );
+          },
+        ),
+      ),
+      GoRoute(
+        path: '$repeatPin/:pin',
+        name: 'repeatPin',
+        pageBuilder: (context, state) {
+          final pin = state.pathParameters['pin'] ?? '1234';
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: RepeatPinPage(originalPin: pin),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return SlideTransition(
+                    position: animation.drive(
+                      Tween<Offset>(
+                        begin: const Offset(1.0, 0.0),
+                        end: Offset.zero,
+                      ),
+                    ),
+                    child: child,
+                  );
+                },
+          );
+        },
       ),
       GoRoute(
         path: profile,

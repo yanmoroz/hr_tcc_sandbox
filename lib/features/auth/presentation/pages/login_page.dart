@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../blocs/auth_bloc.dart';
 import '../blocs/auth_event.dart';
 import '../blocs/auth_state.dart';
@@ -74,13 +75,8 @@ class _LoginPageState extends State<LoginPage> {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            // TODO: Navigate to PIN setup or main app
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Добро пожаловать, ${state.user.fullName}!'),
-                backgroundColor: Colors.green,
-              ),
-            );
+            // Navigate to PIN setup using go_router
+            context.go('/create-pin');
           }
         },
         child: SafeArea(

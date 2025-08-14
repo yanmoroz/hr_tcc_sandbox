@@ -1,255 +1,168 @@
-# Coding Standards & Best Practices
+# Coding Standards
 
 ## Dart Language Standards
 
-### Code Style
-- Follow the official Dart style guide
-- Use 2-space indentation
-- Maximum line length: 80 characters
-- Use trailing commas for better formatting
-- Prefer `const` constructors when possible
-
 ### Naming Conventions
+- **Classes**: PascalCase (`UserProfile`, `ApiService`)
+- **Variables/Methods**: camelCase (`userName`, `getUserData()`)
+- **Constants**: SCREAMING_SNAKE_CASE (`API_BASE_URL`)
+- **Files**: snake_case (`user_profile_page.dart`)
+
+### Code Organization
 ```dart
-// Classes and enums: PascalCase
-class EmployeeProfile {}
-enum EmployeeStatus { active, inactive, terminated }
-
-// Variables and methods: camelCase
-String employeeName;
-void calculateSalary() {}
-
-// Constants: SCREAMING_SNAKE_CASE
-const String API_BASE_URL = 'https://api.example.com';
-
-// Private members: underscore prefix
-String _privateVariable;
-void _privateMethod() {}
-```
-
-### Documentation
-```dart
-/// Represents an employee in the HR system.
-/// 
-/// This class contains all the essential information about an employee
-/// including personal details, work information, and status.
-class Employee {
-  /// The unique identifier for the employee.
-  final String id;
+class ExampleClass {
+  // 1. Static constants
+  static const String _constant = 'value';
   
-  /// The employee's full name.
-  final String fullName;
+  // 2. Instance variables
+  final String _privateField;
+  String publicField;
   
-  /// Creates an employee with the given [id] and [fullName].
-  /// 
-  /// Throws [ArgumentError] if [id] is empty or [fullName] is null.
-  Employee({
-    required this.id,
-    required this.fullName,
-  }) : assert(id.isNotEmpty, 'Employee ID cannot be empty'),
-       assert(fullName.isNotEmpty, 'Full name cannot be empty');
+  // 3. Constructor
+  ExampleClass(this._privateField);
+  
+  // 4. Factory constructors
+  factory ExampleClass.fromJson(Map<String, dynamic> json) {
+    // Implementation
+  }
+  
+  // 5. Getters
+  String get computedValue => _privateField.toUpperCase();
+  
+  // 6. Public methods
+  void publicMethod() {
+    // Implementation
+  }
+  
+  // 7. Private methods
+  void _privateMethod() {
+    // Implementation
+  }
 }
 ```
 
 ## Flutter-Specific Standards
 
 ### Widget Structure
-```dart
-class EmployeeCard extends StatelessWidget {
-  const EmployeeCard({
-    super.key,
-    required this.employee,
-    this.onTap,
-  });
+- Use `StatelessWidget` when possible
+- Use `StatefulWidget` only when local state is needed
+- Implement `dispose()` methods for controllers and animations
+- Use `const` constructors for immutable widgets
 
-  final Employee employee;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                employee.fullName,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                employee.position,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-```
-
-### State Management
+### BLoC Pattern
 ```dart
 // Event
-abstract class EmployeeEvent {}
-
-class LoadEmployee extends EmployeeEvent {
-  final String id;
-  LoadEmployee(this.id);
+abstract class ProfileEvent extends Equatable {
+  @override
+  List<Object?> get props => [];
 }
 
-class UpdateEmployee extends EmployeeEvent {
-  final Employee employee;
-  UpdateEmployee(this.employee);
+class LoadProfile extends ProfileEvent {
+  final String userId;
+  LoadProfile(this.userId);
+  
+  @override
+  List<Object?> get props => [userId];
 }
 
 // State
-abstract class EmployeeState {}
-
-class EmployeeInitial extends EmployeeState {}
-class EmployeeLoading extends EmployeeState {}
-class EmployeeLoaded extends EmployeeState {
-  final Employee employee;
-  EmployeeLoaded(this.employee);
+abstract class ProfileState extends Equatable {
+  @override
+  List<Object?> get props => [];
 }
-class EmployeeError extends EmployeeState {
-  final String message;
-  EmployeeError(this.message);
+
+class ProfileLoading extends ProfileState {}
+class ProfileLoaded extends ProfileState {
+  final Profile profile;
+  ProfileLoaded(this.profile);
+  
+  @override
+  List<Object?> get props => [profile];
 }
 
 // BLoC
-class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
-  EmployeeBloc(this._repository) : super(EmployeeInitial()) {
-    on<LoadEmployee>(_onLoadEmployee);
-    on<UpdateEmployee>(_onUpdateEmployee);
+class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+  ProfileBloc(this._getProfile) : super(ProfileInitial()) {
+    on<LoadProfile>(_onLoadProfile);
   }
-
-  final EmployeeRepository _repository;
-
-  Future<void> _onLoadEmployee(LoadEmployee event, Emitter<EmployeeState> emit) async {
-    emit(EmployeeLoading());
+  
+  final GetProfile _getProfile;
+  
+  Future<void> _onLoadProfile(LoadProfile event, Emitter<ProfileState> emit) async {
+    emit(ProfileLoading());
     try {
-      final employee = await _repository.getEmployee(event.id);
-      emit(EmployeeLoaded(employee));
+      final profile = await _getProfile.call(event.userId);
+      emit(ProfileLoaded(profile));
     } catch (e) {
-      emit(EmployeeError(e.toString()));
+      emit(ProfileError(e.toString()));
     }
-  }
-
-  Future<void> _onUpdateEmployee(UpdateEmployee event, Emitter<EmployeeState> emit) async {
-    // Implementation
-  }
-}
-
-// Usage in Widget
-class EmployeePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => EmployeeBloc(context.read<EmployeeRepository>()),
-      child: BlocBuilder<EmployeeBloc, EmployeeState>(
-        builder: (context, state) {
-          if (state is EmployeeLoading) {
-            return CircularProgressIndicator();
-          } else if (state is EmployeeLoaded) {
-            return EmployeeCard(employee: state.employee);
-          } else if (state is EmployeeError) {
-            return ErrorWidget(message: state.message);
-          }
-          return Container();
-        },
-      ),
-    );
   }
 }
 ```
 
-## Error Handling
+### Navigation Standards
+```dart
+// Router Configuration
+class AppRouter {
+  static const String profile = '/';
+  static const String profileKpi = '/profile/kpi';
+  
+  static GoRouter get router => GoRouter(
+    initialLocation: profile,
+    routes: [
+      GoRoute(
+        path: profile,
+        name: 'profile',
+        builder: (context, state) => const ProfilePage(),
+      ),
+      GoRoute(
+        path: profileKpi,
+        name: 'profileKpi',
+        builder: (context, state) => const ProfileKpiPage(),
+      ),
+    ],
+  );
+}
+
+// Navigation Usage
+// Forward navigation
+context.go(AppRouter.profileKpi);
+
+// Stack-based navigation
+context.push(AppRouter.profileKpi);
+
+// Back navigation
+context.pop(); // Only when using push()
+context.go(AppRouter.profile); // When using go()
+```
+
+## Error Handling Standards
 
 ### Exception Handling
 ```dart
-class ApiException implements Exception {
-  ApiException({
-    required this.message,
-    this.statusCode,
-    this.details,
-  });
-
-  final String message;
-  final int? statusCode;
-  final Map<String, dynamic>? details;
-
-  @override
-  String toString() => 'ApiException: $message (Status: $statusCode)';
-}
-
-// Usage in services
-class EmployeeService {
-  Future<Employee> getEmployee(String id) async {
-    try {
-      final response = await http.get(Uri.parse('$baseUrl/employees/$id'));
-      
-      if (response.statusCode == 200) {
-        return Employee.fromJson(jsonDecode(response.body));
-      } else {
-        throw ApiException(
-          message: 'Failed to load employee',
-          statusCode: response.statusCode,
-        );
-      }
-    } on SocketException {
-      throw ApiException(message: 'No internet connection');
-    } on FormatException {
-      throw ApiException(message: 'Invalid response format');
-    }
+try {
+  final result = await repository.getData();
+  return result;
+} catch (e) {
+  if (e is NetworkException) {
+    throw NetworkError('Network connection failed');
+  } else if (e is ValidationException) {
+    throw ValidationError('Invalid data format');
+  } else {
+    throw UnknownError('An unexpected error occurred');
   }
 }
 ```
 
-### Error Widgets
+### BLoC Error Handling
 ```dart
-class ErrorWidget extends StatelessWidget {
-  const ErrorWidget({
-    super.key,
-    required this.message,
-    this.onRetry,
-  });
-
-  final String message;
-  final VoidCallback? onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Theme.of(context).colorScheme.error,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          if (onRetry != null) ...[
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: onRetry,
-              child: const Text('Retry'),
-            ),
-          ],
-        ],
-      ),
-    );
+Future<void> _onLoadData(LoadData event, Emitter<DataState> emit) async {
+  emit(DataLoading());
+  try {
+    final data = await _repository.getData();
+    emit(DataLoaded(data));
+  } catch (e) {
+    emit(DataError(e.toString()));
   }
 }
 ```
@@ -258,209 +171,107 @@ class ErrorWidget extends StatelessWidget {
 
 ### Unit Tests
 ```dart
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
-
-import 'package:hr_sandbox/domain/entities/employee.dart';
-import 'package:hr_sandbox/data/repositories/employee_repository_impl.dart';
-import 'package:hr_sandbox/data/datasources/employee_remote_datasource.dart';
-
-@GenerateMocks([EmployeeRemoteDataSource])
-import 'employee_repository_impl_test.mocks.dart';
-
-void main() {
-  group('EmployeeRepositoryImpl', () {
-    late EmployeeRepositoryImpl repository;
-    late MockEmployeeRemoteDataSource mockDataSource;
-
-    setUp(() {
-      mockDataSource = MockEmployeeRemoteDataSource();
-      repository = EmployeeRepositoryImpl(mockDataSource);
-    });
-
-    group('getEmployee', () {
-      const employeeId = '123';
-      const employee = Employee(
-        id: employeeId,
-        fullName: 'John Doe',
-        email: 'john.doe@example.com',
-      );
-
-      test('should return employee when data source is successful', () async {
-        // arrange
-        when(mockDataSource.getEmployee(employeeId))
-            .thenAnswer((_) async => employee);
-
-        // act
-        final result = await repository.getEmployee(employeeId);
-
-        // assert
-        expect(result, equals(employee));
-        verify(mockDataSource.getEmployee(employeeId)).called(1);
-      });
-
-      test('should throw exception when data source fails', () async {
-        // arrange
-        when(mockDataSource.getEmployee(employeeId))
-            .thenThrow(ApiException(message: 'Network error'));
-
-        // act & assert
-        expect(
-          () => repository.getEmployee(employeeId),
-          throwsA(isA<ApiException>()),
-        );
-      });
-    });
+group('ProfileBloc', () {
+  late ProfileBloc bloc;
+  late MockGetProfile mockGetProfile;
+  
+  setUp(() {
+    mockGetProfile = MockGetProfile();
+    bloc = ProfileBloc(mockGetProfile);
   });
-}
+  
+  tearDown(() {
+    bloc.close();
+  });
+  
+  test('initial state is ProfileInitial', () {
+    expect(bloc.state, isA<ProfileInitial>());
+  });
+  
+  blocTest<ProfileBloc, ProfileEvent, ProfileState>(
+    'emits [ProfileLoading, ProfileLoaded] when LoadProfile is added',
+    build: () {
+      when(mockGetProfile.call(any)).thenAnswer(
+        (_) async => Profile(id: '1', name: 'Test'),
+      );
+      return bloc;
+    },
+    act: (bloc) => bloc.add(LoadProfile('1')),
+    expect: () => [
+      isA<ProfileLoading>(),
+      isA<ProfileLoaded>(),
+    ],
+  );
+});
 ```
 
 ### Widget Tests
 ```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
-
-import 'package:hr_sandbox/presentation/widgets/employee_card.dart';
-import 'package:hr_sandbox/domain/entities/employee.dart';
-import 'package:hr_sandbox/presentation/providers/employee_provider.dart';
-
-void main() {
-  group('EmployeeCard', () {
-    const employee = Employee(
-      id: '123',
-      fullName: 'John Doe',
-      email: 'john.doe@example.com',
-    );
-
-    testWidgets('displays employee information correctly', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: EmployeeCard(employee: employee),
-          ),
-        ),
-      );
-
-      expect(find.text('John Doe'), findsOneWidget);
-      expect(find.text('john.doe@example.com'), findsOneWidget);
-    });
-
-    testWidgets('calls onTap when tapped', (tester) async {
-      bool tapped = false;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: EmployeeCard(
-              employee: employee,
-              onTap: () => tapped = true,
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.byType(EmployeeCard));
-      expect(tapped, isTrue);
-    });
-  });
-}
+testWidgets('ProfilePage displays user information', (tester) async {
+  await tester.pumpWidget(
+    BlocProvider(
+      create: (context) => ProfileBloc(mockGetProfile),
+      child: const MaterialApp(home: ProfilePage()),
+    ),
+  );
+  
+  expect(find.text('User Profile'), findsOneWidget);
+  expect(find.byType(CircularProgressIndicator), findsOneWidget);
+});
 ```
 
 ## Performance Standards
 
 ### Widget Optimization
-```dart
-// Use const constructors
-const EmployeeCard({super.key, required this.employee});
-
-// Implement shouldRebuild for custom widgets
-class CustomWidget extends StatelessWidget {
-  const CustomWidget({super.key, required this.data});
-
-  final String data;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(data);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) || other is CustomWidget && other.data == data;
-  }
-
-  @override
-  int get hashCode => data.hashCode;
-}
-
-// Use ListView.builder for large lists
-ListView.builder(
-  itemCount: employees.length,
-  itemBuilder: (context, index) {
-    return EmployeeCard(employee: employees[index]);
-  },
-)
-```
+- Use `const` constructors when possible
+- Implement `shouldRebuild` in custom widgets
+- Use `ListView.builder` for large lists
+- Avoid unnecessary rebuilds
 
 ### Memory Management
 ```dart
-class EmployeeProvider extends ChangeNotifier {
-  // Dispose resources properly
+class MyWidget extends StatefulWidget {
+  @override
+  State<MyWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
+  late AnimationController _controller;
+  
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+  }
+  
   @override
   void dispose() {
-    _subscription?.cancel();
+    _controller.dispose();
     super.dispose();
   }
-
-  // Use weak references when needed
-  final WeakReference<BuildContext> _contextRef;
 }
 ```
 
 ## Security Standards
 
-### Data Validation
+### Input Validation
 ```dart
-class EmployeeValidator {
+class InputValidator {
   static String? validateEmail(String? email) {
     if (email == null || email.isEmpty) {
       return 'Email is required';
     }
-    
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(email)) {
-      return 'Please enter a valid email address';
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      return 'Invalid email format';
     }
-    
-    return null;
-  }
-
-  static String? validatePhone(String? phone) {
-    if (phone == null || phone.isEmpty) {
-      return 'Phone number is required';
-    }
-    
-    final phoneRegex = RegExp(r'^\+?[\d\s\-\(\)]+$');
-    if (!phoneRegex.hasMatch(phone)) {
-      return 'Please enter a valid phone number';
-    }
-    
     return null;
   }
 }
 ```
 
-### Input Sanitization
+### Data Sanitization
 ```dart
-class InputSanitizer {
-  static String sanitizeText(String input) {
-    return input.trim().replaceAll(RegExp(r'<[^>]*>'), '');
-  }
-
-  static String sanitizeEmail(String email) {
-    return email.trim().toLowerCase();
-  }
+String sanitizeInput(String input) {
+  return input.trim().replaceAll(RegExp(r'[<>]'), '');
 }
 ``` 

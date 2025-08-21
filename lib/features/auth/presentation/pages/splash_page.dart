@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../domain/usecases/is_authenticated.dart';
 import '../../domain/usecases/get_auth_settings.dart';
+import '../../../../app/config/app_config.dart';
 import '../../../../app/router/app_router.dart';
 
 class SplashPage extends StatefulWidget {
@@ -28,6 +29,12 @@ class _SplashPageState extends State<SplashPage> {
 
     if (!isAuthenticated) {
       context.go(AppRouter.login);
+      return;
+    }
+
+    // Dev flag: if enabled, skip unlock routing, go straight to main when authed
+    if (AppConfig.devBypassUnlockOnStart) {
+      context.go(AppRouter.main);
       return;
     }
 

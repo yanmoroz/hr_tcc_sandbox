@@ -8,6 +8,8 @@ import '../../domain/entities/biometric_type.dart';
 import '../blocs/biometric_setup_bloc.dart';
 import '../blocs/biometric_setup_event.dart';
 import '../blocs/biometric_setup_state.dart';
+import '../../../../app/theme/app_theme.dart';
+import '../widgets/custom_button.dart';
 
 class BiometricSetupPage extends StatefulWidget {
   const BiometricSetupPage({super.key});
@@ -89,36 +91,29 @@ class _BiometricSetupPageState extends State<BiometricSetupPage> {
                       ),
                     ),
                     const Spacer(),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF12369F),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
+                    CustomButton(
+                      text: primaryLabel,
+                      backgroundColor: AppTheme.primaryColor,
+                      textColor: Colors.white,
+                      borderRadius: 12,
                       onPressed: () {
                         context.read<BiometricSetupBloc>().add(
                           BiometricEnableRequested(state.biometricType),
                         );
                       },
-                      child: Text(primaryLabel),
                     ),
                     const SizedBox(height: 12),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
+                    CustomButton(
+                      text: 'Входить только с кодом',
+                      outlined: true,
+                      textColor: Colors.black,
+                      borderColor: const Color(0xBABABE9F),
+                      borderRadius: 12,
                       onPressed: () {
                         context.read<BiometricSetupBloc>().add(
                           BiometricSkipRequested(),
                         );
                       },
-                      child: const Text('Входить только с кодом'),
                     ),
                     const SizedBox(height: 8),
                   ],

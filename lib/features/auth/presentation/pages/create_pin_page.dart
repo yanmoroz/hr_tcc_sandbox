@@ -5,8 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../blocs/pin_bloc.dart';
 import '../blocs/pin_event.dart';
 import '../blocs/pin_state.dart';
-import '../widgets/pin_input.dart';
-import '../widgets/numeric_keypad.dart';
+import '../widgets/pin_entry.dart';
 
 class CreatePinPage extends StatefulWidget {
   const CreatePinPage({super.key});
@@ -77,81 +76,37 @@ class _CreatePinPageState extends State<CreatePinPage> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 40),
+                  child: BlocBuilder<PinBloc, PinState>(
+                    builder: (context, state) {
+                      int digitCount = 0;
+                      bool isLoading = false;
 
-                      // Title
-                      const Text(
-                        'Создайте код доступа',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                      if (state is PinCreating) {
+                        digitCount = state.digitCount;
 
-                      const SizedBox(height: 8),
+                        // Auto-submit when 4 digits are entered
+                        if (digitCount == 4) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            context.read<PinBloc>().add(
+                              PinCreationConfirmed(state.currentPin),
+                            );
+                          });
+                        }
+                      } else if (state is PinCreatingLoading) {
+                        isLoading = true;
+                      }
 
-                      // Subtitle
-                      const Text(
-                        'Войдите в свою учётную запись',
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                        textAlign: TextAlign.center,
-                      ),
-
-                      const SizedBox(height: 60),
-
-                      // PIN Input
-                      BlocBuilder<PinBloc, PinState>(
-                        builder: (context, state) {
-                          int digitCount = 0;
-                          bool isLoading = false;
-
-                          if (state is PinCreating) {
-                            digitCount = state.digitCount;
-
-                            // Auto-submit when 4 digits are entered
-                            if (digitCount == 4) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                context.read<PinBloc>().add(
-                                  PinCreationConfirmed(state.currentPin),
-                                );
-                              });
-                            }
-                          } else if (state is PinCreatingLoading) {
-                            isLoading = true;
-                          }
-
-                          return Column(
-                            children: [
-                              PinInput(
-                                digitCount: digitCount,
-                                maxDigits: 4,
-                                size: 16,
-                              ),
-
-                              if (isLoading) ...[
-                                const SizedBox(height: 24),
-                                const CircularProgressIndicator(),
-                              ],
-                            ],
-                          );
-                        },
-                      ),
-
-                      const Spacer(),
-
-                      // Numeric Keypad
-                      NumericKeypad(
+                      return PinEntry(
+                        title: 'Создайте код доступа',
+                        subtitle: 'Войдите в свою учётную запись',
+                        digitCount: digitCount,
+                        maxDigits: 4,
+                        isLoading: isLoading,
                         onDigitPressed: _onDigitPressed,
                         onDeletePressed: _onDeletePressed,
                         showDeleteButton: true,
-                      ),
-
-                      const SizedBox(height: 40),
-                    ],
+                      );
+                    },
                   ),
                 ),
               ),

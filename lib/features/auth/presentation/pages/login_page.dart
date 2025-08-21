@@ -7,6 +7,7 @@ import '../blocs/auth_event.dart';
 import '../blocs/auth_state.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
+import '../../../../app/theme/app_theme.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -179,10 +180,10 @@ class _LoginPageState extends State<LoginPage> {
                               height: 20,
                               decoration: BoxDecoration(
                                 color: _agreeToDataProcessing
-                                    ? const Color(0xFF6366F1)
+                                    ? AppTheme.primaryColor
                                     : Colors.transparent,
                                 border: Border.all(
-                                  color: const Color(0xFF6366F1),
+                                  color: AppTheme.primaryColor,
                                   width: 1.5,
                                 ),
                                 borderRadius: BorderRadius.circular(3),
@@ -219,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
                                     TextSpan(
                                       text: 'обработку персональных данных',
                                       style: const TextStyle(
-                                        color: Color(0xFF6366F1),
+                                        color: AppTheme.primaryColor,
                                       ),
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = _onDataProcessingLinkPressed,
@@ -242,7 +243,12 @@ class _LoginPageState extends State<LoginPage> {
                           }
                           return CustomButton(
                             text: 'Продолжить',
-                            onPressed: _onLoginPressed,
+                            backgroundColor: AppTheme.primaryColor,
+                            textColor: Colors.white,
+                            borderRadius: 12,
+                            onPressed: () {
+                              _onLoginPressed();
+                            },
                             isLoading: state is LoginLoading,
                             isEnabled: _isFormValid,
                           );

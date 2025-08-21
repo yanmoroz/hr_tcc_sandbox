@@ -5,8 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../blocs/pin_bloc.dart';
 import '../blocs/pin_event.dart';
 import '../blocs/pin_state.dart';
-import '../widgets/pin_input.dart';
-import '../widgets/numeric_keypad.dart';
+import '../widgets/pin_entry.dart';
 
 class RepeatPinPage extends StatefulWidget {
   final String originalPin;
@@ -79,111 +78,51 @@ class _RepeatPinPageState extends State<RepeatPinPage> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 40),
+                  child: BlocBuilder<PinBloc, PinState>(
+                    builder: (context, state) {
+                      int digitCount = 0;
+                      bool isLoading = false;
+                      bool isError = false;
 
-                      // Title
-                      const Text(
-                        'Повторите ПИН-код',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                      if (state is PinConfirming) {
+                        digitCount = state.digitCount;
 
-                      const SizedBox(height: 8),
-
-                      // Subtitle
-                      const Text(
-                        'Для быстрого входа в приложение',
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                        textAlign: TextAlign.center,
-                      ),
-
-                      const SizedBox(height: 60),
-
-                      // PIN Input
-                      BlocBuilder<PinBloc, PinState>(
-                        builder: (context, state) {
-                          int digitCount = 0;
-                          bool isLoading = false;
-                          bool isError = false;
-
-                          if (state is PinConfirming) {
-                            digitCount = state.digitCount;
-
-                            // Auto-submit when 4 digits are entered
-                            if (digitCount == 4) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                context.read<PinBloc>().add(
-                                  PinRepeated(state.currentPin),
-                                );
-                              });
-                            }
-                          } else if (state is PinConfirmingLoading) {
-                            isLoading = true;
-                          } else if (state is PinMismatch) {
-                            isError = true;
-                            digitCount = 4; // Show all dots filled with red
-
-                            // Reset after showing error for a moment
-                            final pinBloc = context.read<PinBloc>();
-                            Future.delayed(
-                              const Duration(milliseconds: 2000),
-                              () {
-                                if (mounted) {
-                                  pinBloc.startPinConfirmation(
-                                    widget.originalPin,
-                                  );
-                                }
-                              },
+                        // Auto-submit when 4 digits are entered
+                        if (digitCount == 4) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            context.read<PinBloc>().add(
+                              PinRepeated(state.currentPin),
                             );
+                          });
+                        }
+                      } else if (state is PinConfirmingLoading) {
+                        isLoading = true;
+                      } else if (state is PinMismatch) {
+                        isError = true;
+                        digitCount = 4; // Show all dots filled with red
+
+                        // Reset after showing error for a moment
+                        final pinBloc = context.read<PinBloc>();
+                        Future.delayed(const Duration(milliseconds: 2000), () {
+                          if (mounted) {
+                            pinBloc.startPinConfirmation(widget.originalPin);
                           }
+                        });
+                      }
 
-                          return Column(
-                            children: [
-                              PinInput(
-                                digitCount: digitCount,
-                                maxDigits: 4,
-                                size: 16,
-                                isError: isError,
-                              ),
-
-                              if (isError) ...[
-                                const SizedBox(height: 16),
-                                const Text(
-                                  'Код не совпадает',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-
-                              if (isLoading) ...[
-                                const SizedBox(height: 24),
-                                const CircularProgressIndicator(),
-                              ],
-                            ],
-                          );
-                        },
-                      ),
-
-                      const Spacer(),
-
-                      // Numeric Keypad
-                      NumericKeypad(
+                      return PinEntry(
+                        title: 'Повторите ПИН-код',
+                        subtitle: 'Для быстрого входа в приложение',
+                        digitCount: digitCount,
+                        maxDigits: 4,
+                        isLoading: isLoading,
+                        isError: isError,
+                        errorText: isError ? 'Код не совпадает' : null,
                         onDigitPressed: _onDigitPressed,
                         onDeletePressed: _onDeletePressed,
                         showDeleteButton: true,
-                      ),
-
-                      const SizedBox(height: 40),
-                    ],
+                      );
+                    },
                   ),
                 ),
               ),

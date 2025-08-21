@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../app/theme/app_theme.dart';
 
 class PinInput extends StatelessWidget {
   final int digitCount;
@@ -15,7 +16,7 @@ class PinInput extends StatelessWidget {
     this.maxDigits = 4,
     this.isError = false,
     this.size = 16,
-    this.filledColor = const Color(0xFF6366F1),
+    this.filledColor = AppTheme.primaryColor,
     this.emptyColor = const Color(0xFFE5E7EB),
     this.errorColor = Colors.red,
   });

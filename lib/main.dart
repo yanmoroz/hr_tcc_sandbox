@@ -2,27 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-// Profile feature imports
-import 'features/profile/data/datasources/profile_remote_datasource.dart';
-import 'features/profile/data/datasources/kpi_remote_datasource.dart';
-import 'features/profile/data/repositories/profile_repository_impl.dart';
-import 'features/profile/data/repositories/kpi_repository_impl.dart';
-import 'features/profile/domain/repositories/profile_repository.dart';
-import 'features/profile/domain/repositories/kpi_repository.dart';
-import 'features/profile/domain/usecases/get_profile.dart';
-import 'features/profile/domain/usecases/update_profile.dart' as usecase;
-import 'features/profile/domain/usecases/get_kpis.dart';
+// BLoCs
 import 'features/profile/presentation/blocs/profile_bloc.dart';
 import 'features/profile/presentation/blocs/profile_event.dart';
 import 'features/profile/presentation/blocs/kpi_bloc.dart';
-
-// Auth feature imports
 import 'features/auth/presentation/blocs/auth_bloc.dart';
 import 'features/auth/presentation/blocs/pin_bloc.dart';
 
-// Router import
+// Router
 import 'app/router/app_router.dart';
-import 'app/di/auth_injection.dart';
+
+// DI modules
+import 'app/di/app_module.dart';
+import 'app/di/di_module.dart';
+import 'features/auth/di/auth_module.dart';
+import 'features/profile/di/profile_module.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -32,31 +26,11 @@ void main() {
 }
 
 void setupDependencies() {
-  // Setup auth dependencies
-  setupAuthDependencies(getIt);
+  final List<DiModule> modules = [AppModule(), AuthModule(), ProfileModule()];
 
-  // Data sources
-  getIt.registerLazySingleton<ProfileRemoteDataSource>(
-    () => ProfileRemoteDataSourceImpl(),
-  );
-  getIt.registerLazySingleton<KpiRemoteDataSource>(
-    () => KpiRemoteDataSourceImpl(),
-  );
-
-  // Repositories
-  getIt.registerLazySingleton<ProfileRepository>(
-    () => ProfileRepositoryImpl(getIt<ProfileRemoteDataSource>()),
-  );
-  getIt.registerLazySingleton<KpiRepository>(
-    () => KpiRepositoryImpl(getIt<KpiRemoteDataSource>()),
-  );
-
-  // Use cases
-  getIt.registerLazySingleton(() => GetProfile(getIt<ProfileRepository>()));
-  getIt.registerLazySingleton(
-    () => usecase.UpdateProfile(getIt<ProfileRepository>()),
-  );
-  getIt.registerLazySingleton(() => GetKpis(getIt<KpiRepository>()));
+  for (final module in modules) {
+    module.register(getIt);
+  }
 }
 
 class MainApp extends StatelessWidget {
@@ -69,14 +43,10 @@ class MainApp extends StatelessWidget {
         BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
         BlocProvider<PinBloc>(create: (context) => getIt<PinBloc>()),
         BlocProvider<ProfileBloc>(
-          create: (context) => ProfileBloc(
-            getProfile: getIt<GetProfile>(),
-            updateProfile: getIt<usecase.UpdateProfile>(),
-          )..add(const LoadProfile('1')),
+          create: (context) =>
+              getIt<ProfileBloc>()..add(const LoadProfile('1')),
         ),
-        BlocProvider<KpiBloc>(
-          create: (context) => KpiBloc(getKpis: getIt<GetKpis>()),
-        ),
+        BlocProvider<KpiBloc>(create: (context) => getIt<KpiBloc>()),
       ],
       child: MaterialApp.router(
         title: 'HR TCC Sandbox',

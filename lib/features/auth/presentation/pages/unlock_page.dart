@@ -45,7 +45,7 @@ class _UnlockPageState extends State<UnlockPage> {
         child: BlocConsumer<UnlockBloc, UnlockState>(
           listener: (context, state) {
             if (state.unlocked) {
-              context.go(AppRouter.profile);
+              context.go(AppRouter.main);
             }
           },
           builder: (context, state) {

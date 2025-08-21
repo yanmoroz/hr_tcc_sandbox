@@ -37,7 +37,7 @@ class _SplashPageState extends State<SplashPage> {
     if (settings.isPinEnabled || (settings.isBiometricEnabled)) {
       context.go(AppRouter.unlock);
     } else {
-      context.go(AppRouter.profile);
+      context.go(AppRouter.main);
     }
   }
 

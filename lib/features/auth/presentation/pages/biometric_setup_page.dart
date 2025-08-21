@@ -9,6 +9,7 @@ import '../blocs/biometric_setup_bloc.dart';
 import '../blocs/biometric_setup_event.dart';
 import '../blocs/biometric_setup_state.dart';
 import '../../../../app/theme/app_theme.dart';
+import '../../../../app/router/app_router.dart';
 import '../widgets/app_button.dart';
 
 class BiometricSetupPage extends StatefulWidget {
@@ -43,7 +44,7 @@ class _BiometricSetupPageState extends State<BiometricSetupPage> {
           listener: (context, state) {
             if (state is BiometricSetupCompleted ||
                 state is BiometricSetupSkipped) {
-              context.go('/profile');
+              context.go(AppRouter.main);
             }
           },
           builder: (context, state) {

@@ -14,6 +14,9 @@ class $AssetsIconsGen {
 
   /// Directory path: assets/icons/auth
   $AssetsIconsAuthGen get auth => const $AssetsIconsAuthGen();
+
+  /// Directory path: assets/icons/quick_links
+  $AssetsIconsQuickLinksGen get quickLinks => const $AssetsIconsQuickLinksGen();
 }
 
 class $AssetsIconsAuthGen {
@@ -27,6 +30,62 @@ class $AssetsIconsAuthGen {
 
   /// List of all assets
   List<String> get values => [faceIdBig, touchIdBig];
+}
+
+class $AssetsIconsQuickLinksGen {
+  const $AssetsIconsQuickLinksGen();
+
+  /// Directory path: assets/icons/quick_links/page
+  $AssetsIconsQuickLinksPageGen get page =>
+      const $AssetsIconsQuickLinksPageGen();
+
+  /// Directory path: assets/icons/quick_links/widget
+  $AssetsIconsQuickLinksWidgetGen get widget =>
+      const $AssetsIconsQuickLinksWidgetGen();
+}
+
+class $AssetsIconsQuickLinksPageGen {
+  const $AssetsIconsQuickLinksPageGen();
+
+  /// File path: assets/icons/quick_links/page/confluence.svg
+  String get confluence => 'assets/icons/quick_links/page/confluence.svg';
+
+  /// File path: assets/icons/quick_links/page/ispring.svg
+  String get ispring => 'assets/icons/quick_links/page/ispring.svg';
+
+  /// File path: assets/icons/quick_links/page/jira.svg
+  String get jira => 'assets/icons/quick_links/page/jira.svg';
+
+  /// File path: assets/icons/quick_links/page/potok.svg
+  String get potok => 'assets/icons/quick_links/page/potok.svg';
+
+  /// File path: assets/icons/quick_links/page/telegram.svg
+  String get telegram => 'assets/icons/quick_links/page/telegram.svg';
+
+  /// List of all assets
+  List<String> get values => [confluence, ispring, jira, potok, telegram];
+}
+
+class $AssetsIconsQuickLinksWidgetGen {
+  const $AssetsIconsQuickLinksWidgetGen();
+
+  /// File path: assets/icons/quick_links/widget/confluence.svg
+  String get confluence => 'assets/icons/quick_links/widget/confluence.svg';
+
+  /// File path: assets/icons/quick_links/widget/ispring.svg
+  String get ispring => 'assets/icons/quick_links/widget/ispring.svg';
+
+  /// File path: assets/icons/quick_links/widget/jira.svg
+  String get jira => 'assets/icons/quick_links/widget/jira.svg';
+
+  /// File path: assets/icons/quick_links/widget/potok.svg
+  String get potok => 'assets/icons/quick_links/widget/potok.svg';
+
+  /// File path: assets/icons/quick_links/widget/telegram.svg
+  String get telegram => 'assets/icons/quick_links/widget/telegram.svg';
+
+  /// List of all assets
+  List<String> get values => [confluence, ispring, jira, potok, telegram];
 }
 
 class Assets {

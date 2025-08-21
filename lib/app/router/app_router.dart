@@ -9,6 +9,7 @@ import '../../features/auth/presentation/pages/splash_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/profile_kpi_page.dart';
 import '../../app/presentation/pages/main_page.dart';
+import '../../features/quick_links/presentation/pages/quick_links_page.dart';
 
 // Custom page transition that handles direction automatically
 class SlidePageTransition extends CustomTransitionPage {
@@ -35,6 +36,7 @@ class AppRouter {
   static const String profile = '/profile';
   static const String profileKpi = '/profile/kpi';
   static const String main = '/home';
+  static const String quickLinks = '/quick-links';
 
   static GoRouter get router => GoRouter(
     initialLocation: splash,
@@ -105,6 +107,14 @@ class AppRouter {
         name: 'main',
         pageBuilder: (context, state) =>
             SlidePageTransition(key: state.pageKey, child: const MainPage()),
+      ),
+      GoRoute(
+        path: quickLinks,
+        name: 'quickLinks',
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: const QuickLinksPage(),
+        ),
       ),
       GoRoute(
         path: profileKpi,

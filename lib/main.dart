@@ -19,6 +19,8 @@ import 'app/di/app_module.dart';
 import 'app/di/di_module.dart';
 import 'features/auth/di/auth_module.dart';
 import 'features/profile/di/profile_module.dart';
+import 'features/quick_links/di/quick_links_module.dart';
+import 'features/quick_links/presentation/blocs/quick_links_bloc.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -28,7 +30,12 @@ void main() {
 }
 
 void setupDependencies() {
-  final List<DiModule> modules = [AppModule(), AuthModule(), ProfileModule()];
+  final List<DiModule> modules = [
+    AppModule(),
+    AuthModule(),
+    ProfileModule(),
+    QuickLinksModule(),
+  ];
 
   for (final module in modules) {
     module.register(getIt);
@@ -53,6 +60,7 @@ class MainApp extends StatelessWidget {
               getIt<ProfileBloc>()..add(const LoadProfile('1')),
         ),
         BlocProvider<KpiBloc>(create: (context) => getIt<KpiBloc>()),
+        BlocProvider(create: (context) => getIt<QuickLinksBloc>()),
       ],
       child: MaterialApp.router(
         title: 'HR TCC Sandbox',

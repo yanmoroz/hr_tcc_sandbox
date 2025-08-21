@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/widgets/user_top_bar.dart';
+import '../../../quick_links/presentation/widgets/quick_links_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -13,7 +14,9 @@ class HomePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: const [
           UserTopBar(),
-          Expanded(child: Center(child: Text('Главная'))),
+          SizedBox(height: 8),
+          QuickLinksWidget(),
+          Expanded(child: SizedBox.shrink()),
         ],
       ),
     );

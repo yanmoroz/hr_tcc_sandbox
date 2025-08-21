@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import '../../shared/services/secure_storage_service.dart';
 import '../../shared/services/biometric_service.dart';
 import '../../shared/services/network_service.dart';
+import '../../shared/services/url_launcher_service.dart';
 import 'di_module.dart';
 
 class AppModule extends DiModule {
@@ -14,5 +15,8 @@ class AppModule extends DiModule {
     );
     getIt.registerLazySingleton<BiometricService>(() => BiometricServiceImpl());
     getIt.registerLazySingleton<NetworkService>(() => NetworkServiceImpl());
+    getIt.registerLazySingleton<UrlLauncherService>(
+      () => UrlLauncherServiceImpl(),
+    );
   }
 }

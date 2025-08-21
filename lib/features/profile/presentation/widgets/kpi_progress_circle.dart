@@ -97,91 +97,111 @@ class _KpiProgressCircleState extends State<KpiProgressCircle>
     return Column(
       children: [
         // Navigation arrows and progress circle
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Left arrow
-            IconButton(
-              onPressed: widget.onPreviousPeriod,
-              icon: Icon(Icons.chevron_left, color: Colors.grey[400], size: 24),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-            ),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            // Responsive sizing to avoid horizontal overflow
+            final double iconExtent = 48; // IconButton min size on Material
+            final double spacing = 8;
+            final double maxDiameter = 240;
+            final double minDiameter = 160;
+            final double availableForCircle =
+                constraints.maxWidth - (2 * iconExtent) - (2 * spacing);
+            final double diameter = availableForCircle.clamp(
+              minDiameter,
+              maxDiameter,
+            );
 
-            const SizedBox(width: 16),
-
-            // Progress circle
-            SizedBox(
-              width: 240,
-              height: 240,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Background circle
-                  SizedBox(
-                    width: 240,
-                    height: 240,
-                    child: CircularProgressIndicator(
-                      value: 1.0,
-                      strokeWidth: 16,
-                      backgroundColor: Colors.grey[200],
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                        Colors.transparent,
-                      ),
-                    ),
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Left arrow
+                IconButton(
+                  onPressed: widget.onPreviousPeriod,
+                  icon: Icon(
+                    Icons.chevron_left,
+                    color: Colors.grey[400],
+                    size: 24,
                   ),
-                  // Animated Progress circle
-                  AnimatedBuilder(
-                    animation: _progressAnimation,
-                    builder: (context, child) {
-                      return SizedBox(
-                        width: 240,
-                        height: 240,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+
+                SizedBox(width: spacing),
+
+                // Progress circle
+                SizedBox(
+                  width: diameter,
+                  height: diameter,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Background circle
+                      SizedBox(
+                        width: diameter,
+                        height: diameter,
                         child: CircularProgressIndicator(
-                          value: _progressAnimation.value,
+                          value: 1.0,
                           strokeWidth: 16,
-                          backgroundColor: Colors.transparent,
+                          backgroundColor: Colors.grey[200],
                           valueColor: const AlwaysStoppedAnimation<Color>(
-                            Color(0xFF1E3A8A),
+                            Colors.transparent,
                           ),
                         ),
-                      );
-                    },
+                      ),
+                      // Animated Progress circle
+                      AnimatedBuilder(
+                        animation: _progressAnimation,
+                        builder: (context, child) {
+                          return SizedBox(
+                            width: diameter,
+                            height: diameter,
+                            child: CircularProgressIndicator(
+                              value: _progressAnimation.value,
+                              strokeWidth: 16,
+                              backgroundColor: Colors.transparent,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                Color(0xFF1E3A8A),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      // Animated Percentage text
+                      AnimatedBuilder(
+                        animation: _progressAnimation,
+                        builder: (context, child) {
+                          final animatedProgress =
+                              (_progressAnimation.value * 100).toInt();
+                          return Text(
+                            '$animatedProgress%',
+                            style: const TextStyle(
+                              fontSize: 36,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                  // Animated Percentage text
-                  AnimatedBuilder(
-                    animation: _progressAnimation,
-                    builder: (context, child) {
-                      final animatedProgress = (_progressAnimation.value * 100)
-                          .toInt();
-                      return Text(
-                        '$animatedProgress%',
-                        style: const TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      );
-                    },
+                ),
+
+                SizedBox(width: spacing),
+
+                // Right arrow
+                IconButton(
+                  onPressed: widget.onNextPeriod,
+                  icon: Icon(
+                    Icons.chevron_right,
+                    color: Colors.grey[400],
+                    size: 24,
                   ),
-                ],
-              ),
-            ),
-
-            const SizedBox(width: 16),
-
-            // Right arrow
-            IconButton(
-              onPressed: widget.onNextPeriod,
-              icon: Icon(
-                Icons.chevron_right,
-                color: Colors.grey[400],
-                size: 24,
-              ),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-            ),
-          ],
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              ],
+            );
+          },
         ),
 
         const SizedBox(height: 20),
@@ -211,7 +231,6 @@ class _KpiProgressCircleState extends State<KpiProgressCircle>
     if (kpis.isEmpty) return 'Период';
 
     final startDate = kpis.first.startDate;
-    final endDate = kpis.first.endDate;
 
     switch (period) {
       case KpiPeriod.quarterly:

@@ -10,6 +10,8 @@ import 'features/profile/presentation/blocs/kpi_bloc.dart';
 import 'features/auth/presentation/blocs/auth_bloc.dart';
 import 'features/auth/presentation/blocs/pin_bloc.dart';
 import 'features/auth/presentation/blocs/unlock_bloc.dart';
+import 'features/quick_links/presentation/blocs/quick_links_bloc.dart';
+import 'features/surveys/presentation/blocs/surveys_bloc.dart';
 
 // Router
 import 'app/router/app_router.dart';
@@ -20,7 +22,7 @@ import 'app/di/di_module.dart';
 import 'features/auth/di/auth_module.dart';
 import 'features/profile/di/profile_module.dart';
 import 'features/quick_links/di/quick_links_module.dart';
-import 'features/quick_links/presentation/blocs/quick_links_bloc.dart';
+import 'features/surveys/di/surveys_module.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -35,6 +37,7 @@ void setupDependencies() {
     AuthModule(),
     ProfileModule(),
     QuickLinksModule(),
+    SurveysModule(),
   ];
 
   for (final module in modules) {
@@ -61,6 +64,7 @@ class MainApp extends StatelessWidget {
         ),
         BlocProvider<KpiBloc>(create: (context) => getIt<KpiBloc>()),
         BlocProvider(create: (context) => getIt<QuickLinksBloc>()),
+        BlocProvider(create: (context) => getIt<SurveysBloc>()),
       ],
       child: MaterialApp.router(
         title: 'HR TCC Sandbox',

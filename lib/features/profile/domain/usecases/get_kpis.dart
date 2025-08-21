@@ -1,10 +1,10 @@
 import '../entities/kpi.dart';
 import '../repositories/kpi_repository.dart';
 
-class GetKpis {
+class GetKpisUseCase {
   final KpiRepository repository;
 
-  GetKpis(this.repository);
+  GetKpisUseCase(this.repository);
 
   Future<List<Kpi>> call(String userId, KpiPeriod period) async {
     return await repository.getKpis(userId, period);

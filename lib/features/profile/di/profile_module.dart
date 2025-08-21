@@ -7,7 +7,7 @@ import '../data/repositories/kpi_repository_impl.dart';
 import '../domain/repositories/profile_repository.dart';
 import '../domain/repositories/kpi_repository.dart';
 import '../domain/usecases/get_profile.dart';
-import '../domain/usecases/update_profile.dart' as usecase;
+import '../domain/usecases/update_profile.dart';
 import '../domain/usecases/get_kpis.dart';
 import '../presentation/blocs/profile_bloc.dart';
 import '../presentation/blocs/kpi_bloc.dart';
@@ -33,21 +33,25 @@ class ProfileModule extends DiModule {
     );
 
     // Use cases
-    getIt.registerLazySingleton<GetProfile>(
-      () => GetProfile(getIt<ProfileRepository>()),
+    getIt.registerLazySingleton<GetProfileUseCase>(
+      () => GetProfileUseCase(getIt<ProfileRepository>()),
     );
-    getIt.registerLazySingleton<usecase.UpdateProfile>(
-      () => usecase.UpdateProfile(getIt<ProfileRepository>()),
+    getIt.registerLazySingleton<UpdateProfileUseCase>(
+      () => UpdateProfileUseCase(getIt<ProfileRepository>()),
     );
-    getIt.registerLazySingleton<GetKpis>(() => GetKpis(getIt<KpiRepository>()));
+    getIt.registerLazySingleton<GetKpisUseCase>(
+      () => GetKpisUseCase(getIt<KpiRepository>()),
+    );
 
     // BLoCs
     getIt.registerFactory<ProfileBloc>(
       () => ProfileBloc(
-        getProfile: getIt<GetProfile>(),
-        updateProfile: getIt<usecase.UpdateProfile>(),
+        getProfile: getIt<GetProfileUseCase>(),
+        updateProfile: getIt<UpdateProfileUseCase>(),
       ),
     );
-    getIt.registerFactory<KpiBloc>(() => KpiBloc(getKpis: getIt<GetKpis>()));
+    getIt.registerFactory<KpiBloc>(
+      () => KpiBloc(getKpis: getIt<GetKpisUseCase>()),
+    );
   }
 }

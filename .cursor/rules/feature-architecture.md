@@ -265,7 +265,31 @@ class GetAnalyticsDataUseCase {
 
 ## Dependency Injection
 
-### Service Locator Pattern
+### Modular GetIt (preferred)
+- Policy: Use modular GetIt DI across the app.
+- Structure:
+  - `lib/app/di/di_module.dart` defines the `DiModule` contract.
+  - `lib/app/di/app_module.dart` registers shared services (storage, network, biometrics, env).
+  - `lib/features/<feature>/di/<feature>_module.dart` registers datasources → repositories → usecases → BLoCs for that feature.
+  - `setupDependencies()` composes modules only; no inline registrations elsewhere.
+- Lifetimes:
+  - lazySingleton: services, datasources, repositories, use cases
+  - factory: BLoCs
+- Use case naming: all use cases end with `UseCase` (e.g., `GetProfileUseCase`).
+- Composition root:
+```dart
+void setupDependencies() {
+  final modules = [AppModule(), AuthModule(), ProfileModule()];
+  for (final m in modules) m.register(getIt);
+}
+```
+- BLoC provision at route boundary:
+```dart
+BlocProvider(create: (_) => getIt<AuthBloc>());
+```
+- Scopes (optional): Use GetIt scopes for short‑lived flows; push on flow start, pop on exit.
+
+### Service Locator Pattern (legacy example)
 ```dart
 // lib/app/di/injection.dart
 import 'package:get_it/get_it.dart';

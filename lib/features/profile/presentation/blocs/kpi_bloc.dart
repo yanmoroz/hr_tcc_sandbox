@@ -5,7 +5,7 @@ import 'kpi_event.dart';
 import 'kpi_state.dart';
 
 class KpiBloc extends Bloc<KpiEvent, KpiState> {
-  final GetKpis getKpis;
+  final GetKpisUseCase getKpis;
 
   KpiBloc({required this.getKpis}) : super(KpiInitial()) {
     on<LoadKpis>(_onLoadKpis);

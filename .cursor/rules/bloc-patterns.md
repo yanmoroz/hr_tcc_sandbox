@@ -87,6 +87,13 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
 
 ## Widget Integration
 
+### DI with GetIt (policy)
+- Register BLoCs as `factory` in the feature's `di/<feature>_module.dart`.
+- UI resolves BLoCs via `BlocProvider(create: (_) => getIt<FeatureBloc>())`.
+- Do not make BLoCs singletons.
+- Do not construct BLoCs inside other layers (repositories, use cases).
+- Use case classes should be injected by their `UseCase`-postfixed names, e.g., `GetProfileUseCase`.
+
 ### BlocProvider
 ```dart
 class EmployeePage extends StatelessWidget {

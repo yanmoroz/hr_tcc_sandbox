@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/profile.dart';
 import '../../domain/usecases/get_profile.dart';
-import '../../domain/usecases/update_profile.dart' as usecase;
+import '../../domain/usecases/update_profile.dart';
 import 'profile_event.dart';
 import 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  final GetProfile getProfile;
-  final usecase.UpdateProfile updateProfile;
+  final GetProfileUseCase getProfile;
+  final UpdateProfileUseCase updateProfile;
 
   ProfileBloc({required this.getProfile, required this.updateProfile})
     : super(ProfileInitial()) {

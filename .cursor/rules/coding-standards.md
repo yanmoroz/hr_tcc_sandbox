@@ -43,6 +43,24 @@ class ExampleClass {
 
 ## Flutter-Specific Standards
 
+### DI Conventions
+- Use modular GetIt across the app.
+- Only DI modules call `register*`; no inline registrations in `main.dart` or widgets.
+- Each feature exposes a single `DiModule.register(GetIt)` entry point in `lib/features/<feature>/di/`.
+- Lifetimes: lazySingleton for services/datasources/repos/use cases; factory for BLoCs.
+- Domain layer must not reference GetIt; depend on abstractions only.
+
+### Use Case Naming
+- All use case classes must end with the `UseCase` postfix.
+- Examples: `LoginUseCase`, `GetProfileUseCase`, `UpdateProfileUseCase`, `GetKpisUseCase`.
+
+
+### PR Checklist (DI)
+- Uses DI modules; no ad-hoc registrations added.
+- BLoCs registered as factories; services/repos/use cases as lazy singletons.
+- New feature includes `di/<feature>_module.dart` and is composed in `setupDependencies()`.
+- Use case classes follow `UseCase` postfix naming.
+
 ### Widget Structure
 - Use `StatelessWidget` when possible
 - Use `StatefulWidget` only when local state is needed

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/profile_bloc.dart';
@@ -11,6 +10,10 @@ import '../widgets/department_position_card.dart';
 import '../widgets/kpi_summary_card.dart';
 import '../widgets/income_card.dart';
 import '../widgets/leave_card.dart';
+import '../../../auth/presentation/blocs/auth_bloc.dart';
+import '../../../auth/presentation/blocs/auth_event.dart';
+import '../../../../app/router/app_router.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -152,9 +155,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   void _performLogout(BuildContext context) {
-    // TODO: Implement logout functionality
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Выход из системы')));
+    context.read<AuthBloc>().add(LogoutRequested());
+    context.go(AppRouter.login);
   }
 }

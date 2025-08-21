@@ -9,7 +9,7 @@ import '../blocs/biometric_setup_bloc.dart';
 import '../blocs/biometric_setup_event.dart';
 import '../blocs/biometric_setup_state.dart';
 import '../../../../app/theme/app_theme.dart';
-import '../widgets/custom_button.dart';
+import '../widgets/app_button.dart';
 
 class BiometricSetupPage extends StatefulWidget {
   const BiometricSetupPage({super.key});
@@ -91,7 +91,7 @@ class _BiometricSetupPageState extends State<BiometricSetupPage> {
                       ),
                     ),
                     const Spacer(),
-                    CustomButton(
+                    AppButton(
                       text: primaryLabel,
                       backgroundColor: AppTheme.primaryColor,
                       textColor: Colors.white,
@@ -103,7 +103,7 @@ class _BiometricSetupPageState extends State<BiometricSetupPage> {
                       },
                     ),
                     const SizedBox(height: 12),
-                    CustomButton(
+                    AppButton(
                       text: 'Входить только с кодом',
                       outlined: true,
                       textColor: Colors.black,

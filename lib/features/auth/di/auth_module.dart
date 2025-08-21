@@ -12,6 +12,8 @@ import '../../auth/domain/usecases/logout.dart';
 import '../../auth/domain/usecases/create_pin.dart';
 import '../../auth/domain/usecases/validate_pin.dart';
 import '../../auth/domain/usecases/reset_pin.dart';
+import '../../auth/domain/usecases/is_authenticated.dart';
+import '../../auth/domain/usecases/get_current_user.dart';
 import '../../auth/domain/usecases/check_biometric_availability.dart';
 import '../../auth/domain/usecases/setup_biometric.dart';
 import '../../auth/domain/usecases/authenticate_with_biometric.dart';
@@ -22,6 +24,7 @@ import '../../auth/domain/usecases/disable_biometric_auth.dart';
 import '../../auth/presentation/blocs/auth_bloc.dart';
 import '../../auth/presentation/blocs/pin_bloc.dart';
 import '../../auth/presentation/blocs/biometric_setup_bloc.dart';
+import '../../auth/presentation/blocs/unlock_bloc.dart';
 import '../../../app/di/di_module.dart';
 
 class AuthModule extends DiModule {
@@ -83,6 +86,12 @@ class AuthModule extends DiModule {
     getIt.registerLazySingleton<DisableBiometricAuthUseCase>(
       () => DisableBiometricAuthUseCase(getIt<AuthRepository>()),
     );
+    getIt.registerLazySingleton<IsAuthenticatedUseCase>(
+      () => IsAuthenticatedUseCase(getIt<AuthRepository>()),
+    );
+    getIt.registerLazySingleton<GetCurrentUserUseCase>(
+      () => GetCurrentUserUseCase(getIt<AuthRepository>()),
+    );
 
     // BLoCs
     getIt.registerFactory<AuthBloc>(
@@ -105,6 +114,15 @@ class AuthModule extends DiModule {
         checkAvailability: getIt<CheckBiometricAvailabilityUseCase>(),
         enableBiometric: getIt<EnableBiometricAuthUseCase>(),
         disableBiometric: getIt<DisableBiometricAuthUseCase>(),
+      ),
+    );
+
+    getIt.registerFactory<UnlockBloc>(
+      () => UnlockBloc(
+        getAuthSettings: getIt<GetAuthSettingsUseCase>(),
+        checkBiometricAvailability: getIt<CheckBiometricAvailabilityUseCase>(),
+        authenticateWithBiometric: getIt<AuthenticateWithBiometricUseCase>(),
+        validatePin: getIt<ValidatePinUseCase>(),
       ),
     );
   }

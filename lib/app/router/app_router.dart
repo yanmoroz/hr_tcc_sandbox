@@ -4,6 +4,8 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/create_pin_page.dart';
 import '../../features/auth/presentation/pages/repeat_pin_page.dart';
 import '../../features/auth/presentation/pages/biometric_setup_page.dart';
+import '../../features/auth/presentation/pages/unlock_page.dart';
+import '../../features/auth/presentation/pages/splash_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/profile_kpi_page.dart';
 
@@ -23,7 +25,9 @@ class SlidePageTransition extends CustomTransitionPage {
 }
 
 class AppRouter {
-  static const String login = '/';
+  static const String splash = '/';
+  static const String login = '/login';
+  static const String unlock = '/unlock';
   static const String createPin = '/create-pin';
   static const String repeatPin = '/repeat-pin';
   static const String biometricSetup = '/biometric-setup';
@@ -31,8 +35,19 @@ class AppRouter {
   static const String profileKpi = '/profile/kpi';
 
   static GoRouter get router => GoRouter(
-    initialLocation: login,
+    initialLocation: splash,
     routes: [
+      GoRoute(
+        path: splash,
+        name: 'splash',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const SplashPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      ),
       GoRoute(
         path: login,
         name: 'login',
@@ -51,6 +66,12 @@ class AppRouter {
           key: state.pageKey,
           child: const CreatePinPage(),
         ),
+      ),
+      GoRoute(
+        path: unlock,
+        name: 'unlock',
+        pageBuilder: (context, state) =>
+            SlidePageTransition(key: state.pageKey, child: const UnlockPage()),
       ),
       GoRoute(
         path: '$repeatPin/:pin',

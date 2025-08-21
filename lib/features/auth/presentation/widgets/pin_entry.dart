@@ -16,6 +16,8 @@ class PinEntry extends StatelessWidget {
   final VoidCallback? onDeletePressed;
   final bool showDeleteButton;
   final Widget? footer;
+  final String? leftActionText;
+  final VoidCallback? onLeftActionPressed;
 
   const PinEntry({
     super.key,
@@ -31,32 +33,36 @@ class PinEntry extends StatelessWidget {
     this.onDeletePressed,
     this.showDeleteButton = true,
     this.footer,
+    this.leftActionText,
+    this.onLeftActionPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 40),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        if (subtitle != null) ...[
-          const SizedBox(height: 8),
-          Text(
-            subtitle!,
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
-            textAlign: TextAlign.center,
-          ),
+        if (title.isNotEmpty || subtitle != null) ...[
+          const SizedBox(height: 40),
+          if (title.isNotEmpty)
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          if (subtitle != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              subtitle!,
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ],
+          const SizedBox(height: 60),
         ],
-
-        const SizedBox(height: 60),
 
         // PIN dots + loading + error
         Column(
@@ -90,7 +96,9 @@ class PinEntry extends StatelessWidget {
         NumericKeypad(
           onDigitPressed: onDigitPressed,
           onDeletePressed: onDeletePressed,
-          showDeleteButton: showDeleteButton,
+          showDeleteButton: digitCount > 0 && showDeleteButton,
+          leftActionText: leftActionText,
+          onLeftActionPressed: onLeftActionPressed,
         ),
 
         if (footer != null) ...[const SizedBox(height: 16), footer!],

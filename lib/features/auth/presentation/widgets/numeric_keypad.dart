@@ -4,12 +4,16 @@ class NumericKeypad extends StatelessWidget {
   final Function(String) onDigitPressed;
   final VoidCallback? onDeletePressed;
   final bool showDeleteButton;
+  final String? leftActionText;
+  final VoidCallback? onLeftActionPressed;
 
   const NumericKeypad({
     super.key,
     required this.onDigitPressed,
     this.onDeletePressed,
     this.showDeleteButton = true,
+    this.leftActionText,
+    this.onLeftActionPressed,
   });
 
   @override
@@ -38,7 +42,15 @@ class NumericKeypad extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const SizedBox(width: 80), // Spacer for centering
+              // Left action or spacer
+              if (leftActionText != null)
+                _buildTextAction(
+                  text: leftActionText!,
+                  onPressed: onLeftActionPressed,
+                )
+              else
+                const SizedBox(width: 80),
+
               _buildKeypadButton(
                 text: '0',
                 onPressed: () => onDigitPressed('0'),
@@ -50,7 +62,7 @@ class NumericKeypad extends StatelessWidget {
                   onPressed: onDeletePressed,
                 )
               else
-                const SizedBox(width: 80), // Spacer
+                const SizedBox(width: 80),
             ],
           ),
         ],
@@ -86,6 +98,27 @@ class NumericKeypad extends StatelessWidget {
                       color: Colors.black87,
                     ),
                   ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextAction({
+    required String text,
+    required VoidCallback? onPressed,
+  }) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints.tightFor(width: 80, height: 80),
+      child: TextButton(
+        onPressed: onPressed,
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: Colors.black87,
           ),
         ),
       ),

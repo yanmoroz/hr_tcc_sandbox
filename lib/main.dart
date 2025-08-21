@@ -9,6 +9,7 @@ import 'features/profile/presentation/blocs/profile_event.dart';
 import 'features/profile/presentation/blocs/kpi_bloc.dart';
 import 'features/auth/presentation/blocs/auth_bloc.dart';
 import 'features/auth/presentation/blocs/pin_bloc.dart';
+import 'features/auth/presentation/blocs/unlock_bloc.dart';
 
 // Router
 import 'app/router/app_router.dart';
@@ -46,6 +47,7 @@ class MainApp extends StatelessWidget {
         BlocProvider<BiometricSetupBloc>(
           create: (context) => getIt<BiometricSetupBloc>(),
         ),
+        BlocProvider<UnlockBloc>(create: (context) => getIt<UnlockBloc>()),
         BlocProvider<ProfileBloc>(
           create: (context) =>
               getIt<ProfileBloc>()..add(const LoadProfile('1')),

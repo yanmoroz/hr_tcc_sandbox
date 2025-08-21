@@ -6,7 +6,7 @@ import '../blocs/auth_bloc.dart';
 import '../blocs/auth_event.dart';
 import '../blocs/auth_state.dart';
 import '../widgets/custom_text_field.dart';
-import '../widgets/custom_button.dart';
+import '../widgets/app_button.dart';
 import '../../../../app/theme/app_theme.dart';
 
 class LoginPage extends StatefulWidget {
@@ -241,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                           if (!_isFormValid) {
                             return const SizedBox.shrink(); // Hide button when form is invalid
                           }
-                          return CustomButton(
+                          return AppButton(
                             text: 'Продолжить',
                             backgroundColor: AppTheme.primaryColor,
                             textColor: Colors.white,

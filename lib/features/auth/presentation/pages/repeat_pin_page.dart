@@ -49,8 +49,8 @@ class _RepeatPinPageState extends State<RepeatPinPage> {
         child: BlocListener<PinBloc, PinState>(
           listener: (context, state) {
             if (state is PinConfirmed) {
-              // Navigate to profile page
-              context.go('/profile');
+              // Navigate to biometric setup page
+              context.push('/biometric-setup');
             } else if (state is PinError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

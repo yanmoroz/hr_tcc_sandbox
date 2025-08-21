@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/create_pin_page.dart';
 import '../../features/auth/presentation/pages/repeat_pin_page.dart';
+import '../../features/auth/presentation/pages/biometric_setup_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/profile_kpi_page.dart';
 
@@ -25,6 +26,7 @@ class AppRouter {
   static const String login = '/';
   static const String createPin = '/create-pin';
   static const String repeatPin = '/repeat-pin';
+  static const String biometricSetup = '/biometric-setup';
   static const String profile = '/profile';
   static const String profileKpi = '/profile/kpi';
 
@@ -60,6 +62,14 @@ class AppRouter {
             child: RepeatPinPage(originalPin: pin),
           );
         },
+      ),
+      GoRoute(
+        path: biometricSetup,
+        name: 'biometricSetup',
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: const BiometricSetupPage(),
+        ),
       ),
       GoRoute(
         path: profile,

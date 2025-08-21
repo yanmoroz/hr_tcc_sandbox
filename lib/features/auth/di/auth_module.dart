@@ -17,8 +17,11 @@ import '../../auth/domain/usecases/setup_biometric.dart';
 import '../../auth/domain/usecases/authenticate_with_biometric.dart';
 import '../../auth/domain/usecases/save_auth_settings.dart';
 import '../../auth/domain/usecases/get_auth_settings.dart';
+import '../../auth/domain/usecases/enable_biometric_auth.dart';
+import '../../auth/domain/usecases/disable_biometric_auth.dart';
 import '../../auth/presentation/blocs/auth_bloc.dart';
 import '../../auth/presentation/blocs/pin_bloc.dart';
+import '../../auth/presentation/blocs/biometric_setup_bloc.dart';
 import '../../../app/di/di_module.dart';
 
 class AuthModule extends DiModule {
@@ -74,6 +77,12 @@ class AuthModule extends DiModule {
     getIt.registerLazySingleton<GetAuthSettingsUseCase>(
       () => GetAuthSettingsUseCase(getIt<AuthRepository>()),
     );
+    getIt.registerLazySingleton<EnableBiometricAuthUseCase>(
+      () => EnableBiometricAuthUseCase(getIt<AuthRepository>()),
+    );
+    getIt.registerLazySingleton<DisableBiometricAuthUseCase>(
+      () => DisableBiometricAuthUseCase(getIt<AuthRepository>()),
+    );
 
     // BLoCs
     getIt.registerFactory<AuthBloc>(
@@ -88,6 +97,14 @@ class AuthModule extends DiModule {
       () => PinBloc(
         createPinUseCase: getIt<CreatePinUseCase>(),
         validatePinUseCase: getIt<ValidatePinUseCase>(),
+      ),
+    );
+
+    getIt.registerFactory<BiometricSetupBloc>(
+      () => BiometricSetupBloc(
+        checkAvailability: getIt<CheckBiometricAvailabilityUseCase>(),
+        enableBiometric: getIt<EnableBiometricAuthUseCase>(),
+        disableBiometric: getIt<DisableBiometricAuthUseCase>(),
       ),
     );
   }

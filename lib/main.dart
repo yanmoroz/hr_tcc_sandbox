@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 // BLoCs
+import 'features/auth/presentation/blocs/biometric_setup_bloc.dart';
 import 'features/profile/presentation/blocs/profile_bloc.dart';
 import 'features/profile/presentation/blocs/profile_event.dart';
 import 'features/profile/presentation/blocs/kpi_bloc.dart';
@@ -42,6 +43,9 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
         BlocProvider<PinBloc>(create: (context) => getIt<PinBloc>()),
+        BlocProvider<BiometricSetupBloc>(
+          create: (context) => getIt<BiometricSetupBloc>(),
+        ),
         BlocProvider<ProfileBloc>(
           create: (context) =>
               getIt<ProfileBloc>()..add(const LoadProfile('1')),

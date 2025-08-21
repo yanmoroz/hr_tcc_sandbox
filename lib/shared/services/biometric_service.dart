@@ -1,3 +1,4 @@
+import 'package:local_auth/local_auth.dart' as la;
 import '../../features/auth/domain/entities/biometric_type.dart';
 
 abstract class BiometricService {
@@ -7,29 +8,75 @@ abstract class BiometricService {
 }
 
 class BiometricServiceImpl implements BiometricService {
+  final la.LocalAuthentication _auth = la.LocalAuthentication();
+
   @override
   Future<BiometricType> checkBiometricAvailability() async {
-    // Simulate biometric availability check
-    await Future.delayed(const Duration(milliseconds: 300));
+    try {
+      final bool canCheck = await _auth.canCheckBiometrics;
+      if (!canCheck) return BiometricType.none;
 
-    // Mock implementation - in real app, this would check device capabilities
-    // For now, return Face ID as available
-    return BiometricType.faceId;
+      final List<BiometricType> available = await _mapAvailableBiometrics();
+      // Prefer Face ID when present, then Touch ID, else fingerprint, else none
+      if (available.contains(BiometricType.faceId)) {
+        return BiometricType.faceId;
+      }
+      if (available.contains(BiometricType.touchId)) {
+        return BiometricType.touchId;
+      }
+      if (available.contains(BiometricType.fingerprint)) {
+        return BiometricType.fingerprint;
+      }
+      return BiometricType.none;
+    } catch (_) {
+      return BiometricType.none;
+    }
   }
 
   @override
   Future<bool> authenticateWithBiometric() async {
-    // Simulate biometric authentication
-    await Future.delayed(const Duration(milliseconds: 800));
-
-    // Mock implementation - in real app, this would trigger biometric prompt
-    // For now, return true (successful authentication)
-    return true;
+    try {
+      final bool didAuthenticate = await _auth.authenticate(
+        localizedReason: 'Authenticate to continue',
+        options: const la.AuthenticationOptions(
+          biometricOnly: true,
+          stickyAuth: true,
+          useErrorDialogs: true,
+        ),
+      );
+      return didAuthenticate;
+    } catch (_) {
+      return false;
+    }
   }
 
   @override
   Future<bool> isBiometricAvailable() async {
     final biometricType = await checkBiometricAvailability();
     return biometricType != BiometricType.none;
+  }
+
+  Future<List<BiometricType>> _mapAvailableBiometrics() async {
+    final Set<BiometricType> mapped = {};
+    try {
+      final List<la.BiometricType> available = await _auth
+          .getAvailableBiometrics();
+      for (final b in available) {
+        switch (b) {
+          case la.BiometricType.face:
+            mapped.add(BiometricType.faceId);
+            break;
+          case la.BiometricType.fingerprint:
+            mapped.add(BiometricType.fingerprint);
+            break;
+          case la.BiometricType.strong:
+          case la.BiometricType.weak:
+          case la.BiometricType.iris:
+            mapped.add(BiometricType.fingerprint);
+            break;
+        }
+      }
+    } catch (_) {}
+    return mapped.toList();
   }
 }

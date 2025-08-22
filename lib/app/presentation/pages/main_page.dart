@@ -4,6 +4,7 @@ import '../../../main.dart';
 import '../../../features/quick_links/presentation/blocs/quick_links_bloc.dart';
 import '../../../features/surveys/presentation/blocs/surveys_bloc.dart';
 import '../../../features/resale/presentation/blocs/resale_bloc.dart';
+import '../../../shared/widgets/app_bottom_navigation_bar.dart';
 
 import '../../../features/home/presentation/pages/home_page.dart';
 import '../../../features/requests/presentation/pages/requests_page.dart';
@@ -40,24 +41,30 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _tabs[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
-        type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
+          AppBottomNavigationBarItem(
+            icon: Icons.home_outlined,
+            selectedIcon: Icons.home,
             label: 'Главная',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search_outlined),
+          AppBottomNavigationBarItem(
+            icon: Icons.search_outlined,
+            selectedIcon: Icons.search,
             label: 'Мои заявки',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.contacts_outlined),
+          AppBottomNavigationBarItem(
+            icon: Icons.contacts_outlined,
+            selectedIcon: Icons.contacts,
             label: 'Адресная книга',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: 'Ещё'),
+          AppBottomNavigationBarItem(
+            icon: Icons.more_horiz,
+            selectedIcon: Icons.more_horiz,
+            label: 'Ещё',
+          ),
         ],
       ),
     );

@@ -1,25 +1,27 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-class SearchBarWidget extends StatefulWidget {
+class AppSearchBar extends StatefulWidget {
   final String initialQuery;
   final Function(String) onSearch;
   final VoidCallback onClear;
   final Duration debounceDelay;
+  final String hintText;
 
-  const SearchBarWidget({
+  const AppSearchBar({
     super.key,
     this.initialQuery = '',
     required this.onSearch,
     required this.onClear,
     this.debounceDelay = const Duration(milliseconds: 500),
+    this.hintText = 'Поиск',
   });
 
   @override
-  State<SearchBarWidget> createState() => _SearchBarWidgetState();
+  State<AppSearchBar> createState() => _AppSearchBarState();
 }
 
-class _SearchBarWidgetState extends State<SearchBarWidget> {
+class _AppSearchBarState extends State<AppSearchBar> {
   late TextEditingController _controller;
   late FocusNode _focusNode;
   Timer? _debounceTimer;
@@ -32,7 +34,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
   }
 
   @override
-  void didUpdateWidget(SearchBarWidget oldWidget) {
+  void didUpdateWidget(AppSearchBar oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initialQuery != widget.initialQuery) {
       _controller.text = widget.initialQuery;
@@ -59,7 +61,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
         controller: _controller,
         focusNode: _focusNode,
         decoration: InputDecoration(
-          hintText: 'Поиск',
+          hintText: widget.hintText,
           hintStyle: TextStyle(color: Colors.grey[600], fontSize: 16),
           prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
           suffixIcon: _controller.text.isNotEmpty

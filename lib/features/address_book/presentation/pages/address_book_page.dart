@@ -7,7 +7,7 @@ import '../blocs/address_book_bloc.dart';
 import '../blocs/address_book_event.dart';
 import '../blocs/address_book_state.dart';
 import '../widgets/contact_card.dart';
-import '../widgets/search_bar_widget.dart';
+import '../../../../shared/widgets/search_bar.dart';
 
 class AddressBookPage extends StatefulWidget {
   const AddressBookPage({super.key});
@@ -116,7 +116,7 @@ class _AddressBookPageState extends State<AddressBookPage> {
           searchQuery = state.searchQuery;
         }
 
-        return SearchBarWidget(
+        return AppSearchBar(
           initialQuery: searchQuery,
           onSearch: (query) {
             _bloc.add(SearchContactsEvent(query));

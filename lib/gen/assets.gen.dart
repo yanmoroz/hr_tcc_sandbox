@@ -19,6 +19,13 @@ class $AssetsIconsGen {
   $AssetsIconsQuickLinksGen get quickLinks => const $AssetsIconsQuickLinksGen();
 }
 
+class $AssetsImagesGen {
+  const $AssetsImagesGen();
+
+  /// Directory path: assets/images/surveys
+  $AssetsImagesSurveysGen get surveys => const $AssetsImagesSurveysGen();
+}
+
 class $AssetsIconsAuthGen {
   const $AssetsIconsAuthGen();
 
@@ -42,6 +49,16 @@ class $AssetsIconsQuickLinksGen {
   /// Directory path: assets/icons/quick_links/widget
   $AssetsIconsQuickLinksWidgetGen get widget =>
       const $AssetsIconsQuickLinksWidgetGen();
+}
+
+class $AssetsImagesSurveysGen {
+  const $AssetsImagesSurveysGen();
+
+  /// File path: assets/images/surveys/placeholder.txt
+  String get placeholder => 'assets/images/surveys/placeholder.txt';
+
+  /// List of all assets
+  List<String> get values => [placeholder];
 }
 
 class $AssetsIconsQuickLinksPageGen {
@@ -92,4 +109,5 @@ class Assets {
   const Assets._();
 
   static const $AssetsIconsGen icons = $AssetsIconsGen();
+  static const $AssetsImagesGen images = $AssetsImagesGen();
 }

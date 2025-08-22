@@ -8,7 +8,7 @@ import '../blocs/resale_bloc.dart';
 import '../blocs/resale_event.dart';
 import '../blocs/resale_state.dart';
 import '../../../../shared/widgets/filter_bar.dart';
-import '../../../address_book/presentation/widgets/search_bar_widget.dart';
+import '../../../../shared/widgets/search_bar.dart';
 import '../../../../../app/router/app_router.dart';
 
 class ResaleListPage extends StatefulWidget {
@@ -125,7 +125,7 @@ class _ResaleListPageState extends State<ResaleListPage> {
   Widget _buildSearchBar() {
     return BlocBuilder<ResaleBloc, ResaleState>(
       bloc: _bloc,
-      builder: (context, state) => SearchBarWidget(
+      builder: (context, state) => AppSearchBar(
         initialQuery: state.searchQuery,
         onSearch: (q) => _bloc.add(ResaleSearchChanged(q)),
         onClear: () => _bloc.add(const ResaleSearchChanged('')),

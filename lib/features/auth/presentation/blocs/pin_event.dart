@@ -45,3 +45,16 @@ class PinReset extends PinEvent {
 class PinValidationFailed extends PinEvent {
   const PinValidationFailed();
 }
+
+class StartPinCreation extends PinEvent {
+  const StartPinCreation();
+}
+
+class StartPinConfirmation extends PinEvent {
+  final String originalPin;
+
+  const StartPinConfirmation(this.originalPin);
+
+  @override
+  List<Object?> get props => [originalPin];
+}

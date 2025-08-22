@@ -20,7 +20,7 @@ class _CreatePinPageState extends State<CreatePinPage> {
     super.initState();
     // Start PIN creation when page loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PinBloc>().startPinCreation();
+      context.read<PinBloc>().add(StartPinCreation());
     });
   }
 

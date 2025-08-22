@@ -18,10 +18,14 @@ import 'features/quick_links/di/quick_links_module.dart';
 import 'features/surveys/di/surveys_module.dart';
 import 'features/resale/di/resale_module.dart';
 
+// Services
+import 'shared/services/logger_service.dart';
+
 final GetIt getIt = GetIt.instance;
 
 void main() {
   setupDependencies();
+  getIt<LoggerService>().info('HR TCC Sandbox app starting...');
   runApp(const MainApp());
 }
 
@@ -39,6 +43,7 @@ void setupDependencies() {
   for (final module in modules) {
     module.register(getIt);
   }
+  getIt<LoggerService>().info('Dependencies setup completed');
 }
 
 class MainApp extends StatelessWidget {

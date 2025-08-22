@@ -100,57 +100,47 @@ class KpiTargetIndicatorsCard extends StatelessWidget {
             style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
           const SizedBox(height: 16),
-          ...goals
-              .map(
-                (goal) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          ...goals.map(
+            (goal) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  goal.title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
                   children: [
-                    Text(
-                      goal.title,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                    Expanded(
+                      child: _buildMetricColumn(
+                        'Вес',
+                        goal.weight.toInt().toString(),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildMetricColumn(
-                            'Вес',
-                            goal.weight.toInt().toString(),
-                          ),
-                        ),
-                        Container(
-                          width: 1,
-                          height: 40,
-                          color: Colors.grey[300],
-                        ),
-                        Expanded(
-                          child: _buildMetricColumn(
-                            'Факт',
-                            goal.fact.toInt().toString(),
-                          ),
-                        ),
-                        Container(
-                          width: 1,
-                          height: 40,
-                          color: Colors.grey[300],
-                        ),
-                        Expanded(
-                          child: _buildMetricColumn(
-                            'Расчет КПЭ',
-                            '${goal.kpiCalculation.toInt()}%',
-                          ),
-                        ),
-                      ],
+                    Container(width: 1, height: 40, color: Colors.grey[300]),
+                    Expanded(
+                      child: _buildMetricColumn(
+                        'Факт',
+                        goal.fact.toInt().toString(),
+                      ),
                     ),
-                    if (goal != goals.last) const SizedBox(height: 16),
+                    Container(width: 1, height: 40, color: Colors.grey[300]),
+                    Expanded(
+                      child: _buildMetricColumn(
+                        'Расчет КПЭ',
+                        '${goal.kpiCalculation.toInt()}%',
+                      ),
+                    ),
                   ],
                 ),
-              )
-              .toList(),
+                if (goal != goals.last) const SizedBox(height: 16),
+              ],
+            ),
+          ),
         ],
       ),
     );

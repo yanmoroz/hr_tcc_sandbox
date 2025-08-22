@@ -22,7 +22,7 @@ class _RepeatPinPageState extends State<RepeatPinPage> {
     super.initState();
     // Start PIN confirmation when page loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PinBloc>().startPinConfirmation(widget.originalPin);
+      context.read<PinBloc>().add(StartPinConfirmation(widget.originalPin));
     });
   }
 
@@ -105,7 +105,9 @@ class _RepeatPinPageState extends State<RepeatPinPage> {
                         final pinBloc = context.read<PinBloc>();
                         Future.delayed(const Duration(milliseconds: 2000), () {
                           if (mounted) {
-                            pinBloc.startPinConfirmation(widget.originalPin);
+                            pinBloc.add(
+                              StartPinConfirmation(widget.originalPin),
+                            );
                           }
                         });
                       }

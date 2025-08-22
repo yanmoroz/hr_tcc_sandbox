@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../utils/auth_constants.dart';
 
 abstract class NetworkService {
   Future<http.Response> post(String url, Map<String, dynamic> body);

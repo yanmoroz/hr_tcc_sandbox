@@ -18,6 +18,8 @@ class PinBloc extends Bloc<PinEvent, PinState> {
     on<PinRepeated>(_onPinRepeated);
     on<PinReset>(_onPinReset);
     on<PinValidationFailed>(_onPinValidationFailed);
+    on<StartPinCreation>(_onStartPinCreation);
+    on<StartPinConfirmation>(_onStartPinConfirmation);
   }
 
   void _onPinDigitEntered(PinDigitEntered event, Emitter<PinState> emit) {
@@ -124,13 +126,20 @@ class PinBloc extends Bloc<PinEvent, PinState> {
     emit(const PinMismatch());
   }
 
-  void startPinCreation() {
+  void _onStartPinCreation(StartPinCreation event, Emitter<PinState> emit) {
     emit(const PinCreating(currentPin: '', digitCount: 0));
   }
 
-  void startPinConfirmation(String originalPin) {
+  void _onStartPinConfirmation(
+    StartPinConfirmation event,
+    Emitter<PinState> emit,
+  ) {
     emit(
-      PinConfirming(originalPin: originalPin, currentPin: '', digitCount: 0),
+      PinConfirming(
+        originalPin: event.originalPin,
+        currentPin: '',
+        digitCount: 0,
+      ),
     );
   }
 }

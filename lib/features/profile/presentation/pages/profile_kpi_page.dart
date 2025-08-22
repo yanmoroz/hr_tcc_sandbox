@@ -9,7 +9,6 @@ import '../widgets/kpi_period_selector.dart';
 import '../widgets/kpi_progress_circle.dart';
 import '../widgets/kpi_planned_values_card.dart';
 import '../widgets/kpi_target_indicators_card.dart';
-import '../../../../app/router/app_router.dart';
 
 class ProfileKpiPage extends StatefulWidget {
   const ProfileKpiPage({super.key});

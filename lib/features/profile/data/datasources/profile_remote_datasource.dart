@@ -1,5 +1,7 @@
 import '../models/profile_model.dart';
 import '../../domain/entities/profile.dart';
+import '../../../../shared/services/logger_service.dart';
+import '../../../../main.dart';
 
 abstract class ProfileRemoteDataSource {
   Future<ProfileModel> getProfile(String userId);
@@ -50,6 +52,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     await Future.delayed(const Duration(milliseconds: 500));
 
     // Mock implementation
-    print('Avatar updated for user $userId: $avatarUrl');
+    getIt<LoggerService>().info('Avatar updated for user $userId: $avatarUrl');
   }
 }

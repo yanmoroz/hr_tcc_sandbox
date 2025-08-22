@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/contact.dart';
 import '../../domain/usecases/get_contacts.dart';
 import '../../domain/usecases/search_contacts.dart';
 import 'address_book_event.dart';

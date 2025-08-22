@@ -4,6 +4,7 @@ import '../../shared/services/secure_storage_service.dart';
 import '../../shared/services/biometric_service.dart';
 import '../../shared/services/network_service.dart';
 import '../../shared/services/url_launcher_service.dart';
+import '../../shared/services/logger_service.dart';
 import 'di_module.dart';
 
 class AppModule extends DiModule {
@@ -18,5 +19,6 @@ class AppModule extends DiModule {
     getIt.registerLazySingleton<UrlLauncherService>(
       () => UrlLauncherServiceImpl(),
     );
+    getIt.registerLazySingleton<LoggerService>(() => LoggerService());
   }
 }

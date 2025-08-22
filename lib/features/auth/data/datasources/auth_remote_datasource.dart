@@ -1,5 +1,7 @@
 import '../../../../shared/services/network_service.dart';
+import '../../../../shared/services/logger_service.dart';
 import '../../../../shared/utils/auth_constants.dart';
+import '../../../../main.dart';
 import '../models/login_request_model.dart';
 import '../models/login_response_model.dart';
 import '../models/user_model.dart';
@@ -61,7 +63,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } catch (e) {
       // Logout should not fail even if API call fails
       // Just log the error and continue
-      print('Logout API call failed: $e');
+      getIt<LoggerService>().warning('Logout API call failed: $e');
     }
   }
 

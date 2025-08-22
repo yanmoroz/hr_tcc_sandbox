@@ -143,7 +143,7 @@ class ProfilePage extends StatelessWidget {
                   _performLogout(context);
                 },
                 style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all(Colors.red),
+                  foregroundColor: WidgetStateProperty.all(Colors.red),
                 ),
                 child: const Text('Выйти'),
               ),

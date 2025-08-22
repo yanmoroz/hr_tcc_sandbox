@@ -96,9 +96,7 @@ class AppBottomNavigationBarItem {
   });
 
   const AppBottomNavigationBarItem.sameIcon({
-    required IconData icon,
-    required String label,
-  }) : icon = icon,
-       selectedIcon = icon,
-       label = label;
+    required this.icon,
+    required this.label,
+  }) : selectedIcon = icon;
 }

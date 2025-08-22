@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hr_sandbox/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 // Router
@@ -50,6 +51,7 @@ class MainApp extends StatelessWidget {
           create: (context) =>
               getIt<ProfileBloc>()..add(const LoadProfile('1')),
         ),
+        BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
       ],
       child: MaterialApp.router(
         title: 'HR TCC Sandbox',

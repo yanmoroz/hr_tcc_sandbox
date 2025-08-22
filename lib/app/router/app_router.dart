@@ -139,10 +139,6 @@ class AppRouter {
           key: state.pageKey,
           child: MultiBlocProvider(
             providers: [
-              BlocProvider<ProfileBloc>(
-                create: (context) =>
-                    getIt<ProfileBloc>()..add(const LoadProfile('1')),
-              ),
               BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
             ],
             child: const ProfilePage(),

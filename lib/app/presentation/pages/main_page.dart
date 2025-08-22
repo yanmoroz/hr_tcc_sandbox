@@ -1,49 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../main.dart';
-import '../../../features/quick_links/presentation/blocs/quick_links_bloc.dart';
-import '../../../features/surveys/presentation/blocs/surveys_bloc.dart';
-import '../../../features/resale/presentation/blocs/resale_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/app_bottom_navigation_bar.dart';
 
-import '../../../features/home/presentation/pages/home_page.dart';
-import '../../../features/requests/presentation/pages/requests_page.dart';
-import '../../../features/address_book/presentation/pages/address_book_page.dart';
-import '../../../features/more/presentation/pages/more_page.dart';
+class MainPage extends StatelessWidget {
+  final StatefulNavigationShell navigationShell;
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
-
-  @override
-  State<MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  int _currentIndex = 0;
-
-  static final List<Widget> _tabs = <Widget>[
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<QuickLinksBloc>(
-          create: (context) => getIt<QuickLinksBloc>(),
-        ),
-        BlocProvider<SurveysBloc>(create: (context) => getIt<SurveysBloc>()),
-        BlocProvider<ResaleBloc>(create: (context) => getIt<ResaleBloc>()),
-      ],
-      child: HomePage(),
-    ),
-    RequestsPage(),
-    AddressBookPage(),
-    MorePage(),
-  ];
+  const MainPage({super.key, required this.navigationShell});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _tabs[_currentIndex],
+      body: navigationShell,
       bottomNavigationBar: AppBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        currentIndex: navigationShell.currentIndex,
+        onTap: (index) => navigationShell.goBranch(
+          index,
+          // If tapping the already selected tab, pop to its initial location
+          initialLocation: index == navigationShell.currentIndex,
+        ),
         items: const [
           AppBottomNavigationBarItem(
             icon: Icons.home_outlined,

@@ -8,6 +8,7 @@ import 'app/router/app_router.dart';
 // DI modules
 import 'app/di/app_module.dart';
 import 'app/di/di_module.dart';
+import 'features/address_book/di/address_book_module.dart';
 import 'features/auth/di/auth_module.dart';
 import 'features/profile/di/profile_module.dart';
 import 'features/profile/presentation/blocs/kpi_bloc.dart';
@@ -26,6 +27,7 @@ void main() {
 void setupDependencies() {
   final List<DiModule> modules = [
     AppModule(),
+    AddressBookModule(),
     AuthModule(),
     ProfileModule(),
     QuickLinksModule(),

@@ -7,7 +7,7 @@ import '../../domain/entities/resale_item.dart';
 import '../blocs/resale_bloc.dart';
 import '../blocs/resale_event.dart';
 import '../blocs/resale_state.dart';
-import '../widgets/resale_filter_bar.dart';
+import '../../../../shared/widgets/filter_bar.dart';
 import '../../../address_book/presentation/widgets/search_bar_widget.dart';
 import '../../../../../app/router/app_router.dart';
 
@@ -44,14 +44,24 @@ class _ResaleListPageState extends State<ResaleListPage> {
             _buildHeader(),
             BlocBuilder<ResaleBloc, ResaleState>(
               bloc: _bloc,
-              builder: (context, state) => ResaleFilterBar(
+              builder: (context, state) => FilterBar<ResaleFilter>(
                 currentFilter: state.currentFilter,
-                allCount: state.allItems.length,
-                bookedCount: state.allItems
-                    .where((e) => e.status == ResaleItemStatus.booked)
-                    .length,
                 onFilterChanged: (filter) =>
                     _bloc.add(ResaleFilterChanged(filter)),
+                options: [
+                  FilterOption<ResaleFilter>(
+                    label: 'Все',
+                    count: state.allItems.length,
+                    value: ResaleFilter.all,
+                  ),
+                  FilterOption<ResaleFilter>(
+                    label: 'Забронированные',
+                    count: state.allItems
+                        .where((e) => e.status == ResaleItemStatus.booked)
+                        .length,
+                    value: ResaleFilter.booked,
+                  ),
+                ],
               ),
             ),
             _buildSearchBar(),

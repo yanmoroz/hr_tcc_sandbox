@@ -6,7 +6,7 @@ import '../blocs/surveys_bloc.dart';
 import '../blocs/surveys_event.dart';
 import '../blocs/surveys_state.dart';
 import '../widgets/survey_card.dart';
-import '../widgets/survey_filter_bar.dart';
+import '../../../../shared/widgets/filter_bar.dart';
 import '../../../../app/router/app_router.dart';
 
 class SurveysPage extends StatefulWidget {
@@ -79,16 +79,30 @@ class _SurveysPageState extends State<SurveysPage> {
               // Filter bar
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                child: SurveyFilterBar(
+                child: FilterBar<SurveyFilter>(
                   currentFilter: state.currentFilter,
-                  allCount: state.allSurveys.length,
-                  notCompletedCount: notCompletedCount,
-                  completedCount: completedCount,
                   onFilterChanged: (filter) {
                     context.read<SurveysBloc>().add(
                       SurveyFilterChanged(filter),
                     );
                   },
+                  options: [
+                    FilterOption<SurveyFilter>(
+                      label: 'Все',
+                      count: state.allSurveys.length,
+                      value: SurveyFilter.all,
+                    ),
+                    FilterOption<SurveyFilter>(
+                      label: 'Непройденные',
+                      count: notCompletedCount,
+                      value: SurveyFilter.notCompleted,
+                    ),
+                    FilterOption<SurveyFilter>(
+                      label: 'Пройденные',
+                      count: completedCount,
+                      value: SurveyFilter.completed,
+                    ),
+                  ],
                 ),
               ),
               // Surveys list

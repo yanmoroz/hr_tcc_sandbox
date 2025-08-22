@@ -1,48 +1,62 @@
 import 'package:flutter/material.dart';
-import '../blocs/resale_event.dart';
 
-class ResaleFilterBar extends StatelessWidget {
-  final ResaleFilter currentFilter;
-  final int allCount;
-  final int bookedCount;
-  final ValueChanged<ResaleFilter> onFilterChanged;
+class FilterOption<T> {
+  final String label;
+  final int count;
+  final T value;
 
-  const ResaleFilterBar({
+  const FilterOption({
+    required this.label,
+    required this.count,
+    required this.value,
+  });
+}
+
+class FilterBar<T> extends StatelessWidget {
+  final List<FilterOption<T>> options;
+  final T currentFilter;
+  final ValueChanged<T> onFilterChanged;
+  final EdgeInsetsGeometry? padding;
+
+  const FilterBar({
     super.key,
+    required this.options,
     required this.currentFilter,
-    required this.allCount,
-    required this.bookedCount,
     required this.onFilterChanged,
+    this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: [
-            _buildFilterChip(
-              filter: ResaleFilter.all,
-              label: 'Все $allCount',
-              isSelected: currentFilter == ResaleFilter.all,
-            ),
-            const SizedBox(width: 8),
-            _buildFilterChip(
-              filter: ResaleFilter.booked,
-              label: 'Забронированные $bookedCount',
-              isSelected: currentFilter == ResaleFilter.booked,
-            ),
-          ],
+          children: options.asMap().entries.map((entry) {
+            final index = entry.key;
+            final option = entry.value;
+            final isSelected = currentFilter == option.value;
+
+            return Row(
+              children: [
+                _buildFilterChip(
+                  filter: option.value,
+                  label: '${option.label} ${option.count}',
+                  isSelected: isSelected,
+                ),
+                if (index < options.length - 1) const SizedBox(width: 8),
+              ],
+            );
+          }).toList(),
         ),
       ),
     );
   }
 
   Widget _buildFilterChip({
-    required ResaleFilter filter,
+    required T filter,
     required String label,
     required bool isSelected,
   }) {

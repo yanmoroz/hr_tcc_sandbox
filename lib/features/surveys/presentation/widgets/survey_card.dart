@@ -110,6 +110,7 @@ class SurveyCard extends StatelessWidget {
             // Bottom row with status, count, and action button
             Row(
               children: [
+                const SizedBox(width: 72),
                 // Status tag
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -135,7 +136,7 @@ class SurveyCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const Spacer(),
                 // Completion count
                 Text(
                   'Прошли: ${survey.completionCount}',
@@ -143,15 +144,22 @@ class SurveyCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            AppButton(
-              text: 'Пройти опрос',
-              backgroundColor: const Color(0xFF12369F),
-              textColor: Colors.white,
-              borderRadius: 8,
-              onPressed: onTakeSurvey,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            ),
+            // Action button (only for not completed surveys)
+            if (survey.status == SurveyStatus.notCompleted &&
+                onTakeSurvey != null) ...[
+              const SizedBox(height: 12),
+              AppButton(
+                text: 'Пройти опрос',
+                backgroundColor: const Color(0xFF12369F),
+                textColor: Colors.white,
+                borderRadius: 8,
+                onPressed: onTakeSurvey,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+              ),
+            ],
           ],
         ),
       ),

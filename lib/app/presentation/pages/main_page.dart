@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../features/profile/presentation/blocs/profile_bloc.dart';
+import '../../../main.dart';
+import '../../../features/quick_links/presentation/blocs/quick_links_bloc.dart';
+import '../../../features/surveys/presentation/blocs/surveys_bloc.dart';
 
 import '../../../features/home/presentation/pages/home_page.dart';
 import '../../../features/requests/presentation/pages/requests_page.dart';
@@ -16,7 +21,15 @@ class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
 
   static final List<Widget> _tabs = <Widget>[
-    HomePage(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<QuickLinksBloc>(
+          create: (context) => getIt<QuickLinksBloc>(),
+        ),
+        BlocProvider<SurveysBloc>(create: (context) => getIt<SurveysBloc>()),
+      ],
+      child: HomePage(),
+    ),
     RequestsPage(),
     AddressBookPage(),
     MorePage(),

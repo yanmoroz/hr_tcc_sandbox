@@ -1,8 +1,18 @@
 import '../../domain/entities/survey.dart';
+import '../../domain/entities/survey_detail.dart';
+import '../../domain/entities/survey_response.dart';
+import '../../domain/entities/survey_question.dart';
 import '../models/survey_model.dart';
+import '../models/survey_detail_model.dart';
+import '../models/survey_question_model.dart';
 
 abstract class SurveysLocalDataSource {
   Future<List<Survey>> getSurveys();
+  Future<SurveyDetail> getSurveyDetail(String surveyId);
+  Future<void> submitSurveyResponse(
+    String surveyId,
+    List<SurveyResponse> responses,
+  );
 }
 
 class SurveysLocalDataSourceImpl implements SurveysLocalDataSource {
@@ -75,5 +85,67 @@ class SurveysLocalDataSourceImpl implements SurveysLocalDataSource {
         completionCount: 557,
       ),
     ];
+  }
+
+  @override
+  Future<SurveyDetail> getSurveyDetail(String surveyId) async {
+    // Mock data based on the image showing the survey detail
+    return SurveyDetailModel(
+      id: surveyId,
+      title: 'О чём бы вы хотели узнавать из проекта «Развивающая среда»?',
+      timestamp: 'Вчера в 21:08',
+      imageUrl: 'assets/images/surveys/developing_environment.png',
+      headerText: 'Предложите темы для проекта «Развивающая среда»',
+      questions: [
+        SurveyQuestionModel(
+          id: '1',
+          title:
+              '1. О каких сферах вам хотелось бы узнать больше в рамках «Развивающей среды»?',
+          description:
+              'Например, soft skills, карьерное развитие, управление проектами, психология, здоровье и баланс и т.д.',
+          type: QuestionType.multiline,
+          isRequired: true,
+          placeholder: 'Ваш ответ',
+        ),
+        SurveyQuestionModel(
+          id: '2',
+          title: '2. Какие конкретные темы вам было бы интересно обсудить?',
+          description:
+              'Например, тайм-менеджмент, публичные выступления, стрессоустойчивость, работа с прокрастинацией и т.д.',
+          type: QuestionType.multiline,
+          isRequired: true,
+          placeholder: 'Ваш ответ',
+        ),
+        SurveyQuestionModel(
+          id: '3',
+          title:
+              '3. Кого из спикеров или экспертов вы хотели бы увидеть в «Развивающей среде»?',
+          description:
+              'Если у вас есть конкретные фамилии, пишите или присылайте ссылку на личный сайт или профиль в соцсетях. Например, нейробиолог, предприниматель, коуч и т.д.',
+          type: QuestionType.multiline,
+          isRequired: false,
+          placeholder: 'Ваш ответ',
+        ),
+        SurveyQuestionModel(
+          id: '4',
+          title:
+              '4. Команда S8 Академии планирует Илью Фёдорова, executive-коуча, бизнес-тренера, члену Ассоциации русскоязычных коучей в «Развивающую среду». Вы уже сейчас можете оставить ему свой вопрос:',
+          description: '',
+          type: QuestionType.multiline,
+          isRequired: false,
+          placeholder: 'Ваш ответ',
+        ),
+      ],
+    );
+  }
+
+  @override
+  Future<void> submitSurveyResponse(
+    String surveyId,
+    List<SurveyResponse> responses,
+  ) async {
+    // Mock implementation - in real app, this would send data to server
+    await Future.delayed(const Duration(seconds: 1));
+    // Simulate successful submission
   }
 }

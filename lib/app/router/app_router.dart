@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/create_pin_page.dart';
 import '../../features/auth/presentation/pages/repeat_pin_page.dart';
@@ -11,6 +12,18 @@ import '../../features/profile/presentation/pages/profile_kpi_page.dart';
 import '../../app/presentation/pages/main_page.dart';
 import '../../features/quick_links/presentation/pages/quick_links_page.dart';
 import '../../features/surveys/presentation/pages/surveys_page.dart';
+import '../../features/surveys/presentation/pages/survey_detail_page.dart';
+import '../../main.dart';
+import '../../features/auth/presentation/blocs/auth_bloc.dart';
+import '../../features/auth/presentation/blocs/pin_bloc.dart';
+import '../../features/auth/presentation/blocs/biometric_setup_bloc.dart';
+import '../../features/auth/presentation/blocs/unlock_bloc.dart';
+import '../../features/profile/presentation/blocs/profile_bloc.dart';
+import '../../features/profile/presentation/blocs/profile_event.dart';
+import '../../features/profile/presentation/blocs/kpi_bloc.dart';
+import '../../features/quick_links/presentation/blocs/quick_links_bloc.dart';
+import '../../features/surveys/presentation/blocs/surveys_bloc.dart';
+import '../../features/surveys/presentation/blocs/survey_detail_bloc.dart';
 
 // Custom page transition that handles direction automatically
 class SlidePageTransition extends CustomTransitionPage {
@@ -39,6 +52,7 @@ class AppRouter {
   static const String main = '/home';
   static const String quickLinks = '/quick-links';
   static const String surveys = '/surveys';
+  static const String surveyDetail = '/survey-detail';
 
   static GoRouter get router => GoRouter(
     initialLocation: splash,
@@ -48,7 +62,10 @@ class AppRouter {
         name: 'splash',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const SplashPage(),
+          child: BlocProvider<AuthBloc>(
+            create: (context) => getIt<AuthBloc>(),
+            child: const SplashPage(),
+          ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -59,7 +76,10 @@ class AppRouter {
         name: 'login',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const LoginPage(),
+          child: BlocProvider<AuthBloc>(
+            create: (context) => getIt<AuthBloc>(),
+            child: const LoginPage(),
+          ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -70,14 +90,22 @@ class AppRouter {
         name: 'createPin',
         pageBuilder: (context, state) => SlidePageTransition(
           key: state.pageKey,
-          child: const CreatePinPage(),
+          child: BlocProvider<PinBloc>(
+            create: (context) => getIt<PinBloc>(),
+            child: const CreatePinPage(),
+          ),
         ),
       ),
       GoRoute(
         path: unlock,
         name: 'unlock',
-        pageBuilder: (context, state) =>
-            SlidePageTransition(key: state.pageKey, child: const UnlockPage()),
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: BlocProvider<UnlockBloc>(
+            create: (context) => getIt<UnlockBloc>(),
+            child: const UnlockPage(),
+          ),
+        ),
       ),
       GoRoute(
         path: '$repeatPin/:pin',
@@ -86,7 +114,10 @@ class AppRouter {
           final pin = state.pathParameters['pin'] ?? '1234';
           return SlidePageTransition(
             key: state.pageKey,
-            child: RepeatPinPage(originalPin: pin),
+            child: BlocProvider<PinBloc>(
+              create: (context) => getIt<PinBloc>(),
+              child: RepeatPinPage(originalPin: pin),
+            ),
           );
         },
       ),
@@ -95,14 +126,28 @@ class AppRouter {
         name: 'biometricSetup',
         pageBuilder: (context, state) => SlidePageTransition(
           key: state.pageKey,
-          child: const BiometricSetupPage(),
+          child: BlocProvider<BiometricSetupBloc>(
+            create: (context) => getIt<BiometricSetupBloc>(),
+            child: const BiometricSetupPage(),
+          ),
         ),
       ),
       GoRoute(
         path: profile,
         name: 'profile',
-        pageBuilder: (context, state) =>
-            SlidePageTransition(key: state.pageKey, child: const ProfilePage()),
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<ProfileBloc>(
+                create: (context) =>
+                    getIt<ProfileBloc>()..add(const LoadProfile('1')),
+              ),
+              BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
+            ],
+            child: const ProfilePage(),
+          ),
+        ),
       ),
       GoRoute(
         path: main,
@@ -115,21 +160,46 @@ class AppRouter {
         name: 'quickLinks',
         pageBuilder: (context, state) => SlidePageTransition(
           key: state.pageKey,
-          child: const QuickLinksPage(),
+          child: BlocProvider<QuickLinksBloc>(
+            create: (context) => getIt<QuickLinksBloc>(),
+            child: const QuickLinksPage(),
+          ),
         ),
       ),
       GoRoute(
         path: surveys,
         name: 'surveys',
-        pageBuilder: (context, state) =>
-            SlidePageTransition(key: state.pageKey, child: const SurveysPage()),
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: BlocProvider<SurveysBloc>(
+            create: (context) => getIt<SurveysBloc>(),
+            child: const SurveysPage(),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: '$surveyDetail/:surveyId',
+        name: 'surveyDetail',
+        pageBuilder: (context, state) {
+          final surveyId = state.pathParameters['surveyId'] ?? '';
+          return SlidePageTransition(
+            key: state.pageKey,
+            child: BlocProvider<SurveyDetailBloc>(
+              create: (context) => getIt<SurveyDetailBloc>(),
+              child: SurveyDetailPage(surveyId: surveyId),
+            ),
+          );
+        },
       ),
       GoRoute(
         path: profileKpi,
         name: 'profileKpi',
         pageBuilder: (context, state) => SlidePageTransition(
           key: state.pageKey,
-          child: const ProfileKpiPage(),
+          child: BlocProvider<KpiBloc>(
+            create: (context) => getIt<KpiBloc>(),
+            child: const ProfileKpiPage(),
+          ),
         ),
       ),
     ],

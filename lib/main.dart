@@ -2,17 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-// BLoCs
-import 'features/auth/presentation/blocs/biometric_setup_bloc.dart';
-import 'features/profile/presentation/blocs/profile_bloc.dart';
-import 'features/profile/presentation/blocs/profile_event.dart';
-import 'features/profile/presentation/blocs/kpi_bloc.dart';
-import 'features/auth/presentation/blocs/auth_bloc.dart';
-import 'features/auth/presentation/blocs/pin_bloc.dart';
-import 'features/auth/presentation/blocs/unlock_bloc.dart';
-import 'features/quick_links/presentation/blocs/quick_links_bloc.dart';
-import 'features/surveys/presentation/blocs/surveys_bloc.dart';
-
 // Router
 import 'app/router/app_router.dart';
 
@@ -21,6 +10,9 @@ import 'app/di/app_module.dart';
 import 'app/di/di_module.dart';
 import 'features/auth/di/auth_module.dart';
 import 'features/profile/di/profile_module.dart';
+import 'features/profile/presentation/blocs/kpi_bloc.dart';
+import 'features/profile/presentation/blocs/profile_bloc.dart';
+import 'features/profile/presentation/blocs/profile_event.dart';
 import 'features/quick_links/di/quick_links_module.dart';
 import 'features/surveys/di/surveys_module.dart';
 
@@ -52,19 +44,10 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
-        BlocProvider<PinBloc>(create: (context) => getIt<PinBloc>()),
-        BlocProvider<BiometricSetupBloc>(
-          create: (context) => getIt<BiometricSetupBloc>(),
-        ),
-        BlocProvider<UnlockBloc>(create: (context) => getIt<UnlockBloc>()),
         BlocProvider<ProfileBloc>(
           create: (context) =>
               getIt<ProfileBloc>()..add(const LoadProfile('1')),
         ),
-        BlocProvider<KpiBloc>(create: (context) => getIt<KpiBloc>()),
-        BlocProvider(create: (context) => getIt<QuickLinksBloc>()),
-        BlocProvider(create: (context) => getIt<SurveysBloc>()),
       ],
       child: MaterialApp.router(
         title: 'HR TCC Sandbox',

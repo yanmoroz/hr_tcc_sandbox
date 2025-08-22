@@ -80,13 +80,6 @@ class _SurveysWidgetState extends State<SurveysWidget> {
   }
 
   void _onTakeSurvey(Survey survey) {
-    // TODO: Implement survey taking functionality
-    // This could open a web view, navigate to a survey form, etc.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Открытие опроса: ${survey.title}'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    context.push('${AppRouter.surveyDetail}/${survey.id}');
   }
 }

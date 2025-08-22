@@ -51,6 +51,11 @@ class SurveyFilterBar extends StatelessWidget {
     required String label,
     required bool isSelected,
   }) {
+    // Extract the text and number from label (e.g., "Все 6" -> "Все" and "6")
+    final parts = label.split(' ');
+    final text = parts.first;
+    final count = parts.length > 1 ? parts.last : '';
+
     return GestureDetector(
       onTap: () => onFilterChanged(filter),
       child: Container(
@@ -59,13 +64,36 @@ class SurveyFilterBar extends StatelessWidget {
           color: isSelected ? const Color(0xFF12369F) : Colors.grey[200],
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: isSelected ? Colors.white : Colors.black87,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: isSelected ? Colors.white : Colors.black87,
+              ),
+            ),
+            if (count.isNotEmpty) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  count,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );

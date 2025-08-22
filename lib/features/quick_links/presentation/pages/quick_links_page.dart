@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../blocs/quick_links_bloc.dart';
 import '../blocs/quick_links_event.dart';
@@ -26,7 +27,7 @@ class _QuickLinksPageState extends State<QuickLinksPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         title: const Text('Быстрые ссылки'),
         backgroundColor: Colors.white,

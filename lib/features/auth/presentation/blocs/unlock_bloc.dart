@@ -113,7 +113,7 @@ class UnlockBloc extends Bloc<UnlockEvent, UnlockState> {
     emit(state.copyWith(isLoading: true));
     final isOk = await _authenticateWithBiometric();
     if (isOk) {
-      emit(state.copyWith(isLoading: false));
+      emit(state.copyWith(isLoading: false, unlocked: true));
     } else {
       emit(state.copyWith(isLoading: false));
     }

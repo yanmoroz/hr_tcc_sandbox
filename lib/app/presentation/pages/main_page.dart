@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../features/profile/presentation/blocs/profile_bloc.dart';
 import '../../../main.dart';
 import '../../../features/quick_links/presentation/blocs/quick_links_bloc.dart';
 import '../../../features/surveys/presentation/blocs/surveys_bloc.dart';
+import '../../../features/resale/presentation/blocs/resale_bloc.dart';
 
 import '../../../features/home/presentation/pages/home_page.dart';
 import '../../../features/requests/presentation/pages/requests_page.dart';
@@ -27,6 +27,7 @@ class _MainPageState extends State<MainPage> {
           create: (context) => getIt<QuickLinksBloc>(),
         ),
         BlocProvider<SurveysBloc>(create: (context) => getIt<SurveysBloc>()),
+        BlocProvider<ResaleBloc>(create: (context) => getIt<ResaleBloc>()),
       ],
       child: HomePage(),
     ),

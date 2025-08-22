@@ -18,12 +18,13 @@ import '../../features/auth/presentation/blocs/auth_bloc.dart';
 import '../../features/auth/presentation/blocs/pin_bloc.dart';
 import '../../features/auth/presentation/blocs/biometric_setup_bloc.dart';
 import '../../features/auth/presentation/blocs/unlock_bloc.dart';
-import '../../features/profile/presentation/blocs/profile_bloc.dart';
-import '../../features/profile/presentation/blocs/profile_event.dart';
 import '../../features/profile/presentation/blocs/kpi_bloc.dart';
 import '../../features/quick_links/presentation/blocs/quick_links_bloc.dart';
 import '../../features/surveys/presentation/blocs/surveys_bloc.dart';
 import '../../features/surveys/presentation/blocs/survey_detail_bloc.dart';
+import '../../features/resale/presentation/blocs/resale_bloc.dart';
+import '../../features/resale/presentation/pages/resale_list_page.dart';
+import '../../features/resale/presentation/pages/resale_detail_page.dart';
 
 // Custom page transition that handles direction automatically
 class SlidePageTransition extends CustomTransitionPage {
@@ -53,6 +54,8 @@ class AppRouter {
   static const String quickLinks = '/quick-links';
   static const String surveys = '/surveys';
   static const String surveyDetail = '/survey-detail';
+  static const String resale = '/resale';
+  static const String resaleDetail = '/resale-detail';
 
   static GoRouter get router => GoRouter(
     initialLocation: splash,
@@ -174,6 +177,17 @@ class AppRouter {
         ),
       ),
       GoRoute(
+        path: resale,
+        name: 'resale',
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: BlocProvider<ResaleBloc>(
+            create: (context) => getIt<ResaleBloc>(),
+            child: const ResaleListPage(),
+          ),
+        ),
+      ),
+      GoRoute(
         path: '$surveyDetail/:surveyId',
         name: 'surveyDetail',
         pageBuilder: (context, state) {
@@ -183,6 +197,20 @@ class AppRouter {
             child: BlocProvider<SurveyDetailBloc>(
               create: (context) => getIt<SurveyDetailBloc>(),
               child: SurveyDetailPage(surveyId: surveyId),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: '$resaleDetail/:itemId',
+        name: 'resaleDetail',
+        pageBuilder: (context, state) {
+          final itemId = state.pathParameters['itemId'] ?? '';
+          return SlidePageTransition(
+            key: state.pageKey,
+            child: BlocProvider<ResaleBloc>(
+              create: (context) => getIt<ResaleBloc>(),
+              child: ResaleDetailPage(itemId: itemId),
             ),
           );
         },

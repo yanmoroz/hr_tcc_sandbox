@@ -12,11 +12,11 @@ import 'app/di/di_module.dart';
 import 'features/address_book/di/address_book_module.dart';
 import 'features/auth/di/auth_module.dart';
 import 'features/profile/di/profile_module.dart';
-import 'features/profile/presentation/blocs/kpi_bloc.dart';
 import 'features/profile/presentation/blocs/profile_bloc.dart';
 import 'features/profile/presentation/blocs/profile_event.dart';
 import 'features/quick_links/di/quick_links_module.dart';
 import 'features/surveys/di/surveys_module.dart';
+import 'features/resale/di/resale_module.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -33,6 +33,7 @@ void setupDependencies() {
     ProfileModule(),
     QuickLinksModule(),
     SurveysModule(),
+    ResaleModule(),
   ];
 
   for (final module in modules) {

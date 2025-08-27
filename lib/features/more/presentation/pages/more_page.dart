@@ -11,9 +11,13 @@ class MorePage extends StatelessWidget {
       bottom: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: const [
-          UserTopBar(),
-          Expanded(child: Center(child: Text('Ещё'))),
+        children: [
+          const UserTopBar(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: const Center(child: Text('Ещё')),
+            ),
+          ),
         ],
       ),
     );

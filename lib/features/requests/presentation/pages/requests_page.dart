@@ -11,9 +11,13 @@ class RequestsPage extends StatelessWidget {
       bottom: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: const [
-          UserTopBar(),
-          Expanded(child: Center(child: Text('Мои заявки'))),
+        children: [
+          const UserTopBar(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: const Center(child: Text('Мои заявки')),
+            ),
+          ),
         ],
       ),
     );

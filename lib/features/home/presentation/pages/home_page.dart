@@ -12,20 +12,27 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       top: true,
       bottom: false,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const [
-            UserTopBar(),
-            SizedBox(height: 8),
-            QuickLinksWidget(),
-            SizedBox(height: 24),
-            SurveysWidget(),
-            SizedBox(height: 24),
-            ResaleWidget(),
-            SizedBox(height: 24),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const UserTopBar(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: const [
+                  SizedBox(height: 8),
+                  QuickLinksWidget(),
+                  SizedBox(height: 24),
+                  SurveysWidget(),
+                  SizedBox(height: 24),
+                  ResaleWidget(),
+                  SizedBox(height: 24),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

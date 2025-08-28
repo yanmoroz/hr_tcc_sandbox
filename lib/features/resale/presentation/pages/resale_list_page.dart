@@ -8,7 +8,7 @@ import '../blocs/resale_bloc.dart';
 import '../blocs/resale_event.dart';
 import '../blocs/resale_state.dart';
 import '../../../../shared/widgets/filter_bar.dart';
-import '../../../../shared/widgets/search_bar.dart';
+import '../../../../shared/widgets/app_search_bar.dart';
 import '../../../../shared/widgets/app_top_bar.dart';
 import '../../../../../app/router/app_router.dart';
 

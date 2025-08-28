@@ -25,8 +25,10 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canPop = Navigator.canPop(context);
+
     return AppBar(
-      leading: showBackButton
+      leading: showBackButton && canPop
           ? IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: onBackPressed ?? () => context.pop(),

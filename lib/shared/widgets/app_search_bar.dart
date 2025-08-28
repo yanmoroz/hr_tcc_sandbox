@@ -7,6 +7,7 @@ class AppSearchBar extends StatefulWidget {
   final VoidCallback onClear;
   final Duration debounceDelay;
   final String hintText;
+  final Color? backgroundColor;
 
   const AppSearchBar({
     super.key,
@@ -15,6 +16,7 @@ class AppSearchBar extends StatefulWidget {
     required this.onClear,
     this.debounceDelay = const Duration(milliseconds: 500),
     this.hintText = 'Поиск',
+    this.backgroundColor,
   });
 
   @override
@@ -54,7 +56,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: widget.backgroundColor ?? Colors.grey[200],
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(

@@ -1,23 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/app_bottom_navigation_bar.dart';
+import '../../../features/home/presentation/pages/home_page.dart';
+import '../../../features/requests/presentation/pages/requests_page.dart';
+import '../../../features/address_book/presentation/pages/address_book_page.dart';
+import '../../../features/more/presentation/pages/more_page.dart';
 
-class MainPage extends StatelessWidget {
-  final StatefulNavigationShell navigationShell;
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
-  const MainPage({super.key, required this.navigationShell});
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  int _currentIndex = 0;
+
+  late final List<Widget> _tabs = <Widget>[
+    const HomePage(),
+    RequestsPage(),
+    AddressBookPage(),
+    MorePage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: navigationShell,
+      body: IndexedStack(index: _currentIndex, children: _tabs),
       bottomNavigationBar: AppBottomNavigationBar(
-        currentIndex: navigationShell.currentIndex,
-        onTap: (index) => navigationShell.goBranch(
-          index,
-          // If tapping the already selected tab, pop to its initial location
-          initialLocation: index == navigationShell.currentIndex,
-        ),
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
         items: const [
           AppBottomNavigationBarItem(
             icon: Icons.home_outlined,

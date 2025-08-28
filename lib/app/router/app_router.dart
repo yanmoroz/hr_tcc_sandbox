@@ -26,7 +26,6 @@ import '../../features/surveys/presentation/blocs/survey_detail_bloc.dart';
 import '../../features/resale/presentation/blocs/resale_bloc.dart';
 import '../../features/resale/presentation/pages/resale_list_page.dart';
 import '../../features/resale/presentation/pages/resale_detail_page.dart';
-import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/requests/presentation/pages/requests_page.dart';
 import '../../features/address_book/presentation/pages/address_book_page.dart';
 import '../../features/more/presentation/pages/more_page.dart';
@@ -167,139 +166,107 @@ class AppRouter {
           ),
         ),
       ),
-      // Shell with persistent bottom navigation bar
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) =>
-            MainPage(navigationShell: navigationShell),
-        branches: [
-          // Home branch
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: main,
-                name: 'main',
-                pageBuilder: (context, state) => SlidePageTransition(
-                  key: state.pageKey,
-                  child: MultiBlocProvider(
-                    providers: [
-                      BlocProvider<QuickLinksBloc>(
-                        create: (context) => getIt<QuickLinksBloc>(),
-                      ),
-                      BlocProvider<SurveysBloc>(
-                        create: (context) => getIt<SurveysBloc>(),
-                      ),
-                      BlocProvider<ResaleBloc>(
-                        create: (context) => getIt<ResaleBloc>(),
-                      ),
-                    ],
-                    child: HomePage(),
-                  ),
-                ),
+      // Main page with local tabs (no persistent shell)
+      GoRoute(
+        path: main,
+        name: 'main',
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<QuickLinksBloc>(
+                create: (context) => getIt<QuickLinksBloc>(),
               ),
-              GoRoute(
-                path: quickLinks,
-                name: 'quickLinks',
-                pageBuilder: (context, state) => SlidePageTransition(
-                  key: state.pageKey,
-                  child: BlocProvider<QuickLinksBloc>(
-                    create: (context) => getIt<QuickLinksBloc>(),
-                    child: const QuickLinksPage(),
-                  ),
-                ),
+              BlocProvider<SurveysBloc>(
+                create: (context) => getIt<SurveysBloc>(),
               ),
-              GoRoute(
-                path: surveys,
-                name: 'surveys',
-                pageBuilder: (context, state) => SlidePageTransition(
-                  key: state.pageKey,
-                  child: BlocProvider<SurveysBloc>(
-                    create: (context) => getIt<SurveysBloc>(),
-                    child: const SurveysPage(),
-                  ),
-                ),
-              ),
-              GoRoute(
-                path: '$surveyDetail/:surveyId',
-                name: 'surveyDetail',
-                pageBuilder: (context, state) {
-                  final surveyId = state.pathParameters['surveyId'] ?? '';
-                  return SlidePageTransition(
-                    key: state.pageKey,
-                    child: BlocProvider<SurveyDetailBloc>(
-                      create: (context) => getIt<SurveyDetailBloc>(),
-                      child: SurveyDetailPage(surveyId: surveyId),
-                    ),
-                  );
-                },
-              ),
-              GoRoute(
-                path: resale,
-                name: 'resale',
-                pageBuilder: (context, state) => SlidePageTransition(
-                  key: state.pageKey,
-                  child: BlocProvider<ResaleBloc>(
-                    create: (context) => getIt<ResaleBloc>(),
-                    child: const ResaleListPage(),
-                  ),
-                ),
-              ),
-              GoRoute(
-                path: '$resaleDetail/:itemId',
-                name: 'resaleDetail',
-                pageBuilder: (context, state) {
-                  final itemId = state.pathParameters['itemId'] ?? '';
-                  return SlidePageTransition(
-                    key: state.pageKey,
-                    child: BlocProvider<ResaleBloc>(
-                      create: (context) => getIt<ResaleBloc>(),
-                      child: ResaleDetailPage(itemId: itemId),
-                    ),
-                  );
-                },
+              BlocProvider<ResaleBloc>(
+                create: (context) => getIt<ResaleBloc>(),
               ),
             ],
+            child: const MainPage(),
           ),
-
-          // Requests branch
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: requests,
-                name: 'requests',
-                pageBuilder: (context, state) => SlidePageTransition(
-                  key: state.pageKey,
-                  child: RequestsPage(),
-                ),
-              ),
-            ],
+        ),
+      ),
+      // Simple routes (forward navigations won't show bottom bar)
+      GoRoute(
+        path: quickLinks,
+        name: 'quickLinks',
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: BlocProvider<QuickLinksBloc>(
+            create: (context) => getIt<QuickLinksBloc>(),
+            child: const QuickLinksPage(),
           ),
-
-          // Address book branch
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: addressBook,
-                name: 'addressBook',
-                pageBuilder: (context, state) => SlidePageTransition(
-                  key: state.pageKey,
-                  child: AddressBookPage(),
-                ),
-              ),
-            ],
+        ),
+      ),
+      GoRoute(
+        path: surveys,
+        name: 'surveys',
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: BlocProvider<SurveysBloc>(
+            create: (context) => getIt<SurveysBloc>(),
+            child: const SurveysPage(),
           ),
-
-          // More branch
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: more,
-                name: 'more',
-                pageBuilder: (context, state) =>
-                    SlidePageTransition(key: state.pageKey, child: MorePage()),
-              ),
-            ],
+        ),
+      ),
+      GoRoute(
+        path: '$surveyDetail/:surveyId',
+        name: 'surveyDetail',
+        pageBuilder: (context, state) {
+          final surveyId = state.pathParameters['surveyId'] ?? '';
+          return SlidePageTransition(
+            key: state.pageKey,
+            child: BlocProvider<SurveyDetailBloc>(
+              create: (context) => getIt<SurveyDetailBloc>(),
+              child: SurveyDetailPage(surveyId: surveyId),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: resale,
+        name: 'resale',
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: BlocProvider<ResaleBloc>(
+            create: (context) => getIt<ResaleBloc>(),
+            child: const ResaleListPage(),
           ),
-        ],
+        ),
+      ),
+      GoRoute(
+        path: '$resaleDetail/:itemId',
+        name: 'resaleDetail',
+        pageBuilder: (context, state) {
+          final itemId = state.pathParameters['itemId'] ?? '';
+          return SlidePageTransition(
+            key: state.pageKey,
+            child: BlocProvider<ResaleBloc>(
+              create: (context) => getIt<ResaleBloc>(),
+              child: ResaleDetailPage(itemId: itemId),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: requests,
+        name: 'requests',
+        pageBuilder: (context, state) =>
+            SlidePageTransition(key: state.pageKey, child: RequestsPage()),
+      ),
+      GoRoute(
+        path: addressBook,
+        name: 'addressBook',
+        pageBuilder: (context, state) =>
+            SlidePageTransition(key: state.pageKey, child: AddressBookPage()),
+      ),
+      GoRoute(
+        path: more,
+        name: 'more',
+        pageBuilder: (context, state) =>
+            SlidePageTransition(key: state.pageKey, child: MorePage()),
       ),
     ],
     errorBuilder: (context, state) => _buildErrorPage(context, state),

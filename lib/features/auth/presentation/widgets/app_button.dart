@@ -12,6 +12,8 @@ class AppButton extends StatelessWidget {
   final Color? borderColor;
   final EdgeInsetsGeometry? padding;
   final double borderRadius;
+  final Widget? leading;
+  final Widget? trailing;
 
   const AppButton({
     super.key,
@@ -25,6 +27,8 @@ class AppButton extends StatelessWidget {
     this.borderColor,
     this.padding,
     this.borderRadius = 12,
+    this.leading,
+    this.trailing,
   });
 
   @override
@@ -59,14 +63,29 @@ class AppButton extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(resolvedTextColor),
                 ),
               )
-            : Text(
-                text,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+            : _buildButtonContent(),
       ),
     );
+  }
+
+  Widget _buildButtonContent() {
+    if (leading != null || trailing != null) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (leading != null) ...[leading!, const SizedBox(width: 8)],
+          Text(
+            text,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          if (trailing != null) ...[const SizedBox(width: 8), trailing!],
+        ],
+      );
+    } else {
+      return Text(
+        text,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      );
+    }
   }
 }

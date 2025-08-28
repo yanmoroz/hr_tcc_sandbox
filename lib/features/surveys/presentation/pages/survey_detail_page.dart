@@ -9,6 +9,7 @@ import '../widgets/survey_question_widget.dart';
 import '../../../auth/presentation/widgets/app_button.dart';
 
 import '../../../../shared/widgets/app_top_bar.dart';
+import '../../../../shared/widgets/app_bottom_menu.dart';
 
 class SurveyDetailPage extends StatefulWidget {
   final String surveyId;
@@ -33,6 +34,21 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
     return Scaffold(
       appBar: const AppTopBar(),
       backgroundColor: const Color(0xFFF4F5F7),
+      bottomNavigationBar: BlocBuilder<SurveyDetailBloc, SurveyDetailState>(
+        builder: (context, state) {
+          return AppBottomMenu(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: AppButton(
+              text: state.isSubmitting ? 'Отправка...' : 'Завершить опрос',
+              backgroundColor: const Color(0xFF12369F),
+              textColor: Colors.white,
+              borderRadius: 12,
+              onPressed: state.isSubmitting ? null : () => _submitSurvey(state),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+          );
+        },
+      ),
       body: BlocConsumer<SurveyDetailBloc, SurveyDetailState>(
         listener: (context, state) {
           if (state.isSubmitted) {
@@ -65,7 +81,12 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
           final survey = state.surveyDetail!;
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.only(
+              left: 16,
+              right: 16,
+              bottom:
+                  100, // Add bottom padding to avoid content being hidden behind the bottom menu
+            ),
             child: Column(
               children: [
                 // Status and timestamp row
@@ -182,20 +203,6 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
                       );
                     }),
                     const SizedBox(height: 24),
-                    // Submit button
-                    AppButton(
-                      text: state.isSubmitting
-                          ? 'Отправка...'
-                          : 'Завершить опрос',
-                      backgroundColor: const Color(0xFF12369F),
-                      textColor: Colors.white,
-                      borderRadius: 12,
-                      onPressed: state.isSubmitting
-                          ? null
-                          : () => _submitSurvey(state),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    const SizedBox(height: 32),
                   ],
                 ),
               ],

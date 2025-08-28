@@ -8,6 +8,7 @@ import '../blocs/resale_event.dart';
 import '../blocs/resale_state.dart';
 import '../../../auth/presentation/widgets/app_button.dart';
 import '../../../../shared/widgets/app_top_bar.dart';
+import '../../../../shared/widgets/app_bottom_menu.dart';
 
 class ResaleDetailPage extends StatefulWidget {
   final String itemId;
@@ -37,6 +38,51 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppTopBar(title: 'Ресейл'),
+      bottomNavigationBar: BlocBuilder<ResaleBloc, ResaleState>(
+        bloc: _bloc,
+        builder: (context, state) {
+          final item = state.allItems.firstWhere(
+            (e) => e.id == widget.itemId,
+            orElse: () => ResaleItem(
+              id: '',
+              title: '',
+              category: '',
+              priceRub: 0,
+              ownerName: '',
+              updatedAt: DateTime(2000),
+              location: '',
+              description: '',
+              imageUrls: [],
+              status: ResaleItemStatus.forSale,
+            ),
+          );
+
+          if (item.id.isEmpty) {
+            return const SizedBox.shrink();
+          }
+
+          return AppBottomMenu(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: AppButton(
+              text: item.status == ResaleItemStatus.booked
+                  ? 'Снять бронь'
+                  : 'Забронировать',
+              backgroundColor: const Color(0xFF12369F),
+              textColor: Colors.white,
+              borderRadius: 12,
+              onPressed: () => _bloc.add(ResaleToggleBooking(widget.itemId)),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              leading: Icon(
+                item.status == ResaleItemStatus.booked
+                    ? Icons.lock
+                    : Icons.lock_open,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+          );
+        },
+      ),
       body: BlocBuilder<ResaleBloc, ResaleState>(
         bloc: _bloc,
         builder: (context, state) {
@@ -60,111 +106,89 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          return Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(bottom: 24),
+          return SingleChildScrollView(
+            padding: const EdgeInsets.only(
+              bottom:
+                  100, // Add bottom padding to avoid content being hidden behind the bottom menu
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.network(
+                    item.imageUrls.isNotEmpty
+                        ? item.imageUrls.first
+                        : 'https://picsum.photos/800/450',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: Image.network(
-                          item.imageUrls.isNotEmpty
-                              ? item.imageUrls.first
-                              : 'https://picsum.photos/800/450',
-                          fit: BoxFit.cover,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: item.status == ResaleItemStatus.forSale
+                                  ? Colors.green[400]
+                                  : Colors.orange[400],
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              item.status == ResaleItemStatus.forSale
+                                  ? 'В продаже'
+                                  : 'Забронировано',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          Text(_formatDate(item.updatedAt)),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        _formatPrice(item.priceRub),
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        item.status == ResaleItemStatus.forSale
-                                        ? Colors.green[400]
-                                        : Colors.orange[400],
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    item.status == ResaleItemStatus.forSale
-                                        ? 'В продаже'
-                                        : 'Забронировано',
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                Text(_formatDate(item.updatedAt)),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              _formatPrice(item.priceRub),
-                              style: const TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              item.title,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            _buildDocTile('Автотека Ауди 380.pdf'),
-                            const SizedBox(height: 12),
-                            _buildInfoRow('Тип', item.category),
-                            _buildInfoRow('Ответственный', item.ownerName),
-                            _buildInfoRow('Расположение', item.location),
-                            const SizedBox(height: 12),
-                            const Text(
-                              'Описание',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(item.description),
-                          ],
+                      const SizedBox(height: 6),
+                      Text(
+                        item.title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
+                      const SizedBox(height: 16),
+                      _buildDocTile('Автотека Ауди 380.pdf'),
+                      const SizedBox(height: 12),
+                      _buildInfoRow('Тип', item.category),
+                      _buildInfoRow('Ответственный', item.ownerName),
+                      _buildInfoRow('Расположение', item.location),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Описание',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(item.description),
                     ],
                   ),
                 ),
-              ),
-              SafeArea(
-                top: false,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: AppButton(
-                    text: item.status == ResaleItemStatus.booked
-                        ? 'Снять бронь'
-                        : 'Забронировать',
-                    onPressed: () =>
-                        _bloc.add(ResaleToggleBooking(widget.itemId)),
-                    backgroundColor: const Color(0xFF12369F),
-                    textColor: Colors.white,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),

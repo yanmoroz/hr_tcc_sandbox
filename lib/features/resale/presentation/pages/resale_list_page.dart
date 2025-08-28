@@ -11,6 +11,7 @@ import '../../../../shared/widgets/filter_bar.dart';
 import '../../../../shared/widgets/app_search_bar.dart';
 import '../../../../shared/widgets/app_top_bar.dart';
 import '../../../../../app/router/app_router.dart';
+import '../widgets/resale_card.dart';
 
 class ResaleListPage extends StatefulWidget {
   const ResaleListPage({super.key});
@@ -96,50 +97,10 @@ class _ResaleListPageState extends State<ResaleListPage> {
       itemCount: state.filteredItems.length,
       itemBuilder: (context, index) {
         final item = state.filteredItems[index];
-        return GestureDetector(
-          onTap: () => context.push('${AppRouter.resaleDetail}/${item.id}'),
-          child: Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 12,
-              ),
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  item.imageUrls.isNotEmpty
-                      ? item.imageUrls.first
-                      : 'https://picsum.photos/200',
-                  width: 72,
-                  height: 72,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              title: Text(_formatPrice(item.priceRub)),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(item.category),
-                  Text('${item.ownerName}\n${_formatDate(item.updatedAt)}'),
-                ],
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.lock_outline),
-                onPressed: () => _bloc.add(
-                  ResaleToggleBooking(state.filteredItems[index].id),
-                ),
-              ),
-            ),
-          ),
+        return ResaleCard(
+          item: item,
+          onOpen: () => context.push('${AppRouter.resaleDetail}/${item.id}'),
+          onToggleBooking: () => _bloc.add(ResaleToggleBooking(item.id)),
         );
       },
     );
@@ -165,23 +126,5 @@ class _ResaleListPageState extends State<ResaleListPage> {
     );
   }
 
-  String _formatPrice(int priceRub) {
-    final buffer = StringBuffer();
-    final str = priceRub.toString();
-    for (int i = 0; i < str.length; i++) {
-      buffer.write(str[str.length - 1 - i]);
-      if ((i + 1) % 3 == 0 && i != str.length - 1) buffer.write(' ');
-    }
-    final reversed = buffer.toString().split('').reversed.join();
-    return '$reversed ₽';
-  }
-
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final diff = now.difference(date);
-    if (diff.inDays >= 1) {
-      return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year} в ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
-    }
-    return 'Вчера в ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
-  }
+  // Price/date formatting handled inside `ResaleCard`.
 }

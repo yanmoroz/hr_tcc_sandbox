@@ -106,88 +106,90 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.only(
-              bottom:
-                  100, // Add bottom padding to avoid content being hidden behind the bottom menu
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Image.network(
-                    item.imageUrls.isNotEmpty
-                        ? item.imageUrls.first
-                        : 'https://picsum.photos/800/450',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: item.status == ResaleItemStatus.forSale
-                                  ? Colors.green[400]
-                                  : Colors.orange[400],
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              item.status == ResaleItemStatus.forSale
-                                  ? 'В продаже'
-                                  : 'Забронировано',
-                              style: const TextStyle(color: Colors.white),
-                            ),
+          return Container(
+            color: Colors.white,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
                           ),
-                          Text(_formatDate(item.updatedAt)),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        _formatPrice(item.priceRub),
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
+                          decoration: BoxDecoration(
+                            color: item.status == ResaleItemStatus.forSale
+                                ? Colors.green[400]
+                                : Colors.orange[400],
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            item.status == ResaleItemStatus.forSale
+                                ? 'В продаже'
+                                : 'Забронировано',
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        item.title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildDocTile('Автотека Ауди 380.pdf'),
-                      const SizedBox(height: 12),
-                      _buildInfoRow('Тип', item.category),
-                      _buildInfoRow('Ответственный', item.ownerName),
-                      _buildInfoRow('Расположение', item.location),
-                      const SizedBox(height: 12),
-                      const Text(
-                        'Описание',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(item.description),
-                    ],
+                        Text(_formatDate(item.updatedAt)),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Image.network(
+                      item.imageUrls.isNotEmpty
+                          ? item.imageUrls.first
+                          : 'https://picsum.photos/800/450',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 12),
+                        Text(
+                          _formatPrice(item.priceRub),
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          item.title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildDocTile('Автотека Ауди 380.pdf'),
+                        const SizedBox(height: 12),
+                        _buildInfoRow('Тип', item.category),
+                        _buildInfoRow('Ответственный', item.ownerName),
+                        _buildInfoRow('Расположение', item.location),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Описание',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(item.description),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },

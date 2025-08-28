@@ -47,7 +47,7 @@ class SurveyDetailBloc extends Bloc<SurveyDetailEvent, SurveyDetailState> {
   ) async {
     emit(state.copyWith(isSubmitting: true));
     try {
-      await _submitSurveyResponse(event.surveyId, event.responses);
+      await _submitSurveyResponse(event.surveyId, event.answers);
       emit(state.copyWith(isSubmitting: false, isSubmitted: true));
     } catch (e) {
       emit(state.copyWith(isSubmitting: false, error: e.toString()));

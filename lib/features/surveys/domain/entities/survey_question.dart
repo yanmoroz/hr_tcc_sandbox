@@ -1,3 +1,5 @@
+import 'file_attachment.dart';
+
 // Base abstract class for all question types
 abstract class SurveyQuestion {
   final String id;
@@ -69,4 +71,23 @@ class QuestionOption {
   final String? value;
 
   const QuestionOption({required this.id, required this.text, this.value});
+}
+
+// File attachment question
+class FileAttachmentQuestion extends SurveyQuestion {
+  final String? placeholder;
+  final List<String> allowedExtensions;
+  final int? maxFileSizeInMB;
+  final FileAttachment? attachedFile;
+
+  const FileAttachmentQuestion({
+    required super.id,
+    required super.title,
+    super.description,
+    super.isRequired = false,
+    this.placeholder,
+    this.allowedExtensions = const ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
+    this.maxFileSizeInMB = 10,
+    this.attachedFile,
+  });
 }

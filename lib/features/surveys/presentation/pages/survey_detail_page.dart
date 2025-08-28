@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../domain/entities/survey_response.dart';
+import '../../domain/entities/survey_answer.dart';
 import '../blocs/survey_detail_bloc.dart';
 import '../blocs/survey_detail_event.dart';
 import '../blocs/survey_detail_state.dart';
@@ -33,7 +33,7 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppTopBar(),
-      backgroundColor: const Color(0xFFF4F5F7),
+      backgroundColor: Colors.white,
       bottomNavigationBar: BlocBuilder<SurveyDetailBloc, SurveyDetailState>(
         builder: (context, state) {
           return AppBottomMenu(
@@ -81,12 +81,7 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
           final survey = state.surveyDetail!;
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              bottom:
-                  100, // Add bottom padding to avoid content being hidden behind the bottom menu
-            ),
+            padding: const EdgeInsets.only(left: 16, right: 16),
             child: Column(
               children: [
                 // Status and timestamp row
@@ -191,18 +186,22 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
                 // Questions form
                 Column(
                   children: [
-                    ...survey.questions.map((question) {
+                    ...survey.questions.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final question = entry.value;
                       return SurveyQuestionWidget(
                         question: question,
+                        questionNumber: index + 1,
                         answer: state.responses[question.id],
-                        onAnswerChanged: (answer) {
+                        onAnswerChanged: (responseData) {
+                          final answer = responseData['answer'] as String;
                           context.read<SurveyDetailBloc>().add(
                             SurveyResponseChanged(question.id, answer),
                           );
                         },
                       );
                     }),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 8),
                   ],
                 ),
               ],
@@ -214,14 +213,14 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
   }
 
   void _submitSurvey(SurveyDetailState state) {
-    final responses = state.responses.entries
+    final answers = state.responses.entries
         .map(
-          (entry) => SurveyResponse(questionId: entry.key, answer: entry.value),
+          (entry) => SurveyAnswer(questionId: entry.key, answer: entry.value),
         )
         .toList();
 
     context.read<SurveyDetailBloc>().add(
-      SurveySubmitted(widget.surveyId, responses),
+      SurveySubmitted(widget.surveyId, answers),
     );
   }
 }

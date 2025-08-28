@@ -1,6 +1,6 @@
 import '../../domain/entities/survey.dart';
 import '../../domain/entities/survey_detail.dart';
-import '../../domain/entities/survey_response.dart';
+import '../../domain/entities/survey_answer.dart';
 import '../../domain/entities/survey_question.dart';
 import '../models/survey_model.dart';
 import '../models/survey_detail_model.dart';
@@ -10,7 +10,7 @@ abstract class SurveysLocalDataSource {
   Future<SurveyDetail> getSurveyDetail(String surveyId);
   Future<void> submitSurveyResponse(
     String surveyId,
-    List<SurveyResponse> responses,
+    List<SurveyAnswer> answers,
   );
 }
 
@@ -178,6 +178,15 @@ class SurveysLocalDataSourceImpl implements SurveysLocalDataSource {
               description: 'Для уведомлений о турнире',
               isRequired: false,
               placeholder: '+7 (___) ___-__-__',
+            ),
+            FileAttachmentQuestion(
+              id: '6',
+              title: 'Прикрепите документ с медицинской справкой',
+              description:
+                  'Просьба прикрепить файл с названием на латинице и через нижнее подчёркивание с указанием фамилии инициатора',
+              isRequired: true,
+              allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
+              maxFileSizeInMB: 5,
             ),
           ],
         );
@@ -422,7 +431,7 @@ class SurveysLocalDataSourceImpl implements SurveysLocalDataSource {
   @override
   Future<void> submitSurveyResponse(
     String surveyId,
-    List<SurveyResponse> responses,
+    List<SurveyAnswer> answers,
   ) async {
     // Mock implementation - in real app, this would send data to server
     await Future.delayed(const Duration(seconds: 1));

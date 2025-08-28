@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/survey_response.dart';
+import '../../domain/entities/survey_answer.dart';
 
 abstract class SurveyDetailEvent extends Equatable {
   const SurveyDetailEvent();
@@ -28,10 +28,10 @@ class SurveyResponseChanged extends SurveyDetailEvent {
 
 class SurveySubmitted extends SurveyDetailEvent {
   final String surveyId;
-  final List<SurveyResponse> responses;
+  final List<SurveyAnswer> answers;
 
-  const SurveySubmitted(this.surveyId, this.responses);
+  const SurveySubmitted(this.surveyId, this.answers);
 
   @override
-  List<Object?> get props => [surveyId, responses];
+  List<Object?> get props => [surveyId, answers];
 }

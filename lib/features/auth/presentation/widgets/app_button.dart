@@ -14,6 +14,7 @@ class AppButton extends StatelessWidget {
   final double borderRadius;
   final Widget? leading;
   final Widget? trailing;
+  final double? height;
 
   const AppButton({
     super.key,
@@ -29,6 +30,7 @@ class AppButton extends StatelessWidget {
     this.borderRadius = 12,
     this.leading,
     this.trailing,
+    this.height,
   });
 
   @override
@@ -42,6 +44,7 @@ class AppButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
+      height: height,
       child: ElevatedButton(
         onPressed: (isEnabled && !isLoading) ? onPressed : null,
         style: ElevatedButton.styleFrom(
@@ -49,7 +52,9 @@ class AppButton extends StatelessWidget {
           foregroundColor: resolvedTextColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
-            side: BorderSide(color: resolvedBorderColor),
+            side: outlined || borderColor != null
+                ? BorderSide(color: resolvedBorderColor)
+                : BorderSide.none,
           ),
           padding: resolvedPadding,
           elevation: 0,

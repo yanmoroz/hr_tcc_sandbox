@@ -8,6 +8,8 @@ import '../blocs/survey_detail_state.dart';
 import '../widgets/survey_question_widget.dart';
 import '../../../auth/presentation/widgets/app_button.dart';
 
+import '../../../../shared/widgets/app_top_bar.dart';
+
 class SurveyDetailPage extends StatefulWidget {
   final String surveyId;
 
@@ -29,15 +31,7 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        foregroundColor: Colors.black87,
-      ),
+      appBar: const AppTopBar(),
       backgroundColor: const Color(0xFFF4F5F7),
       body: BlocConsumer<SurveyDetailBloc, SurveyDetailState>(
         listener: (context, state) {

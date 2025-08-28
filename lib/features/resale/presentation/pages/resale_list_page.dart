@@ -9,6 +9,7 @@ import '../blocs/resale_event.dart';
 import '../blocs/resale_state.dart';
 import '../../../../shared/widgets/filter_bar.dart';
 import '../../../../shared/widgets/search_bar.dart';
+import '../../../../shared/widgets/app_top_bar.dart';
 import '../../../../../app/router/app_router.dart';
 
 class ResaleListPage extends StatefulWidget {
@@ -36,88 +37,45 @@ class _ResaleListPageState extends State<ResaleListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            BlocBuilder<ResaleBloc, ResaleState>(
-              bloc: _bloc,
-              builder: (context, state) => FilterBar<ResaleFilter>(
-                currentFilter: state.currentFilter,
-                onFilterChanged: (filter) =>
-                    _bloc.add(ResaleFilterChanged(filter)),
-                options: [
-                  FilterOption<ResaleFilter>(
-                    label: 'Все',
-                    count: state.allItems.length,
-                    value: ResaleFilter.all,
-                  ),
-                  FilterOption<ResaleFilter>(
-                    label: 'Забронированные',
-                    count: state.allItems
-                        .where((e) => e.status == ResaleItemStatus.booked)
-                        .length,
-                    value: ResaleFilter.booked,
-                  ),
-                ],
-              ),
-            ),
-            _buildSearchBar(),
-            Expanded(
-              child: BlocBuilder<ResaleBloc, ResaleState>(
-                bloc: _bloc,
-                builder: (context, state) {
-                  if (state.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state.filteredItems.isEmpty &&
-                      state.searchQuery.isNotEmpty) {
-                    return _buildNoResults();
-                  }
-                  return _buildList(state);
-                },
-              ),
-            ),
-          ],
+    return BlocBuilder<ResaleBloc, ResaleState>(
+      bloc: _bloc,
+      builder: (context, state) => Scaffold(
+        backgroundColor: Colors.grey[50],
+        appBar: AppTopBar(
+          title: 'Ресейл',
+          subtitle: '${state.allItems.length} товаров',
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: () => context.pop(),
-            icon: const Icon(Icons.arrow_back_ios_new),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              children: [
-                const Text(
-                  'Ресейл',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
-                  ),
+        body: Column(
+          children: [
+            FilterBar<ResaleFilter>(
+              currentFilter: state.currentFilter,
+              onFilterChanged: (filter) =>
+                  _bloc.add(ResaleFilterChanged(filter)),
+              options: [
+                FilterOption<ResaleFilter>(
+                  label: 'Все',
+                  count: state.allItems.length,
+                  value: ResaleFilter.all,
                 ),
-                BlocBuilder<ResaleBloc, ResaleState>(
-                  bloc: _bloc,
-                  builder: (context, state) => Text(
-                    '${state.allItems.length} товаров',
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                  ),
+                FilterOption<ResaleFilter>(
+                  label: 'Забронированные',
+                  count: state.allItems
+                      .where((e) => e.status == ResaleItemStatus.booked)
+                      .length,
+                  value: ResaleFilter.booked,
                 ),
               ],
             ),
-          ),
-        ],
+            _buildSearchBar(),
+            Expanded(
+              child: state.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : state.filteredItems.isEmpty && state.searchQuery.isNotEmpty
+                  ? _buildNoResults()
+                  : _buildList(state),
+            ),
+          ],
+        ),
       ),
     );
   }

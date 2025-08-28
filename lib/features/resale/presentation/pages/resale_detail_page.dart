@@ -7,6 +7,7 @@ import '../blocs/resale_bloc.dart';
 import '../blocs/resale_event.dart';
 import '../blocs/resale_state.dart';
 import '../../../auth/presentation/widgets/app_button.dart';
+import '../../../../shared/widgets/app_top_bar.dart';
 
 class ResaleDetailPage extends StatefulWidget {
   final String itemId;
@@ -35,7 +36,7 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Ресейл')),
+      appBar: const AppTopBar(title: 'Ресейл'),
       body: BlocBuilder<ResaleBloc, ResaleState>(
         bloc: _bloc,
         builder: (context, state) {

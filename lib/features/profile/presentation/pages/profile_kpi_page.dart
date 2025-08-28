@@ -9,6 +9,7 @@ import '../widgets/kpi_period_selector.dart';
 import '../widgets/kpi_progress_circle.dart';
 import '../widgets/kpi_planned_values_card.dart';
 import '../widgets/kpi_target_indicators_card.dart';
+import '../../../../shared/widgets/app_top_bar.dart';
 
 class ProfileKpiPage extends StatefulWidget {
   const ProfileKpiPage({super.key});
@@ -111,19 +112,7 @@ class _ProfileKpiPageState extends State<ProfileKpiPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text(
-          'Итоговый расчёт КПЭ',
-          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black87),
-      ),
+      appBar: const AppTopBar(title: 'Итоговый расчёт КПЭ'),
       body: BlocBuilder<KpiBloc, KpiState>(
         builder: (context, state) {
           if (state is KpiLoading) {

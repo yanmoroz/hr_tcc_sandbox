@@ -7,6 +7,7 @@ import '../blocs/surveys_event.dart';
 import '../blocs/surveys_state.dart';
 import '../widgets/survey_card.dart';
 import '../../../../shared/widgets/filter_bar.dart';
+import '../../../../shared/widgets/app_top_bar.dart';
 import '../../../../app/router/app_router.dart';
 
 class SurveysPage extends StatefulWidget {
@@ -26,16 +27,7 @@ class _SurveysPageState extends State<SurveysPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text('Опросы'),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        foregroundColor: Colors.black87,
-      ),
+      appBar: const AppTopBar(title: 'Опросы'),
       backgroundColor: const Color(0xFFF4F5F7),
       body: BlocBuilder<SurveysBloc, SurveysState>(
         builder: (context, state) {

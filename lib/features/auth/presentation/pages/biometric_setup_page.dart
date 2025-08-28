@@ -10,6 +10,7 @@ import '../blocs/biometric_setup_event.dart';
 import '../blocs/biometric_setup_state.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../app/router/app_router.dart';
+import '../../../../shared/widgets/app_top_bar.dart';
 import '../widgets/app_button.dart';
 
 class BiometricSetupPage extends StatefulWidget {
@@ -30,15 +31,7 @@ class _BiometricSetupPageState extends State<BiometricSetupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black87),
-      ),
+      appBar: const AppTopBar(),
       body: SafeArea(
         child: BlocConsumer<BiometricSetupBloc, BiometricSetupState>(
           listener: (context, state) {

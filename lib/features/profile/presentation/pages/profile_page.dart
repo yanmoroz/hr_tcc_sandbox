@@ -13,6 +13,7 @@ import '../widgets/leave_card.dart';
 import '../../../auth/presentation/blocs/auth_bloc.dart';
 import '../../../auth/presentation/blocs/auth_event.dart';
 import '../../../../app/router/app_router.dart';
+import '../../../../shared/widgets/app_top_bar.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -22,22 +23,15 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text(
-          'Профиль',
-          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
+      appBar: AppTopBar(
+        title: 'Профиль',
+        showBackButton: false,
+        trailing: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () {
+            _showLogoutDialog(context);
+          },
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black87),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              _showLogoutDialog(context);
-            },
-          ),
-        ],
       ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {

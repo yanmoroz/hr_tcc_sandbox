@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../shared/widgets/app_top_bar.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/create_pin_page.dart';
 import '../../features/auth/presentation/pages/repeat_pin_page.dart';
@@ -306,12 +307,7 @@ class AppRouter {
 
   static Widget _buildErrorPage(BuildContext context, GoRouterState state) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ошибка'),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black87),
-      ),
+      appBar: const AppTopBar(title: 'Ошибка'),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

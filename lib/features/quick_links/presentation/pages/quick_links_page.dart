@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../blocs/quick_links_bloc.dart';
 import '../blocs/quick_links_event.dart';
 import '../blocs/quick_links_state.dart';
+import '../../../../shared/widgets/app_top_bar.dart';
 
 class QuickLinksPage extends StatefulWidget {
   const QuickLinksPage({super.key});
@@ -24,16 +25,7 @@ class _QuickLinksPageState extends State<QuickLinksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text('Быстрые ссылки'),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        foregroundColor: Colors.black87,
-      ),
+      appBar: const AppTopBar(title: 'Быстрые ссылки'),
       backgroundColor: const Color(0xFFF4F5F7),
       body: SafeArea(
         child: BlocBuilder<QuickLinksBloc, QuickLinksState>(

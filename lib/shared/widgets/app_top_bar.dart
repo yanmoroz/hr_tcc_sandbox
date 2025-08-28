@@ -52,6 +52,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         style: const TextStyle(
           fontWeight: FontWeight.w600,
           color: Colors.black87,
+          fontSize: 18,
         ),
       );
     }
@@ -63,13 +64,19 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         Text(
           title!,
           style: const TextStyle(
+            fontFamily: 'SF Pro Display',
             fontWeight: FontWeight.w600,
             color: Colors.black87,
+            fontSize: 18,
           ),
         ),
         Text(
           subtitle!,
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
+          style: const TextStyle(
+            fontFamily: 'SF Pro Text',
+            fontSize: 12,
+            color: Colors.grey,
+          ),
         ),
       ],
     );

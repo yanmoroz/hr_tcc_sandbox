@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../domain/entities/survey_answer.dart';
@@ -36,6 +37,38 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
       backgroundColor: Colors.white,
       bottomNavigationBar: BlocBuilder<SurveyDetailBloc, SurveyDetailState>(
         builder: (context, state) {
+          if (state.isSubmitted) {
+            return AppBottomMenu(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('👌', style: TextStyle(fontSize: 56)),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Спасибо за участие!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Ваши ответы помогают улучшить наш сервис',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: Colors.black54),
+                  ),
+                  const SizedBox(height: 16),
+                  AppButton(
+                    text: 'Пожалуйста',
+                    backgroundColor: const Color(0xFF12369F),
+                    textColor: Colors.white,
+                    borderRadius: 12,
+                    onPressed: () => context.pop(),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ],
+              ),
+            );
+          }
           return AppBottomMenu(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: AppButton(
@@ -52,13 +85,7 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
       body: BlocConsumer<SurveyDetailBloc, SurveyDetailState>(
         listener: (context, state) {
           if (state.isSubmitted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Опрос успешно отправлен!'),
-                backgroundColor: Colors.green,
-              ),
-            );
-            context.pop();
+            // Success is handled by bottom bar UI
           }
           if (state.error != null) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -80,132 +107,147 @@ class _SurveyDetailPageState extends State<SurveyDetailPage> {
 
           final survey = state.surveyDetail!;
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Column(
-              children: [
-                // Status and timestamp row
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF5E6D3),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          'Не пройден',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        survey.timestamp,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Survey header with image and status
-                Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header image
-                      Container(
-                        // height: 160,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(16),
-                          ),
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF12369F), Color(0xFFFF8C42)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 16),
-                              Text(
-                                survey.headerText ??
-                                    'Предложите темы для проекта «Развивающая среда»',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // Survey title
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          survey.title,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Questions form
-                Column(
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Column(
                   children: [
-                    ...survey.questions.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final question = entry.value;
-                      return SurveyQuestionWidget(
-                        question: question,
-                        questionNumber: index + 1,
-                        answer: state.responses[question.id],
-                        onAnswerChanged: (responseData) {
-                          final answer = responseData['answer'] as String;
-                          context.read<SurveyDetailBloc>().add(
-                            SurveyResponseChanged(question.id, answer),
+                    // Status and timestamp row
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF5E6D3),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text(
+                              'Не пройден',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            survey.timestamp,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Survey header with image and status
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Header image
+                          Container(
+                            // height: 160,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(16),
+                              ),
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF12369F), Color(0xFFFF8C42)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    survey.headerText ??
+                                        'Предложите темы для проекта «Развивающая среда»',
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // Survey title
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Text(
+                              survey.title,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Questions form
+                    Column(
+                      children: [
+                        ...survey.questions.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final question = entry.value;
+                          return SurveyQuestionWidget(
+                            question: question,
+                            questionNumber: index + 1,
+                            answer: state.responses[question.id],
+                            onAnswerChanged: (responseData) {
+                              final answer = responseData['answer'] as String;
+                              context.read<SurveyDetailBloc>().add(
+                                SurveyResponseChanged(question.id, answer),
+                              );
+                            },
                           );
-                        },
-                      );
-                    }),
-                    const SizedBox(height: 8),
+                        }),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              if (state.isSubmitted)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                      child: Container(
+                        color: Colors.black.withValues(alpha: 0.05),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           );
         },
       ),

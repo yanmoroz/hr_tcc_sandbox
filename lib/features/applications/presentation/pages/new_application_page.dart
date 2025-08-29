@@ -10,6 +10,8 @@ import '../blocs/new_application_state.dart';
 import '../widgets/dropdown_field.dart';
 import '../widgets/date_field.dart';
 import '../widgets/app_text_field.dart';
+import '../widgets/forms/employment_certificate_form.dart';
+import '../widgets/forms/parking_form.dart';
 
 class NewApplicationPage extends StatelessWidget {
   final ApplicationType applicationType;
@@ -75,85 +77,35 @@ class NewApplicationPage extends StatelessWidget {
             }
           },
           builder: (context, state) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ),
-                ),
-                // Show form widgets only for employmentCertificate
-                if (applicationType ==
-                    ApplicationType.employmentCertificate) ...[
-                  DropdownField<ApplicationPurpose>(
-                    label: 'Цель справки',
-                    modalTitle: 'Выберите цель справки',
-                    value: state.selectedPurposeId == null
-                        ? null
-                        : state.purposes.firstWhere(
-                            (p) => p.id == state.selectedPurposeId,
-                            orElse: () => state.purposes.first,
-                          ),
-                    items: state.purposes,
-                    itemBuilder: (p) => p.title,
-                    onChanged: (p) {
-                      if (p != null) {
-                        context.read<NewApplicationBloc>().add(
-                          NewApplicationPurposeSelected(p.id),
-                        );
-                      }
-                    },
-                  ),
-                  DateField(
-                    label: 'Срок получения',
-                    date: state.receiveDate,
-                    onPick: (d) => context.read<NewApplicationBloc>().add(
-                      NewApplicationDateChanged(d),
-                    ),
-                  ),
-                  AppTextField(
-                    label: 'Количество экземпляров',
-                    value: state.copies == 0 ? null : state.copies,
-                    onChanged: (v) => context.read<NewApplicationBloc>().add(
-                      NewApplicationCopiesChanged(v),
-                    ),
-                  ),
-                ],
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: state.canSubmit
-                          ? () => context.read<NewApplicationBloc>().add(
-                              NewApplicationSubmitted(),
-                            )
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: state.canSubmit
-                            ? const Color(0xFF12369F)
-                            : Colors.grey[300],
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
                         ),
                       ),
-                      child: const Text('Создать'),
                     ),
                   ),
-                ),
-              ],
+                  // Show form widgets only for employmentCertificate
+                  if (applicationType ==
+                      ApplicationType.employmentCertificate) ...[
+                    EmploymentCertificateForm(state: state),
+                  ]
+                  // Parking form
+                  else if (applicationType == ApplicationType.parking) ...[
+                    ParkingForm(state: state),
+                  ],
+                  const SizedBox(height: 100), // Add bottom padding for button
+                ],
+              ),
             );
           },
         ),

@@ -1,0 +1,145 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../shared/widgets/radio_group.dart';
+import '../../blocs/new_application_bloc.dart';
+import '../../blocs/new_application_event.dart';
+import '../../blocs/new_application_state.dart';
+import '../app_text_field.dart';
+import '../date_field.dart';
+import '../dropdown_field.dart';
+
+class ParkingForm extends StatelessWidget {
+  final NewApplicationState state;
+
+  const ParkingForm({super.key, required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        RadioGroup<ParkingPassType>(
+          label: 'Тип пропуска',
+          value: state.parkingPassType,
+          options: [
+            const RadioOption(
+              label: 'Гостевой пропуск',
+              value: ParkingPassType.guest,
+            ),
+            const RadioOption(
+              label: 'Постоянный пропуск',
+              value: ParkingPassType.permanent,
+            ),
+          ],
+          onChanged: (v) =>
+              context.read<NewApplicationBloc>().add(ParkingPassTypeChanged(v)),
+        ),
+
+        DropdownField<String>(
+          label: 'Цель посещения',
+          value: state.parkingPurpose,
+          items: const ['Совещание', 'Встреча', 'Поставка', 'Сервис', 'Другое'],
+          itemBuilder: (s) => s,
+          onChanged: (v) => context.read<NewApplicationBloc>().add(
+            ParkingPurposeChanged(v ?? ''),
+          ),
+        ),
+
+        DropdownField<int>(
+          label: 'Этаж',
+          value: state.parkingFloor,
+          items: List<int>.generate(50, (i) => i + 1),
+          itemBuilder: (i) => i.toString(),
+          onChanged: (v) => context.read<NewApplicationBloc>().add(
+            ParkingFloorChanged(v ?? 1),
+          ),
+        ),
+        DropdownField<int>(
+          label: 'Офис',
+          value: state.parkingOffice,
+          items: List<int>.generate(10, (i) => i + 1),
+          itemBuilder: (i) => i.toString(),
+          onChanged: (v) => context.read<NewApplicationBloc>().add(
+            ParkingOfficeChanged(v ?? 1),
+          ),
+        ),
+
+        DropdownField<String>(
+          label: 'Марка автомобиля',
+          value: state.carBrand,
+          items: const [
+            'Audi',
+            'BMW',
+            'Belgee',
+            'Changan',
+            'Chery',
+            'Chevrolet',
+            'Ford',
+            'Geely',
+            'Haval',
+            'Hyundai',
+            'Kia',
+          ],
+          itemBuilder: (s) => s,
+          onChanged: (v) => context.read<NewApplicationBloc>().add(
+            ParkingCarBrandChanged(v ?? ''),
+          ),
+        ),
+        AppTextField<String>(
+          label: 'Госномер автомобиля',
+          value: state.carPlate,
+          onChanged: (t) =>
+              context.read<NewApplicationBloc>().add(ParkingCarPlateChanged(t)),
+        ),
+
+        // Date period
+        DateField(
+          label: 'Дата с',
+          date: state.parkingDateFrom,
+          onPick: (d) =>
+              context.read<NewApplicationBloc>().add(ParkingDateFromChanged(d)),
+        ),
+        DateField(
+          label: 'Дата по',
+          date: state.parkingDateTo,
+          onPick: (d) =>
+              context.read<NewApplicationBloc>().add(ParkingDateToChanged(d)),
+        ),
+
+        // Time from/to
+        AppTextField<String>(
+          label: 'Часы «С»',
+          value: state.timeFrom,
+          onChanged: (t) =>
+              context.read<NewApplicationBloc>().add(ParkingTimeFromChanged(t)),
+        ),
+        AppTextField<String>(
+          label: 'Часы «До»',
+          value: state.timeTo,
+          onChanged: (t) =>
+              context.read<NewApplicationBloc>().add(ParkingTimeToChanged(t)),
+        ),
+
+        // Visitors
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+          child: Text(
+            'Посетители',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[700],
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        AppTextField<String>(
+          label: 'ФИО',
+          value: state.visitors.isNotEmpty ? state.visitors.first : null,
+          onChanged: (t) => context.read<NewApplicationBloc>().add(
+            ParkingVisitorPrimaryChanged(t),
+          ),
+        ),
+      ],
+    );
+  }
+}

@@ -1,4 +1,5 @@
 import '../../domain/entities/application_type.dart';
+import '../blocs/new_application_state.dart';
 
 abstract class NewApplicationEvent {}
 
@@ -23,3 +24,64 @@ class NewApplicationCopiesChanged extends NewApplicationEvent {
 }
 
 class NewApplicationSubmitted extends NewApplicationEvent {}
+
+// Parking-specific events
+class ParkingPassTypeChanged extends NewApplicationEvent {
+  final ParkingPassType type;
+  ParkingPassTypeChanged(this.type);
+}
+
+class ParkingPurposeChanged extends NewApplicationEvent {
+  final String purpose;
+  ParkingPurposeChanged(this.purpose);
+}
+
+class ParkingFloorChanged extends NewApplicationEvent {
+  final int floor;
+  ParkingFloorChanged(this.floor);
+}
+
+class ParkingOfficeChanged extends NewApplicationEvent {
+  final int office;
+  ParkingOfficeChanged(this.office);
+}
+
+class ParkingCarBrandChanged extends NewApplicationEvent {
+  final String brand;
+  ParkingCarBrandChanged(this.brand);
+}
+
+class ParkingCarPlateChanged extends NewApplicationEvent {
+  final String plate;
+  ParkingCarPlateChanged(this.plate);
+}
+
+class ParkingDateOnlyChanged extends NewApplicationEvent {
+  final DateTime date;
+  ParkingDateOnlyChanged(this.date);
+}
+
+class ParkingDateFromChanged extends NewApplicationEvent {
+  final DateTime date;
+  ParkingDateFromChanged(this.date);
+}
+
+class ParkingDateToChanged extends NewApplicationEvent {
+  final DateTime date;
+  ParkingDateToChanged(this.date);
+}
+
+class ParkingTimeFromChanged extends NewApplicationEvent {
+  final String time;
+  ParkingTimeFromChanged(this.time);
+}
+
+class ParkingTimeToChanged extends NewApplicationEvent {
+  final String time;
+  ParkingTimeToChanged(this.time);
+}
+
+class ParkingVisitorPrimaryChanged extends NewApplicationEvent {
+  final String name;
+  ParkingVisitorPrimaryChanged(this.name);
+}

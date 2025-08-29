@@ -88,6 +88,17 @@ class _ApplicationsPageContent extends StatelessWidget {
                         state.filteredApplications,
                       ),
               ),
+              // Pinned button at bottom
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                child: AppButton(
+                  text: 'Создать заявку',
+                  onPressed: () => context.push(AppRouter.createApplication),
+                  backgroundColor: const Color(0xFF12369F),
+                  textColor: Colors.white,
+                  height: 56,
+                ),
+              ),
             ],
           );
         },
@@ -108,16 +119,6 @@ class _ApplicationsPageContent extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-          child: AppButton(
-            text: 'Создать заявку',
-            onPressed: () => context.push(AppRouter.createApplication),
-            backgroundColor: const Color(0xFF12369F),
-            textColor: Colors.white,
-            height: 56,
-          ),
-        ),
       ],
     );
   }

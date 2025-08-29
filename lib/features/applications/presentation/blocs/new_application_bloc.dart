@@ -26,6 +26,18 @@ class NewApplicationBloc
     on<NewApplicationPurposeSelected>(_onPurposeSelected);
     on<NewApplicationDateChanged>(_onDateChanged);
     on<NewApplicationCopiesChanged>(_onCopiesChanged);
+    on<ParkingPassTypeChanged>(_onParkingPassTypeChanged);
+    on<ParkingPurposeChanged>(_onParkingPurposeChanged);
+    on<ParkingFloorChanged>(_onParkingFloorChanged);
+    on<ParkingOfficeChanged>(_onParkingOfficeChanged);
+    on<ParkingCarBrandChanged>(_onParkingCarBrandChanged);
+    on<ParkingCarPlateChanged>(_onParkingCarPlateChanged);
+    // on<ParkingDateOnlyChanged>(_onParkingDateOnlyChanged);
+    on<ParkingDateFromChanged>(_onParkingDateFromChanged);
+    on<ParkingDateToChanged>(_onParkingDateToChanged);
+    on<ParkingTimeFromChanged>(_onParkingTimeFromChanged);
+    on<ParkingTimeToChanged>(_onParkingTimeToChanged);
+    on<ParkingVisitorPrimaryChanged>(_onParkingVisitorPrimaryChanged);
     on<NewApplicationSubmitted>(_onSubmitted);
   }
 
@@ -36,8 +48,12 @@ class NewApplicationBloc
     emit(
       state.copyWith(isLoading: true, applicationType: event.applicationType),
     );
-    final purposes = await _getPurposes(event.applicationType);
-    emit(state.copyWith(isLoading: false, purposes: purposes));
+    if (event.applicationType == ApplicationType.employmentCertificate) {
+      final purposes = await _getPurposes(event.applicationType);
+      emit(state.copyWith(isLoading: false, purposes: purposes));
+    } else {
+      emit(state.copyWith(isLoading: false));
+    }
   }
 
   void _onPurposeSelected(
@@ -59,6 +75,97 @@ class NewApplicationBloc
     Emitter<NewApplicationState> emit,
   ) {
     emit(state.copyWith(copies: event.copies));
+  }
+
+  // Parking handlers
+  void _onParkingPassTypeChanged(
+    ParkingPassTypeChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(parkingPassType: event.type));
+  }
+
+  void _onParkingPurposeChanged(
+    ParkingPurposeChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(parkingPurpose: event.purpose));
+  }
+
+  void _onParkingFloorChanged(
+    ParkingFloorChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(parkingFloor: event.floor));
+  }
+
+  void _onParkingOfficeChanged(
+    ParkingOfficeChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(parkingOffice: event.office));
+  }
+
+  void _onParkingCarBrandChanged(
+    ParkingCarBrandChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(carBrand: event.brand));
+  }
+
+  void _onParkingCarPlateChanged(
+    ParkingCarPlateChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(carPlate: event.plate));
+  }
+
+  // void _onParkingDateOnlyChanged(
+  //   ParkingDateOnlyChanged event,
+  //   Emitter<NewApplicationState> emit,
+  // ) {
+  //   emit(state.copyWith(parkingDate: event.date));
+  // }
+
+  void _onParkingDateFromChanged(
+    ParkingDateFromChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(parkingDateFrom: event.date));
+  }
+
+  void _onParkingDateToChanged(
+    ParkingDateToChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(parkingDateTo: event.date));
+  }
+
+  void _onParkingTimeFromChanged(
+    ParkingTimeFromChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(timeFrom: event.time));
+  }
+
+  void _onParkingTimeToChanged(
+    ParkingTimeToChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(timeTo: event.time));
+  }
+
+  void _onParkingVisitorPrimaryChanged(
+    ParkingVisitorPrimaryChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    final List<String> updated = List<String>.from(state.visitors);
+    if (updated.isEmpty) {
+      updated.add(event.name);
+    } else {
+      updated[0] = event.name;
+    }
+    emit(state.copyWith(visitors: updated));
   }
 
   Future<void> _onSubmitted(

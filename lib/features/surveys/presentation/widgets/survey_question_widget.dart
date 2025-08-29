@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import '../../domain/entities/survey_question.dart';
 import '../../domain/entities/file_attachment.dart';
 import '../../../auth/presentation/widgets/app_button.dart';
+import '../../../../shared/widgets/radio_group.dart';
 
 class SurveyQuestionWidget extends StatefulWidget {
   final SurveyQuestion question;
@@ -128,51 +129,23 @@ class _SurveyQuestionWidgetState extends State<SurveyQuestionWidget> {
   }
 
   Widget _buildSingleSelectInput(SingleSelectQuestion question) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFF2F2F6),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.only(left: 16),
-      child: Column(
-        children: question.options.asMap().entries.map((entry) {
-          final index = entry.key;
-          final option = entry.value;
-          return Column(
-            children: [
-              _buildOption(option),
-              if (index < question.options.length - 1)
-                Container(
-                  height: 1,
-                  color: Colors.white,
-                  margin: const EdgeInsets.only(right: 16),
-                ),
-            ],
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildOption(QuestionOption option) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.only(right: 8),
-      child: RadioListTile<String>(
-        title: Text(
-          option.text,
-          style: const TextStyle(fontSize: 14, color: Colors.black87),
-        ),
-        value: option.value ?? option.id,
-        groupValue: widget.answer,
-        onChanged: (value) {
-          if (value != null) {
-            widget.onAnswerChanged({'answer': value});
-          }
-        },
-        contentPadding: EdgeInsets.zero,
-        controlAffinity: ListTileControlAffinity.trailing,
-      ),
+    return RadioGroup<String>(
+      label: '',
+      value: widget.answer,
+      options: question.options
+          .map(
+            (option) => RadioOption<String>(
+              label: option.text,
+              value: option.value ?? option.id,
+            ),
+          )
+          .toList(),
+      onChanged: (value) {
+        if (value != null) {
+          widget.onAnswerChanged({'answer': value});
+        }
+      },
+      padding: EdgeInsets.zero,
     );
   }
 

@@ -39,9 +39,10 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
 
   @override
   Future<List<Application>> getApplications() async {
-    // Mock data with one employmentCertificate application
+    // Mock data with multiple applications
     final purposes = await _local.getPurposes('work_place_ref');
     final mortgagePurpose = purposes.firstWhere((p) => p.id == 'mortgage');
+    final rentPurpose = purposes.firstWhere((p) => p.id == 'rent');
 
     return [
       Application(
@@ -52,6 +53,25 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         createdAt: DateTime.now().subtract(const Duration(days: 2)),
         status: ApplicationStatus.inProgress,
         comment: 'Ожидает подписи руководителя',
+      ),
+      Application(
+        id: '2',
+        type: ApplicationType.employmentCertificate,
+        title: 'Справка с места работы',
+        purpose: rentPurpose,
+        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        status: ApplicationStatus.done,
+        completedAt: DateTime.now().subtract(const Duration(hours: 6)),
+        comment: 'Готова к выдаче',
+      ),
+      Application(
+        id: '3',
+        type: ApplicationType.parking,
+        title: 'Парковка',
+        purpose: mortgagePurpose, // Using same purpose for simplicity
+        createdAt: DateTime.now().subtract(const Duration(hours: 12)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Ожидает одобрения службы безопасности',
       ),
     ];
   }

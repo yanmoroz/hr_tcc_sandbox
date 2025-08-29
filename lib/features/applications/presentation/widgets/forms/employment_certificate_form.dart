@@ -44,12 +44,17 @@ class EmploymentCertificateForm extends StatelessWidget {
             NewApplicationDateChanged(d),
           ),
         ),
-        AppTextField<int>(
+        AppTextField(
           label: 'Количество экземпляров',
-          value: state.copies == 0 ? null : state.copies,
-          onChanged: (v) => context.read<NewApplicationBloc>().add(
-            NewApplicationCopiesChanged(v),
-          ),
+          value: state.copies == 0 ? null : state.copies.toString(),
+          onChanged: (v) {
+            final copies = int.tryParse(v);
+            if (copies != null && copies > 0) {
+              context.read<NewApplicationBloc>().add(
+                NewApplicationCopiesChanged(copies),
+              );
+            }
+          },
         ),
       ],
     );

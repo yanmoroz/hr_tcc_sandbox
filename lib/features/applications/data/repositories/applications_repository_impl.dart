@@ -73,6 +73,20 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         status: ApplicationStatus.inProgress,
         comment: 'Ожидает одобрения службы безопасности',
       ),
+      // Absence mock
+      Application(
+        id: '4',
+        type: ApplicationType.absence,
+        title: 'Отсутствие',
+        purpose: const ApplicationPurpose(
+          id: 'early_leave',
+          title: 'Ранний уход',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 3)),
+        status: ApplicationStatus.done,
+        completedAt: DateTime.now().subtract(const Duration(days: 2, hours: 4)),
+        comment: 'Плохое самочувствие',
+      ),
     ];
   }
 

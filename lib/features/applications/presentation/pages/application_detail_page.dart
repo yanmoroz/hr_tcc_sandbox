@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/application.dart';
 import '../../domain/entities/application_type.dart';
 import '../blocs/application_detail_bloc.dart';
-import '../blocs/application_detail_event.dart';
 import '../blocs/application_detail_state.dart';
 import '../widgets/detail_sections/employment_certificate_detail_section.dart';
 import '../widgets/detail_sections/parking_detail_section.dart';
+import '../widgets/detail_sections/absence_detail_section.dart';
 import '../../../../shared/widgets/app_top_bar.dart';
 
 class ApplicationDetailPage extends StatelessWidget {
@@ -100,7 +100,9 @@ class _ApplicationDetailContent extends StatelessWidget {
                 if (application.type == ApplicationType.employmentCertificate)
                   EmploymentCertificateDetailSection(application: application)
                 else if (application.type == ApplicationType.parking)
-                  ParkingDetailSection(application: application),
+                  ParkingDetailSection(application: application)
+                else if (application.type == ApplicationType.absence)
+                  AbsenceDetailSection(application: application),
               ],
             ),
           ),

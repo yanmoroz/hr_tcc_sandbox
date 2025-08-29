@@ -85,3 +85,24 @@ class ParkingVisitorPrimaryChanged extends NewApplicationEvent {
   final String name;
   ParkingVisitorPrimaryChanged(this.name);
 }
+
+// Absence-specific events
+class AbsenceTypeChanged extends NewApplicationEvent {
+  final String type;
+  AbsenceTypeChanged(this.type);
+}
+
+class AbsenceDateChanged extends NewApplicationEvent {
+  final DateTime date;
+  AbsenceDateChanged(this.date);
+}
+
+class AbsenceTimeChanged extends NewApplicationEvent {
+  final String time; // formatted HH:mm
+  AbsenceTimeChanged(this.time);
+}
+
+class AbsenceReasonChanged extends NewApplicationEvent {
+  final String reason;
+  AbsenceReasonChanged(this.reason);
+}

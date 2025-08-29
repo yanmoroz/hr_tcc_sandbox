@@ -27,6 +27,12 @@ class NewApplicationState {
   final String? timeTo;
   final List<String> visitors;
 
+  // Absence specific
+  final String? absenceType;
+  final DateTime? absenceDate;
+  final String? absenceTime; // HH:mm
+  final String? absenceReason;
+
   const NewApplicationState({
     this.isLoading = false,
     required this.applicationType,
@@ -48,6 +54,10 @@ class NewApplicationState {
     this.timeFrom,
     this.timeTo,
     this.visitors = const [],
+    this.absenceType,
+    this.absenceDate,
+    this.absenceTime,
+    this.absenceReason,
   });
 
   bool get canSubmit {
@@ -64,6 +74,12 @@ class NewApplicationState {
           parkingDateFrom != null &&
           parkingDateTo != null &&
           (visitors.isNotEmpty && visitors.first.trim().isNotEmpty) &&
+          !isSubmitting;
+    }
+    if (applicationType == ApplicationType.absence) {
+      return (absenceType != null && absenceType!.isNotEmpty) &&
+          absenceDate != null &&
+          (absenceTime != null && absenceTime!.isNotEmpty) &&
           !isSubmitting;
     }
     return !isSubmitting;
@@ -102,6 +118,15 @@ class NewApplicationState {
     String? timeTo,
     bool clearTimeTo = false,
     List<String>? visitors,
+    // Absence
+    String? absenceType,
+    bool clearAbsenceType = false,
+    DateTime? absenceDate,
+    bool clearAbsenceDate = false,
+    String? absenceTime,
+    bool clearAbsenceTime = false,
+    String? absenceReason,
+    bool clearAbsenceReason = false,
   }) {
     return NewApplicationState(
       isLoading: isLoading ?? this.isLoading,
@@ -136,6 +161,18 @@ class NewApplicationState {
       timeFrom: (clearTimeFrom ? null : (timeFrom ?? this.timeFrom)),
       timeTo: (clearTimeTo ? null : (timeTo ?? this.timeTo)),
       visitors: visitors ?? this.visitors,
+      absenceType: (clearAbsenceType
+          ? null
+          : (absenceType ?? this.absenceType)),
+      absenceDate: (clearAbsenceDate
+          ? null
+          : (absenceDate ?? this.absenceDate)),
+      absenceTime: (clearAbsenceTime
+          ? null
+          : (absenceTime ?? this.absenceTime)),
+      absenceReason: (clearAbsenceReason
+          ? null
+          : (absenceReason ?? this.absenceReason)),
     );
   }
 }

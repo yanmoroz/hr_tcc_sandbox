@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/widgets/app_top_bar.dart';
-import '../../domain/entities/application_purpose.dart';
 import '../../domain/entities/application_type.dart';
 import '../blocs/new_application_bloc.dart';
 import '../blocs/new_application_event.dart';
 import '../blocs/new_application_state.dart';
-import '../widgets/dropdown_field.dart';
-import '../widgets/date_field.dart';
-import '../widgets/app_text_field.dart';
+// Removed direct field widget imports; forms handle their own
 import '../widgets/forms/employment_certificate_form.dart';
 import '../widgets/forms/parking_form.dart';
+import '../widgets/forms/absence_form.dart';
 
 class NewApplicationPage extends StatelessWidget {
   final ApplicationType applicationType;
@@ -106,6 +104,11 @@ class NewApplicationPage extends StatelessWidget {
                         else if (applicationType ==
                             ApplicationType.parking) ...[
                           ParkingForm(state: state),
+                        ]
+                        // Absence form
+                        else if (applicationType ==
+                            ApplicationType.absence) ...[
+                          AbsenceForm(state: state),
                         ],
                         const SizedBox(
                           height: 100,

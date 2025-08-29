@@ -38,6 +38,11 @@ class NewApplicationBloc
     on<ParkingTimeFromChanged>(_onParkingTimeFromChanged);
     on<ParkingTimeToChanged>(_onParkingTimeToChanged);
     on<ParkingVisitorPrimaryChanged>(_onParkingVisitorPrimaryChanged);
+    // Absence
+    on<AbsenceTypeChanged>(_onAbsenceTypeChanged);
+    on<AbsenceDateChanged>(_onAbsenceDateChanged);
+    on<AbsenceTimeChanged>(_onAbsenceTimeChanged);
+    on<AbsenceReasonChanged>(_onAbsenceReasonChanged);
     on<NewApplicationSubmitted>(_onSubmitted);
   }
 
@@ -166,6 +171,35 @@ class NewApplicationBloc
       updated[0] = event.name;
     }
     emit(state.copyWith(visitors: updated));
+  }
+
+  // Absence handlers
+  void _onAbsenceTypeChanged(
+    AbsenceTypeChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(absenceType: event.type));
+  }
+
+  void _onAbsenceDateChanged(
+    AbsenceDateChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(absenceDate: event.date));
+  }
+
+  void _onAbsenceTimeChanged(
+    AbsenceTimeChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(absenceTime: event.time));
+  }
+
+  void _onAbsenceReasonChanged(
+    AbsenceReasonChanged event,
+    Emitter<NewApplicationState> emit,
+  ) {
+    emit(state.copyWith(absenceReason: event.reason));
   }
 
   Future<void> _onSubmitted(

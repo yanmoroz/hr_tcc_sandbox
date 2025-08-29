@@ -6,6 +6,7 @@ import '../../blocs/new_application_bloc.dart';
 import '../../blocs/new_application_event.dart';
 import '../../blocs/new_application_state.dart';
 import '../app_text_field.dart';
+import '../car_number_text_field.dart';
 import '../date_field.dart';
 import '../dropdown_field.dart';
 
@@ -85,7 +86,7 @@ class ParkingForm extends StatelessWidget {
             ParkingCarBrandChanged(v ?? ''),
           ),
         ),
-        AppTextField<String>(
+        CarNumberTextField(
           label: 'Госномер автомобиля',
           value: state.carPlate,
           onChanged: (t) =>
@@ -108,7 +109,7 @@ class ParkingForm extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: AppTextField<String>(
+              child: AppTextField(
                 label: 'Часы «С»',
                 value: state.timeFrom,
                 onChanged: (t) => context.read<NewApplicationBloc>().add(
@@ -125,7 +126,7 @@ class ParkingForm extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: AppTextField<String>(
+              child: AppTextField(
                 label: 'Часы «До»',
                 value: state.timeTo,
                 onChanged: (t) => context.read<NewApplicationBloc>().add(
@@ -151,7 +152,7 @@ class ParkingForm extends StatelessWidget {
             ),
           ),
         ),
-        AppTextField<String>(
+        AppTextField(
           label: 'ФИО',
           value: state.visitors.isNotEmpty ? state.visitors.first : null,
           onChanged: (t) => context.read<NewApplicationBloc>().add(

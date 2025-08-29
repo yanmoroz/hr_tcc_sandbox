@@ -10,6 +10,9 @@ import '../blocs/new_application_state.dart';
 import '../widgets/forms/employment_certificate_form.dart';
 import '../widgets/forms/parking_form.dart';
 import '../widgets/forms/absence_form.dart';
+import '../blocs/forms/employment_certificate_form_cubit.dart';
+import '../blocs/forms/parking_form_cubit.dart';
+import '../blocs/forms/absence_form_cubit.dart';
 
 class NewApplicationPage extends StatelessWidget {
   final ApplicationType applicationType;
@@ -75,6 +78,63 @@ class NewApplicationPage extends StatelessWidget {
             }
           },
           builder: (context, state) {
+            // Local submit enable/handler depending on form type
+            bool canSubmit = false;
+            VoidCallback? onSubmit;
+
+            Widget formWidget;
+
+            if (applicationType == ApplicationType.employmentCertificate) {
+              formWidget = BlocProvider(
+                create: (_) =>
+                    EmploymentCertificateFormCubit()
+                      ..setPurposes(state.purposes),
+                child:
+                    BlocBuilder<
+                      EmploymentCertificateFormCubit,
+                      EmploymentCertificateFormState
+                    >(
+                      builder: (context, ecState) {
+                        canSubmit = ecState.isValid && !state.isSubmitting;
+                        onSubmit = canSubmit
+                            ? () => context.read<NewApplicationBloc>().add(
+                                EmploymentCertificateSubmitted(
+                                  purposeId: ecState.selectedPurposeId!,
+                                  receiveDate: ecState.receiveDate!,
+                                  copies: ecState.copies,
+                                ),
+                              )
+                            : null;
+                        return EmploymentCertificateForm(state: ecState);
+                      },
+                    ),
+              );
+            } else if (applicationType == ApplicationType.parking) {
+              formWidget = BlocProvider(
+                create: (_) => ParkingFormCubit(),
+                child: BlocBuilder<ParkingFormCubit, ParkingFormState>(
+                  builder: (context, pState) {
+                    // TODO: Hook submit once backend contract is defined
+                    canSubmit = pState.isValid && !state.isSubmitting;
+                    onSubmit = null; // no submit route yet
+                    return ParkingForm(state: pState);
+                  },
+                ),
+              );
+            } else {
+              formWidget = BlocProvider(
+                create: (_) => AbsenceFormCubit(),
+                child: BlocBuilder<AbsenceFormCubit, AbsenceFormState>(
+                  builder: (context, aState) {
+                    // TODO: Hook submit once backend contract is defined
+                    canSubmit = aState.isValid && !state.isSubmitting;
+                    onSubmit = null; // no submit route yet
+                    return AbsenceForm(state: aState);
+                  },
+                ),
+              );
+            }
+
             return Column(
               children: [
                 Expanded(
@@ -95,42 +155,21 @@ class NewApplicationPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        // Show form widgets only for employmentCertificate
-                        if (applicationType ==
-                            ApplicationType.employmentCertificate) ...[
-                          EmploymentCertificateForm(state: state),
-                        ]
-                        // Parking form
-                        else if (applicationType ==
-                            ApplicationType.parking) ...[
-                          ParkingForm(state: state),
-                        ]
-                        // Absence form
-                        else if (applicationType ==
-                            ApplicationType.absence) ...[
-                          AbsenceForm(state: state),
-                        ],
-                        const SizedBox(
-                          height: 100,
-                        ), // Add bottom padding for button
+                        formWidget,
+                        const SizedBox(height: 100),
                       ],
                     ),
                   ),
                 ),
-                // Submit button pinned to bottom
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: SizedBox(
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton(
-                      onPressed: state.canSubmit
-                          ? () => context.read<NewApplicationBloc>().add(
-                              NewApplicationSubmitted(),
-                            )
-                          : null,
+                      onPressed: onSubmit,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: state.canSubmit
+                        backgroundColor: canSubmit
                             ? const Color(0xFF12369F)
                             : Colors.grey[300],
                         foregroundColor: Colors.white,

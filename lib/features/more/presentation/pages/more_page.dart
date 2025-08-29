@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../../../app/router/app_router.dart';
 import '../../../../shared/widgets/user_top_bar.dart';
@@ -9,141 +10,145 @@ import '../blocs/more_event.dart' as more;
 import '../blocs/more_state.dart' as more;
 import '../../../quick_links/presentation/blocs/quick_links_bloc.dart';
 import '../../../quick_links/presentation/blocs/quick_links_state.dart';
-// child blocs are provided higher in the tree; not used directly here
 
 class MorePage extends StatelessWidget {
   const MorePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: true,
-      bottom: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const UserTopBar(),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: [
-                        // Trigger aggregate update
-                        BlocBuilder<more.MoreBloc, more.MoreState>(
-                          builder: (context, state) {
-                            context.read<more.MoreBloc>().add(
-                              more.MoreRequested(),
-                            );
-                            return const SizedBox.shrink();
-                          },
-                        ),
-                        // Нарушения
-                        _MoreTile(
-                          title: 'Нарушения',
-                          subtitle: '1 заявка',
-                          onTap: () => _showComingSoon(context),
-                        ),
-                        const SizedBox(height: 12),
-                        // Быстрые ссылки
-                        BlocBuilder<QuickLinksBloc, QuickLinksState>(
-                          builder: (context, state) {
-                            final subtitle = state.links.isNotEmpty
-                                ? state.links
-                                      .take(5)
-                                      .map((e) => e.title)
-                                      .join(', ')
-                                : null;
-                            return _MoreTile(
-                              title: 'Быстрые ссылки',
-                              subtitle: subtitle,
-                              onTap: () => context.push(AppRouter.quickLinks),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        // Ресейл
-                        BlocBuilder<more.MoreBloc, more.MoreState>(
-                          buildWhen: (p, n) =>
-                              p.resaleItemsTotal != n.resaleItemsTotal,
-                          builder: (context, state) {
-                            final count = state.resaleItemsTotal;
-                            final subtitle = count > 0
-                                ? '${_formatNumber(count)} товаров'
-                                : null;
-                            return _MoreTile(
-                              title: 'Ресейл',
-                              subtitle: subtitle,
-                              onTap: () => context.push(AppRouter.resale),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        // Опросы (с бейджем с количеством не пройденных)
-                        BlocBuilder<more.MoreBloc, more.MoreState>(
-                          buildWhen: (p, n) =>
-                              p.surveysNotCompletedTotal !=
-                              n.surveysNotCompletedTotal,
-                          builder: (context, state) {
-                            final notCompleted = state.surveysNotCompletedTotal;
-                            return _MoreTile(
-                              title: 'Опросы',
-                              trailing: notCompleted > 0
-                                  ? _Badge(
-                                      text: '${notCompleted} не пройдены',
-                                      color: const Color(0xFFFF9100),
-                                    )
-                                  : const Icon(Icons.chevron_right),
-                              onTap: () => context.push(AppRouter.surveys),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        // Новости
-                        _MoreTile(
-                          title: 'Новости',
-                          trailing: const _Badge(
-                            text: '1 новая',
-                            color: Color(0xFF2BB673),
+    return BlocProvider<more.MoreBloc>(
+      create: (context) => GetIt.instance<more.MoreBloc>(),
+      child: SafeArea(
+        top: true,
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const UserTopBar(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        children: [
+                          // Trigger aggregate update
+                          BlocBuilder<more.MoreBloc, more.MoreState>(
+                            builder: (context, state) {
+                              context.read<more.MoreBloc>().add(
+                                more.MoreRequested(),
+                              );
+                              return const SizedBox.shrink();
+                            },
                           ),
-                          onTap: () => _showComingSoon(context),
-                        ),
-                        const SizedBox(height: 12),
-                        // Льготы и возможности
-                        _MoreTile(
-                          title: 'Льготы и возможности',
-                          subtitle: '8',
-                          onTap: () => _showComingSoon(context),
-                        ),
-                        const SizedBox(height: 12),
-                        // Адресная книга
-                        BlocBuilder<more.MoreBloc, more.MoreState>(
-                          buildWhen: (p, n) =>
-                              p.contactsTotal != n.contactsTotal,
-                          builder: (context, state) {
-                            final subtitle = state.contactsTotal > 0
-                                ? '${_formatNumber(state.contactsTotal)} сотрудников'
-                                : '0 сотрудников';
-                            return _MoreTile(
-                              title: 'Адресная книга',
-                              subtitle: subtitle,
-                              onTap: () => context.push(AppRouter.addressBook),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 8),
-                      ],
+                          // Нарушения
+                          _MoreTile(
+                            title: 'Нарушения',
+                            subtitle: '1 заявка',
+                            onTap: () => _showComingSoon(context),
+                          ),
+                          const SizedBox(height: 12),
+                          // Быстрые ссылки
+                          BlocBuilder<QuickLinksBloc, QuickLinksState>(
+                            builder: (context, state) {
+                              final subtitle = state.links.isNotEmpty
+                                  ? state.links
+                                        .take(5)
+                                        .map((e) => e.title)
+                                        .join(', ')
+                                  : null;
+                              return _MoreTile(
+                                title: 'Быстрые ссылки',
+                                subtitle: subtitle,
+                                onTap: () => context.push(AppRouter.quickLinks),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          // Ресейл
+                          BlocBuilder<more.MoreBloc, more.MoreState>(
+                            buildWhen: (p, n) =>
+                                p.resaleItemsTotal != n.resaleItemsTotal,
+                            builder: (context, state) {
+                              final count = state.resaleItemsTotal;
+                              final subtitle = count > 0
+                                  ? '${_formatNumber(count)} товаров'
+                                  : null;
+                              return _MoreTile(
+                                title: 'Ресейл',
+                                subtitle: subtitle,
+                                onTap: () => context.push(AppRouter.resale),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          // Опросы (с бейджем с количеством не пройденных)
+                          BlocBuilder<more.MoreBloc, more.MoreState>(
+                            buildWhen: (p, n) =>
+                                p.surveysNotCompletedTotal !=
+                                n.surveysNotCompletedTotal,
+                            builder: (context, state) {
+                              final notCompleted =
+                                  state.surveysNotCompletedTotal;
+                              return _MoreTile(
+                                title: 'Опросы',
+                                trailing: notCompleted > 0
+                                    ? _Badge(
+                                        text: '${notCompleted} не пройдены',
+                                        color: const Color(0xFFFF9100),
+                                      )
+                                    : const Icon(Icons.chevron_right),
+                                onTap: () => context.push(AppRouter.surveys),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          // Новости
+                          _MoreTile(
+                            title: 'Новости',
+                            trailing: const _Badge(
+                              text: '1 новая',
+                              color: Color(0xFF2BB673),
+                            ),
+                            onTap: () => _showComingSoon(context),
+                          ),
+                          const SizedBox(height: 12),
+                          // Льготы и возможности
+                          _MoreTile(
+                            title: 'Льготы и возможности',
+                            subtitle: '8',
+                            onTap: () => _showComingSoon(context),
+                          ),
+                          const SizedBox(height: 12),
+                          // Адресная книга
+                          BlocBuilder<more.MoreBloc, more.MoreState>(
+                            buildWhen: (p, n) =>
+                                p.contactsTotal != n.contactsTotal,
+                            builder: (context, state) {
+                              final subtitle = state.contactsTotal > 0
+                                  ? '${_formatNumber(state.contactsTotal)} сотрудников'
+                                  : '0 сотрудников';
+                              return _MoreTile(
+                                title: 'Адресная книга',
+                                subtitle: subtitle,
+                                onTap: () =>
+                                    context.push(AppRouter.addressBook),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

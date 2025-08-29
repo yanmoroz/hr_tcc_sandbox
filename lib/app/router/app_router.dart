@@ -196,13 +196,6 @@ class AppRouter {
               BlocProvider<AddressBookBloc>(
                 create: (context) => getIt<AddressBookBloc>(),
               ),
-              BlocProvider<MoreBloc>(
-                create: (context) => MoreBloc(
-                  resaleBloc: context.read<ResaleBloc>(),
-                  addressBookBloc: context.read<AddressBookBloc>(),
-                  surveysBloc: context.read<SurveysBloc>(),
-                ),
-              ),
             ],
             child: const MainPage(),
           ),

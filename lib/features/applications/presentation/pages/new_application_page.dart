@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/widgets/app_top_bar.dart';
 import '../../domain/entities/application_purpose.dart';
 import '../blocs/new_application_bloc.dart';
 import '../blocs/new_application_event.dart';
 import '../blocs/new_application_state.dart';
+import '../widgets/dropdown_field.dart';
+import '../widgets/date_field.dart';
+import '../widgets/app_text_field.dart';
 
 class NewApplicationPage extends StatelessWidget {
   final String templateId;
@@ -15,15 +19,44 @@ class NewApplicationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: const AppTopBar(title: 'Справка с места работы'),
+      appBar: const AppTopBar(title: 'Создание заявки'),
       body: SafeArea(
-        child: BlocBuilder<NewApplicationBloc, NewApplicationState>(
+        child: BlocConsumer<NewApplicationBloc, NewApplicationState>(
+          listener: (context, state) {
+            if (state.createdId != null) {
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                barrierColor: Colors.black.withOpacity(0.5),
+                builder: (context) => BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                  child: _ApplicationSuccessModal(
+                    onClose: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              ).whenComplete(() => Navigator.of(context).pop());
+            }
+          },
           builder: (context, state) {
             return Column(
               children: [
-                const SizedBox(height: 8),
-                _DropdownField<ApplicationPurpose>(
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Справка с места работы",
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                ),
+                DropdownField<ApplicationPurpose>(
                   label: 'Цель справки',
+                  modalTitle: 'Выберите цель справки',
                   value: state.selectedPurposeId == null
                       ? null
                       : state.purposes.firstWhere(
@@ -40,16 +73,16 @@ class NewApplicationPage extends StatelessWidget {
                     }
                   },
                 ),
-                _DateField(
+                DateField(
                   label: 'Срок получения',
                   date: state.receiveDate,
                   onPick: (d) => context.read<NewApplicationBloc>().add(
                     NewApplicationDateChanged(d),
                   ),
                 ),
-                _CopiesField(
+                AppTextField(
                   label: 'Количество экземпляров',
-                  value: state.copies,
+                  value: state.copies == 0 ? null : state.copies,
                   onChanged: (v) => context.read<NewApplicationBloc>().add(
                     NewApplicationCopiesChanged(v),
                   ),
@@ -88,127 +121,52 @@ class NewApplicationPage extends StatelessWidget {
   }
 }
 
-class _DropdownField<T> extends StatelessWidget {
-  final String label;
-  final T? value;
-  final List<T> items;
-  final String Function(T) itemBuilder;
-  final ValueChanged<T?> onChanged;
+class _ApplicationSuccessModal extends StatelessWidget {
+  final VoidCallback onClose;
 
-  const _DropdownField({
-    required this.label,
-    required this.value,
-    required this.items,
-    required this.itemBuilder,
-    required this.onChanged,
-  });
+  const _ApplicationSuccessModal({required this.onClose});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          filled: true,
-          fillColor: Colors.white,
+    return Center(
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<T>(
-            isExpanded: true,
-            value: value,
-            items: items
-                .map(
-                  (e) => DropdownMenuItem<T>(
-                    value: e,
-                    child: Text(itemBuilder(e)),
-                  ),
-                )
-                .toList(),
-            onChanged: onChanged,
-          ),
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: onClose,
+                icon: const Icon(Icons.close),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: const Color(0xFF35B36A), width: 6),
+              ),
+              child: const Center(
+                child: Icon(Icons.check, size: 56, color: Color(0xFF35B36A)),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Заявка создана',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+          ],
         ),
-      ),
-    );
-  }
-}
-
-class _DateField extends StatelessWidget {
-  final String label;
-  final DateTime? date;
-  final ValueChanged<DateTime> onPick;
-
-  const _DateField({
-    required this.label,
-    required this.date,
-    required this.onPick,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: InkWell(
-        onTap: () async {
-          final now = DateTime.now();
-          final picked = await showDatePicker(
-            context: context,
-            initialDate: date ?? now,
-            firstDate: now,
-            lastDate: DateTime(now.year + 2),
-          );
-          if (picked != null) onPick(picked);
-        },
-        child: InputDecorator(
-          decoration: InputDecoration(
-            labelText: label,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            suffixIcon: const Icon(Icons.calendar_today_outlined),
-            filled: true,
-            fillColor: Colors.white,
-          ),
-          child: Text(
-            date == null
-                ? 'Выбрать дату'
-                : '${date!.day.toString().padLeft(2, '0')}.${date!.month.toString().padLeft(2, '0')}.${date!.year}',
-            style: const TextStyle(fontSize: 16),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CopiesField extends StatelessWidget {
-  final String label;
-  final int value;
-  final ValueChanged<int> onChanged;
-
-  const _CopiesField({
-    required this.label,
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = TextEditingController(text: value.toString());
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: TextField(
-        controller: controller,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          filled: true,
-          fillColor: Colors.white,
-        ),
-        onChanged: (text) {
-          final v = int.tryParse(text) ?? 1;
-          onChanged(v.clamp(1, 50));
-        },
       ),
     );
   }

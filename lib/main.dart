@@ -18,6 +18,7 @@ import 'features/quick_links/di/quick_links_module.dart';
 import 'features/surveys/di/surveys_module.dart';
 import 'features/resale/di/resale_module.dart';
 import 'features/applications/di/applications_module.dart';
+import 'features/more/di/more_module.dart';
 
 // Services
 import 'shared/services/logger_service.dart';
@@ -40,6 +41,7 @@ void setupDependencies() {
     SurveysModule(),
     ResaleModule(),
     ApplicationsModule(),
+    MoreModule(),
   ];
 
   for (final module in modules) {

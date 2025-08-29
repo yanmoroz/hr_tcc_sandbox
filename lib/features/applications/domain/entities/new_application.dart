@@ -1,11 +1,13 @@
+import 'application_type.dart';
+
 class NewApplicationDraft {
-  final String templateId;
+  final ApplicationType applicationType;
   final String purposeId;
   final DateTime receiveDate;
   final int copiesCount;
 
   const NewApplicationDraft({
-    required this.templateId,
+    required this.applicationType,
     required this.purposeId,
     required this.receiveDate,
     required this.copiesCount,
@@ -14,7 +16,7 @@ class NewApplicationDraft {
 
 class CreatedApplication {
   final String id;
-  final String templateId;
+  final ApplicationType applicationType;
 
-  const CreatedApplication({required this.id, required this.templateId});
+  const CreatedApplication({required this.id, required this.applicationType});
 }

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/new_application.dart';
+import '../../domain/entities/application_type.dart';
 import '../../domain/usecases/create_application.dart';
 import '../../domain/usecases/get_application_purposes.dart';
 import 'new_application_event.dart';
@@ -16,7 +17,11 @@ class NewApplicationBloc
     required CreateApplicationUseCase create,
   }) : _getPurposes = getPurposes,
        _create = create,
-       super(const NewApplicationState()) {
+       super(
+         const NewApplicationState(
+           applicationType: ApplicationType.employmentCertificate,
+         ),
+       ) {
     on<NewApplicationStarted>(_onStarted);
     on<NewApplicationPurposeSelected>(_onPurposeSelected);
     on<NewApplicationDateChanged>(_onDateChanged);
@@ -28,8 +33,10 @@ class NewApplicationBloc
     NewApplicationStarted event,
     Emitter<NewApplicationState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, templateId: event.templateId));
-    final purposes = await _getPurposes(event.templateId);
+    emit(
+      state.copyWith(isLoading: true, applicationType: event.applicationType),
+    );
+    final purposes = await _getPurposes(event.applicationType);
     emit(state.copyWith(isLoading: false, purposes: purposes));
   }
 
@@ -62,7 +69,7 @@ class NewApplicationBloc
     emit(state.copyWith(isSubmitting: true, error: null));
     try {
       final draft = NewApplicationDraft(
-        templateId: state.templateId,
+        applicationType: state.applicationType,
         purposeId: state.selectedPurposeId!,
         receiveDate: state.receiveDate!,
         copiesCount: state.copies,

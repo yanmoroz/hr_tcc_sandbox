@@ -1,8 +1,10 @@
+import '../../domain/entities/application_type.dart';
+
 abstract class NewApplicationEvent {}
 
 class NewApplicationStarted extends NewApplicationEvent {
-  final String templateId;
-  NewApplicationStarted(this.templateId);
+  final ApplicationType applicationType;
+  NewApplicationStarted(this.applicationType);
 }
 
 class NewApplicationPurposeSelected extends NewApplicationEvent {

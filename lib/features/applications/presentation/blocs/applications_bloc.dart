@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/application_template.dart';
+import '../../domain/entities/application_category.dart';
 import '../../domain/usecases/get_application_categories.dart';
 import '../../domain/usecases/get_application_templates.dart';
 import 'applications_event.dart';
@@ -58,12 +59,13 @@ class ApplicationsBloc extends Bloc<ApplicationsEvent, ApplicationsState> {
 
   void _applyFilters(Emitter<ApplicationsState> emit) {
     final String q = state.query.trim().toLowerCase();
-    final String? catId = state.selectedCategory?.id;
+    final ApplicationCategory? selectedCategory = state.selectedCategory;
 
     List<ApplicationTemplate> filtered = state.allTemplates;
 
-    if (catId != null && catId != 'all') {
-      filtered = filtered.where((t) => t.categoryId == catId).toList();
+    if (selectedCategory != null &&
+        selectedCategory != ApplicationCategory.all) {
+      filtered = filtered.where((t) => t.category == selectedCategory).toList();
     }
     if (q.isNotEmpty) {
       filtered = filtered

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/widgets/app_top_bar.dart';
 import '../../domain/entities/application_purpose.dart';
+import '../../domain/entities/application_type.dart';
 import '../blocs/new_application_bloc.dart';
 import '../blocs/new_application_event.dart';
 import '../blocs/new_application_state.dart';
@@ -11,12 +12,48 @@ import '../widgets/date_field.dart';
 import '../widgets/app_text_field.dart';
 
 class NewApplicationPage extends StatelessWidget {
-  final String templateId;
+  final ApplicationType applicationType;
 
-  const NewApplicationPage({super.key, required this.templateId});
+  const NewApplicationPage({super.key, required this.applicationType});
+
+  // Simple mapping from ApplicationType to title
+  String _getTitle() {
+    switch (applicationType) {
+      case ApplicationType.employmentCertificate:
+        return 'Справка с места работы';
+      case ApplicationType.accessCard:
+        return 'Пропуск';
+      case ApplicationType.parking:
+        return 'Парковка';
+      case ApplicationType.absence:
+        return 'Отсутствие';
+      case ApplicationType.violation:
+        return 'Нарушение';
+      case ApplicationType.businessTrip:
+        return 'Командировка';
+      case ApplicationType.referralProgram:
+        return 'Реферальная программа';
+      case ApplicationType.ndflCertificate:
+        return 'Справка 2-НДФЛ';
+      case ApplicationType.employmentRecordCopy:
+        return 'Копия трудовой книжки';
+      case ApplicationType.internalTraining:
+        return 'Внутреннее обучение';
+      case ApplicationType.unplannedTraining:
+        return 'Незапланированное обучение';
+      case ApplicationType.additionalEducation:
+        return 'Дополнительное профессиональное образование (ДПО)';
+      case ApplicationType.alpinaDigitalAccess:
+        return 'Предоставление доступа к «Альпина Диджитал»';
+      case ApplicationType.courierDelivery:
+        return 'Курьерская доставка';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final title = _getTitle();
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: const AppTopBar(title: 'Создание заявки'),
@@ -45,7 +82,7 @@ class NewApplicationPage extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Справка с места работы",
+                      title,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w700,
@@ -54,39 +91,43 @@ class NewApplicationPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                DropdownField<ApplicationPurpose>(
-                  label: 'Цель справки',
-                  modalTitle: 'Выберите цель справки',
-                  value: state.selectedPurposeId == null
-                      ? null
-                      : state.purposes.firstWhere(
-                          (p) => p.id == state.selectedPurposeId,
-                          orElse: () => state.purposes.first,
-                        ),
-                  items: state.purposes,
-                  itemBuilder: (p) => p.title,
-                  onChanged: (p) {
-                    if (p != null) {
-                      context.read<NewApplicationBloc>().add(
-                        NewApplicationPurposeSelected(p.id),
-                      );
-                    }
-                  },
-                ),
-                DateField(
-                  label: 'Срок получения',
-                  date: state.receiveDate,
-                  onPick: (d) => context.read<NewApplicationBloc>().add(
-                    NewApplicationDateChanged(d),
+                // Show form widgets only for employmentCertificate
+                if (applicationType ==
+                    ApplicationType.employmentCertificate) ...[
+                  DropdownField<ApplicationPurpose>(
+                    label: 'Цель справки',
+                    modalTitle: 'Выберите цель справки',
+                    value: state.selectedPurposeId == null
+                        ? null
+                        : state.purposes.firstWhere(
+                            (p) => p.id == state.selectedPurposeId,
+                            orElse: () => state.purposes.first,
+                          ),
+                    items: state.purposes,
+                    itemBuilder: (p) => p.title,
+                    onChanged: (p) {
+                      if (p != null) {
+                        context.read<NewApplicationBloc>().add(
+                          NewApplicationPurposeSelected(p.id),
+                        );
+                      }
+                    },
                   ),
-                ),
-                AppTextField(
-                  label: 'Количество экземпляров',
-                  value: state.copies == 0 ? null : state.copies,
-                  onChanged: (v) => context.read<NewApplicationBloc>().add(
-                    NewApplicationCopiesChanged(v),
+                  DateField(
+                    label: 'Срок получения',
+                    date: state.receiveDate,
+                    onPick: (d) => context.read<NewApplicationBloc>().add(
+                      NewApplicationDateChanged(d),
+                    ),
                   ),
-                ),
+                  AppTextField(
+                    label: 'Количество экземпляров',
+                    value: state.copies == 0 ? null : state.copies,
+                    onChanged: (v) => context.read<NewApplicationBloc>().add(
+                      NewApplicationCopiesChanged(v),
+                    ),
+                  ),
+                ],
                 const Spacer(),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),

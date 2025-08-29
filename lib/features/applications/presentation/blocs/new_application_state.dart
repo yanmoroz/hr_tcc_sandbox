@@ -1,8 +1,9 @@
 import '../../domain/entities/application_purpose.dart';
+import '../../domain/entities/application_type.dart';
 
 class NewApplicationState {
   final bool isLoading;
-  final String templateId;
+  final ApplicationType applicationType;
   final List<ApplicationPurpose> purposes;
   final String? selectedPurposeId;
   final DateTime? receiveDate;
@@ -13,7 +14,7 @@ class NewApplicationState {
 
   const NewApplicationState({
     this.isLoading = false,
-    this.templateId = '',
+    required this.applicationType,
     this.purposes = const [],
     this.selectedPurposeId,
     this.receiveDate,
@@ -31,7 +32,7 @@ class NewApplicationState {
 
   NewApplicationState copyWith({
     bool? isLoading,
-    String? templateId,
+    ApplicationType? applicationType,
     List<ApplicationPurpose>? purposes,
     String? selectedPurposeId,
     bool clearSelectedPurpose = false,
@@ -44,7 +45,7 @@ class NewApplicationState {
   }) {
     return NewApplicationState(
       isLoading: isLoading ?? this.isLoading,
-      templateId: templateId ?? this.templateId,
+      applicationType: applicationType ?? this.applicationType,
       purposes: purposes ?? this.purposes,
       selectedPurposeId: clearSelectedPurpose
           ? null

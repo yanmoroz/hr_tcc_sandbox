@@ -26,13 +26,31 @@ class CreateApplicationPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: _CategoriesBar(
-                    categories: state.categories,
-                    selected: state.selectedCategory,
-                  ),
-                ),
+                state.categories.isNotEmpty
+                    ? FilterBar<ApplicationCategory>(
+                        currentFilter:
+                            state.selectedCategory ?? state.categories.first,
+                        onFilterChanged: (category) => context
+                            .read<ApplicationsBloc>()
+                            .add(ApplicationsCategoryChanged(category)),
+                        options: state.categories
+                            .map(
+                              (category) => FilterOption<ApplicationCategory>(
+                                label: category.displayName,
+                                count: category == ApplicationCategory.all
+                                    ? state.allTemplates.length
+                                    : state.allTemplates
+                                          .where(
+                                            (template) =>
+                                                template.category == category,
+                                          )
+                                          .length,
+                                value: category,
+                              ),
+                            )
+                            .toList(),
+                      )
+                    : const SizedBox.shrink(),
                 AppSearchBar(
                   initialQuery: state.query,
                   hintText: 'Наименование заявки',
@@ -52,35 +70,6 @@ class CreateApplicationPage extends StatelessWidget {
           },
         ),
       ),
-    );
-  }
-}
-
-class _CategoriesBar extends StatelessWidget {
-  final List<ApplicationCategory> categories;
-  final ApplicationCategory? selected;
-
-  const _CategoriesBar({required this.categories, required this.selected});
-
-  @override
-  Widget build(BuildContext context) {
-    if (categories.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    return FilterBar<ApplicationCategory>(
-      currentFilter: selected ?? categories.first,
-      onFilterChanged: (cat) => context.read<ApplicationsBloc>().add(
-        ApplicationsCategoryChanged(cat),
-      ),
-      options: categories
-          .map(
-            (c) => FilterOption<ApplicationCategory>(
-              label: c.name,
-              count: c.count,
-              value: c,
-            ),
-          )
-          .toList(),
     );
   }
 }
@@ -125,7 +114,10 @@ class _TemplateTile extends StatelessWidget {
         trailing: const Icon(Icons.chevron_right),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         onTap: () => context.push(
-          AppRouter.newApplication.replaceFirst(':templateId', template.id),
+          AppRouter.newApplication.replaceFirst(
+            ':applicationType',
+            template.type.name,
+          ),
         ),
       ),
     );

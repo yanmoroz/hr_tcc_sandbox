@@ -1,19 +1,15 @@
-class ApplicationCategory {
-  final String id;
-  final String name;
-  final int count;
+enum ApplicationCategory {
+  all('Все'),
+  training('Обучение'),
+  officeOperation('Эксплуатация и обеспечение офиса'),
+  corporateServices('Корпоративные сервисы'),
+  hrServices('HR-сервисы'),
+  regimeManagement('Управление режима');
 
-  const ApplicationCategory({
-    required this.id,
-    required this.name,
-    required this.count,
-  });
+  const ApplicationCategory(this.displayName);
 
-  ApplicationCategory copyWith({String? id, String? name, int? count}) {
-    return ApplicationCategory(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      count: count ?? this.count,
-    );
-  }
+  final String displayName;
+
+  @override
+  String toString() => displayName;
 }

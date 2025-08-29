@@ -7,9 +7,13 @@ import '../domain/repositories/applications_repository.dart';
 import '../domain/usecases/get_application_categories.dart';
 import '../domain/usecases/get_application_templates.dart';
 import '../domain/usecases/get_application_purposes.dart';
+import '../domain/usecases/get_applications.dart';
+import '../domain/usecases/get_application.dart';
 import '../domain/usecases/create_application.dart';
 import '../presentation/blocs/applications_bloc.dart';
 import '../presentation/blocs/new_application_bloc.dart';
+import '../presentation/blocs/applications_list_bloc.dart';
+import '../presentation/blocs/application_detail_bloc.dart';
 
 class ApplicationsModule extends DiModule {
   @override
@@ -29,6 +33,12 @@ class ApplicationsModule extends DiModule {
     getIt.registerLazySingleton<GetApplicationPurposesUseCase>(
       () => GetApplicationPurposesUseCase(getIt<ApplicationsRepository>()),
     );
+    getIt.registerLazySingleton<GetApplicationsUseCase>(
+      () => GetApplicationsUseCase(getIt<ApplicationsRepository>()),
+    );
+    getIt.registerLazySingleton<GetApplicationUseCase>(
+      () => GetApplicationUseCase(getIt<ApplicationsRepository>()),
+    );
     getIt.registerLazySingleton<CreateApplicationUseCase>(
       () => CreateApplicationUseCase(getIt<ApplicationsRepository>()),
     );
@@ -43,6 +53,15 @@ class ApplicationsModule extends DiModule {
         getPurposes: getIt<GetApplicationPurposesUseCase>(),
         create: getIt<CreateApplicationUseCase>(),
       ),
+    );
+    getIt.registerFactory<ApplicationsListBloc>(
+      () => ApplicationsListBloc(
+        getApplications: getIt<GetApplicationsUseCase>(),
+      ),
+    );
+    getIt.registerFactory<ApplicationDetailBloc>(
+      () =>
+          ApplicationDetailBloc(getApplication: getIt<GetApplicationUseCase>()),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../features/applications/presentation/blocs/application_detail_event.dart';
 import '../../features/applications/presentation/pages/applications_page.dart';
 import '../../shared/widgets/app_top_bar.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
@@ -37,6 +38,9 @@ import '../../features/address_book/presentation/pages/address_book_page.dart';
 import '../../features/more/presentation/pages/more_page.dart';
 import '../../features/address_book/presentation/blocs/address_book_bloc.dart';
 import '../../features/more/presentation/blocs/more_bloc.dart';
+import '../../features/applications/domain/entities/application_type.dart';
+import '../../features/applications/presentation/blocs/application_detail_bloc.dart';
+import '../../features/applications/presentation/pages/application_detail_page.dart';
 
 // Custom page transition that handles direction automatically
 class SlidePageTransition extends CustomTransitionPage {
@@ -72,7 +76,19 @@ class AppRouter {
   static const String resale = '/resale';
   static const String resaleDetail = '/resale-detail';
   static const String createApplication = '/create-application';
-  static const String newApplication = '/applications/new/:templateId';
+  static const String newApplication = '/applications/new/:applicationType';
+  static const String applicationDetail = '/applications/:applicationId';
+
+  static ApplicationType _parseApplicationType(String applicationTypeString) {
+    try {
+      return ApplicationType.values.firstWhere(
+        (type) => type.name == applicationTypeString,
+        orElse: () => ApplicationType.employmentCertificate,
+      );
+    } catch (e) {
+      return ApplicationType.employmentCertificate;
+    }
+  }
 
   static GoRouter get router => GoRouter(
     initialLocation: splash,
@@ -285,14 +301,32 @@ class AppRouter {
         path: newApplication,
         name: 'newApplication',
         pageBuilder: (context, state) {
-          final templateId = state.pathParameters['templateId'] ?? '';
+          final applicationTypeString =
+              state.pathParameters['applicationType'] ?? '';
+          final applicationType = _parseApplicationType(applicationTypeString);
           return SlidePageTransition(
             key: state.pageKey,
             child: BlocProvider<NewApplicationBloc>(
               create: (context) =>
                   getIt<NewApplicationBloc>()
-                    ..add(NewApplicationStarted(templateId)),
-              child: NewApplicationPage(templateId: templateId),
+                    ..add(NewApplicationStarted(applicationType)),
+              child: NewApplicationPage(applicationType: applicationType),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: applicationDetail,
+        name: 'applicationDetail',
+        pageBuilder: (context, state) {
+          final id = state.pathParameters['applicationId'] ?? '';
+          return SlidePageTransition(
+            key: state.pageKey,
+            child: BlocProvider<ApplicationDetailBloc>(
+              create: (context) =>
+                  getIt<ApplicationDetailBloc>()
+                    ..add(ApplicationDetailStarted(id)),
+              child: ApplicationDetailPage(applicationId: id),
             ),
           );
         },

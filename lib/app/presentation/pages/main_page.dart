@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../features/applications/presentation/pages/applications_page.dart';
 import '../../../shared/widgets/app_bottom_navigation_bar.dart';
 import '../../../features/home/presentation/pages/home_page.dart';
-import '../../../features/requests/presentation/pages/requests_page.dart';
 import '../../../features/address_book/presentation/pages/address_book_page.dart';
 import '../../../features/more/presentation/pages/more_page.dart';
 
@@ -17,7 +17,7 @@ class _MainPageState extends State<MainPage> {
 
   late final List<Widget> _tabs = <Widget>[
     const HomePage(),
-    RequestsPage(),
+    ApplicationsPage(),
     AddressBookPage(),
     MorePage(),
   ];

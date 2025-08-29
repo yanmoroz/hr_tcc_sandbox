@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../features/applications/presentation/pages/applications_page.dart';
 import '../../shared/widgets/app_top_bar.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/create_pin_page.dart';
@@ -26,7 +27,12 @@ import '../../features/surveys/presentation/blocs/survey_detail_bloc.dart';
 import '../../features/resale/presentation/blocs/resale_bloc.dart';
 import '../../features/resale/presentation/pages/resale_list_page.dart';
 import '../../features/resale/presentation/pages/resale_detail_page.dart';
-import '../../features/requests/presentation/pages/requests_page.dart';
+import '../../features/applications/presentation/pages/create_application_page.dart';
+import '../../features/applications/presentation/blocs/applications_bloc.dart';
+import '../../features/applications/presentation/blocs/applications_event.dart';
+import '../../features/applications/presentation/pages/new_application_page.dart';
+import '../../features/applications/presentation/blocs/new_application_bloc.dart';
+import '../../features/applications/presentation/blocs/new_application_event.dart';
 import '../../features/address_book/presentation/pages/address_book_page.dart';
 import '../../features/more/presentation/pages/more_page.dart';
 
@@ -55,7 +61,7 @@ class AppRouter {
   static const String profile = '/profile';
   static const String profileKpi = '/profile/kpi';
   static const String main = '/home';
-  static const String requests = '/requests';
+  static const String applications = '/applications';
   static const String addressBook = '/address-book';
   static const String more = '/more';
   static const String quickLinks = '/quick-links';
@@ -63,6 +69,8 @@ class AppRouter {
   static const String surveyDetail = '/survey-detail';
   static const String resale = '/resale';
   static const String resaleDetail = '/resale-detail';
+  static const String createApplication = '/create-application';
+  static const String newApplication = '/applications/new/:templateId';
 
   static GoRouter get router => GoRouter(
     initialLocation: splash,
@@ -251,10 +259,38 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: requests,
-        name: 'requests',
+        path: applications,
+        name: 'applications',
         pageBuilder: (context, state) =>
-            SlidePageTransition(key: state.pageKey, child: RequestsPage()),
+            SlidePageTransition(key: state.pageKey, child: ApplicationsPage()),
+      ),
+      GoRoute(
+        path: createApplication,
+        name: 'createApplication',
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: BlocProvider<ApplicationsBloc>(
+            create: (context) =>
+                getIt<ApplicationsBloc>()..add(ApplicationsStarted()),
+            child: const CreateApplicationPage(),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: newApplication,
+        name: 'newApplication',
+        pageBuilder: (context, state) {
+          final templateId = state.pathParameters['templateId'] ?? '';
+          return SlidePageTransition(
+            key: state.pageKey,
+            child: BlocProvider<NewApplicationBloc>(
+              create: (context) =>
+                  getIt<NewApplicationBloc>()
+                    ..add(NewApplicationStarted(templateId)),
+              child: NewApplicationPage(templateId: templateId),
+            ),
+          );
+        },
       ),
       GoRoute(
         path: addressBook,

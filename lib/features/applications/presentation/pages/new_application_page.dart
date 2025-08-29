@@ -77,35 +77,69 @@ class NewApplicationPage extends StatelessWidget {
             }
           },
           builder: (context, state) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black87,
+            return Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              title,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        // Show form widgets only for employmentCertificate
+                        if (applicationType ==
+                            ApplicationType.employmentCertificate) ...[
+                          EmploymentCertificateForm(state: state),
+                        ]
+                        // Parking form
+                        else if (applicationType ==
+                            ApplicationType.parking) ...[
+                          ParkingForm(state: state),
+                        ],
+                        const SizedBox(
+                          height: 100,
+                        ), // Add bottom padding for button
+                      ],
                     ),
                   ),
-                  // Show form widgets only for employmentCertificate
-                  if (applicationType ==
-                      ApplicationType.employmentCertificate) ...[
-                    EmploymentCertificateForm(state: state),
-                  ]
-                  // Parking form
-                  else if (applicationType == ApplicationType.parking) ...[
-                    ParkingForm(state: state),
-                  ],
-                  const SizedBox(height: 100), // Add bottom padding for button
-                ],
-              ),
+                ),
+                // Submit button pinned to bottom
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: state.canSubmit
+                          ? () => context.read<NewApplicationBloc>().add(
+                              NewApplicationSubmitted(),
+                            )
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: state.canSubmit
+                            ? const Color(0xFF12369F)
+                            : Colors.grey[300],
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('Создать'),
+                    ),
+                  ),
+                ),
+              ],
             );
           },
         ),

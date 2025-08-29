@@ -94,41 +94,60 @@ class ParkingForm extends StatelessWidget {
 
         // Date period
         DateField(
-          label: 'Дата с',
-          date: state.parkingDateFrom,
-          onPick: (d) =>
+          label: 'Дата или период',
+          mode: DateFieldMode.range,
+          dateFrom: state.parkingDateFrom,
+          dateTo: state.parkingDateTo,
+          onPickFrom: (d) =>
               context.read<NewApplicationBloc>().add(ParkingDateFromChanged(d)),
-        ),
-        DateField(
-          label: 'Дата по',
-          date: state.parkingDateTo,
-          onPick: (d) =>
+          onPickTo: (d) =>
               context.read<NewApplicationBloc>().add(ParkingDateToChanged(d)),
         ),
 
         // Time from/to
-        AppTextField<String>(
-          label: 'Часы «С»',
-          value: state.timeFrom,
-          onChanged: (t) =>
-              context.read<NewApplicationBloc>().add(ParkingTimeFromChanged(t)),
-        ),
-        AppTextField<String>(
-          label: 'Часы «До»',
-          value: state.timeTo,
-          onChanged: (t) =>
-              context.read<NewApplicationBloc>().add(ParkingTimeToChanged(t)),
+        Row(
+          children: [
+            Expanded(
+              child: AppTextField<String>(
+                label: 'Часы «С»',
+                value: state.timeFrom,
+                onChanged: (t) => context.read<NewApplicationBloc>().add(
+                  ParkingTimeFromChanged(t),
+                ),
+              ),
+            ),
+            const Text(
+              '-',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey,
+              ),
+            ),
+            Expanded(
+              child: AppTextField<String>(
+                label: 'Часы «До»',
+                value: state.timeTo,
+                onChanged: (t) => context.read<NewApplicationBloc>().add(
+                  ParkingTimeToChanged(t),
+                ),
+              ),
+            ),
+          ],
         ),
 
         // Visitors
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
-          child: Text(
-            'Посетители',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
-              fontWeight: FontWeight.w700,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Посетители',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey[800],
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ),

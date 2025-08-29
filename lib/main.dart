@@ -76,6 +76,18 @@ class MainApp extends StatelessWidget {
           ),
           scaffoldBackgroundColor: Colors.grey[50],
         ),
+        // Dismiss keyboard when tapping outside of inputs
+        builder: (context, child) => GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            final currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus &&
+                currentFocus.focusedChild != null) {
+              currentFocus.unfocus();
+            }
+          },
+          child: child,
+        ),
         routerConfig: AppRouter.router,
       ),
     );

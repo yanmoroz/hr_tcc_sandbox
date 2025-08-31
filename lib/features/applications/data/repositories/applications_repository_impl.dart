@@ -48,7 +48,6 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
       Application(
         id: '1',
         type: ApplicationType.employmentCertificate,
-        title: 'Справка с места работы',
         purpose: mortgagePurpose,
         createdAt: DateTime.now().subtract(const Duration(days: 2)),
         status: ApplicationStatus.inProgress,
@@ -57,7 +56,6 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
       Application(
         id: '2',
         type: ApplicationType.employmentCertificate,
-        title: 'Справка с места работы',
         purpose: rentPurpose,
         createdAt: DateTime.now().subtract(const Duration(days: 1)),
         status: ApplicationStatus.done,
@@ -67,7 +65,6 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
       Application(
         id: '3',
         type: ApplicationType.parking,
-        title: 'Парковка',
         purpose: mortgagePurpose, // Using same purpose for simplicity
         createdAt: DateTime.now().subtract(const Duration(hours: 12)),
         status: ApplicationStatus.inProgress,
@@ -77,7 +74,6 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
       Application(
         id: '4',
         type: ApplicationType.absence,
-        title: 'Отсутствие',
         purpose: const ApplicationPurpose(
           id: 'early_leave',
           title: 'Ранний уход',
@@ -86,6 +82,19 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         status: ApplicationStatus.done,
         completedAt: DateTime.now().subtract(const Duration(days: 2, hours: 4)),
         comment: 'Плохое самочувствие',
+      ),
+      // Violation mock
+      Application(
+        id: '5',
+        type: ApplicationType.violation,
+        purpose: const ApplicationPurpose(
+          id: 'violation_subject',
+          title: 'Нарушение',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(hours: 3)),
+        status: ApplicationStatus.done,
+        completedAt: DateTime.now().subtract(const Duration(hours: 1)),
+        comment: 'Рассмотрено службой безопасности',
       ),
     ];
   }
@@ -104,7 +113,7 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
   Future<CreatedApplication> create(NewApplicationDraft draft) =>
       _local.create(draft);
 
-  // Helper method to map ApplicationType to templateId
+  // Helper method to map ApplicationType to templateId for local datasource
   String _getTemplateId(ApplicationType applicationType) {
     switch (applicationType) {
       case ApplicationType.employmentCertificate:

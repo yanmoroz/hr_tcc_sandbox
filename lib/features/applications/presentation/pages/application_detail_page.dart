@@ -8,6 +8,7 @@ import '../blocs/application_detail_state.dart';
 import '../widgets/detail_sections/employment_certificate_detail_section.dart';
 import '../widgets/detail_sections/parking_detail_section.dart';
 import '../widgets/detail_sections/absence_detail_section.dart';
+import '../widgets/detail_sections/violation_detail_section.dart';
 import '../../../../shared/widgets/app_top_bar.dart';
 
 class ApplicationDetailPage extends StatelessWidget {
@@ -89,7 +90,7 @@ class _ApplicationDetailContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  application.title,
+                  application.type.displayName,
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
@@ -102,7 +103,9 @@ class _ApplicationDetailContent extends StatelessWidget {
                 else if (application.type == ApplicationType.parking)
                   ParkingDetailSection(application: application)
                 else if (application.type == ApplicationType.absence)
-                  AbsenceDetailSection(application: application),
+                  AbsenceDetailSection(application: application)
+                else if (application.type == ApplicationType.violation)
+                  ViolationDetailSection(application: application),
               ],
             ),
           ),

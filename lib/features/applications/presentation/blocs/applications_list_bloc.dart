@@ -66,7 +66,7 @@ class ApplicationsListBloc
       filtered = filtered
           .where(
             (app) =>
-                app.title.toLowerCase().contains(q) ||
+                app.type.displayName.toLowerCase().contains(q) ||
                 app.purpose.title.toLowerCase().contains(q),
           )
           .toList();

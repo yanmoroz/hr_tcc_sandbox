@@ -16,7 +16,6 @@ enum ApplicationStatus {
 class Application {
   final String id;
   final ApplicationType type;
-  final String title;
   final ApplicationPurpose purpose;
   final DateTime createdAt;
   final DateTime? completedAt;
@@ -26,7 +25,6 @@ class Application {
   const Application({
     required this.id,
     required this.type,
-    required this.title,
     required this.purpose,
     required this.createdAt,
     this.completedAt,

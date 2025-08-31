@@ -161,7 +161,7 @@ class _ApplicationsPageContent extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          application.title,
+                          application.type.displayName,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,

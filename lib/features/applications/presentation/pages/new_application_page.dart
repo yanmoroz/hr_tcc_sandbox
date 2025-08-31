@@ -10,53 +10,19 @@ import '../blocs/new_application_state.dart';
 import '../widgets/forms/employment_certificate_form.dart';
 import '../widgets/forms/parking_form.dart';
 import '../widgets/forms/absence_form.dart';
+import '../widgets/forms/violation_form.dart';
 import '../blocs/forms/employment_certificate_form_cubit.dart';
 import '../blocs/forms/parking_form_cubit.dart';
 import '../blocs/forms/absence_form_cubit.dart';
+import '../blocs/forms/violation_form_cubit.dart';
 
 class NewApplicationPage extends StatelessWidget {
   final ApplicationType applicationType;
 
   const NewApplicationPage({super.key, required this.applicationType});
 
-  // Simple mapping from ApplicationType to title
-  String _getTitle() {
-    switch (applicationType) {
-      case ApplicationType.employmentCertificate:
-        return 'Справка с места работы';
-      case ApplicationType.accessCard:
-        return 'Пропуск';
-      case ApplicationType.parking:
-        return 'Парковка';
-      case ApplicationType.absence:
-        return 'Отсутствие';
-      case ApplicationType.violation:
-        return 'Нарушение';
-      case ApplicationType.businessTrip:
-        return 'Командировка';
-      case ApplicationType.referralProgram:
-        return 'Реферальная программа';
-      case ApplicationType.ndflCertificate:
-        return 'Справка 2-НДФЛ';
-      case ApplicationType.employmentRecordCopy:
-        return 'Копия трудовой книжки';
-      case ApplicationType.internalTraining:
-        return 'Внутреннее обучение';
-      case ApplicationType.unplannedTraining:
-        return 'Незапланированное обучение';
-      case ApplicationType.additionalEducation:
-        return 'Дополнительное профессиональное образование (ДПО)';
-      case ApplicationType.alpinaDigitalAccess:
-        return 'Предоставление доступа к «Альпина Диджитал»';
-      case ApplicationType.courierDelivery:
-        return 'Курьерская доставка';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final title = _getTitle();
-
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: const AppTopBar(title: 'Создание заявки'),
@@ -82,7 +48,7 @@ class NewApplicationPage extends StatelessWidget {
             bool canSubmit = false;
             VoidCallback? onSubmit;
 
-            Widget formWidget;
+            Widget formWidget = const SizedBox.shrink();
 
             if (applicationType == ApplicationType.employmentCertificate) {
               formWidget = BlocProvider(
@@ -121,7 +87,7 @@ class NewApplicationPage extends StatelessWidget {
                   },
                 ),
               );
-            } else {
+            } else if (applicationType == ApplicationType.absence) {
               formWidget = BlocProvider(
                 create: (_) => AbsenceFormCubit(),
                 child: BlocBuilder<AbsenceFormCubit, AbsenceFormState>(
@@ -130,6 +96,18 @@ class NewApplicationPage extends StatelessWidget {
                     canSubmit = aState.isValid && !state.isSubmitting;
                     onSubmit = null; // no submit route yet
                     return AbsenceForm(state: aState);
+                  },
+                ),
+              );
+            } else if (applicationType == ApplicationType.violation) {
+              formWidget = BlocProvider(
+                create: (_) => ViolationFormCubit(),
+                child: BlocBuilder<ViolationFormCubit, ViolationFormState>(
+                  builder: (context, vState) {
+                    // TODO: Wire submit once endpoint is ready
+                    canSubmit = vState.isValid && !state.isSubmitting;
+                    onSubmit = null; // no submit route yet
+                    return ViolationForm(state: vState);
                   },
                 ),
               );
@@ -146,7 +124,7 @@ class NewApplicationPage extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              title,
+                              applicationType.displayName,
                               style: const TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w700,

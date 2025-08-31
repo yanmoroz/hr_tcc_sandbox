@@ -69,7 +69,7 @@ class ApplicationsBloc extends Bloc<ApplicationsEvent, ApplicationsState> {
     }
     if (q.isNotEmpty) {
       filtered = filtered
-          .where((t) => t.title.toLowerCase().contains(q))
+          .where((t) => t.type.displayName.toLowerCase().contains(q))
           .toList();
     }
 

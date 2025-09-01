@@ -28,6 +28,9 @@ import '../../features/surveys/presentation/blocs/survey_detail_bloc.dart';
 import '../../features/resale/presentation/blocs/resale_bloc.dart';
 import '../../features/resale/presentation/pages/resale_list_page.dart';
 import '../../features/resale/presentation/pages/resale_detail_page.dart';
+import '../../features/news/presentation/pages/news_page.dart';
+import '../../features/news/presentation/blocs/news_bloc.dart';
+import '../../features/news/presentation/blocs/news_event.dart';
 import '../../features/applications/presentation/pages/create_application_page.dart';
 import '../../features/applications/presentation/blocs/applications_bloc.dart';
 import '../../features/applications/presentation/blocs/applications_event.dart';
@@ -37,7 +40,7 @@ import '../../features/applications/presentation/blocs/new_application_event.dar
 import '../../features/address_book/presentation/pages/address_book_page.dart';
 import '../../features/more/presentation/pages/more_page.dart';
 import '../../features/address_book/presentation/blocs/address_book_bloc.dart';
-import '../../features/more/presentation/blocs/more_bloc.dart';
+// removed unused import
 import '../../features/applications/domain/entities/application_type.dart';
 import '../../features/applications/presentation/blocs/application_detail_bloc.dart';
 import '../../features/applications/presentation/pages/application_detail_page.dart';
@@ -76,6 +79,7 @@ class AppRouter {
   static const String surveyDetail = '/survey-detail';
   static const String resale = '/resale';
   static const String resaleDetail = '/resale-detail';
+  static const String news = '/news';
   static const String createApplication = '/create-application';
   static const String newApplication = '/applications/new/:applicationType';
   static const String applicationDetail = '/applications/:applicationId';
@@ -216,6 +220,7 @@ class AppRouter {
               BlocProvider<ApplicationsWidgetCubit>(
                 create: (context) => getIt<ApplicationsWidgetCubit>(),
               ),
+              BlocProvider<NewsBloc>(create: (context) => getIt<NewsBloc>()),
             ],
             child: const MainPage(),
           ),
@@ -241,6 +246,17 @@ class AppRouter {
           child: BlocProvider<SurveysBloc>(
             create: (context) => getIt<SurveysBloc>(),
             child: const SurveysPage(),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: news,
+        name: 'news',
+        pageBuilder: (context, state) => SlidePageTransition(
+          key: state.pageKey,
+          child: BlocProvider<NewsBloc>(
+            create: (context) => getIt<NewsBloc>()..add(NewsStarted()),
+            child: const NewsPage(),
           ),
         ),
       ),

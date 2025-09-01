@@ -4,6 +4,7 @@ import '../../../quick_links/presentation/widgets/quick_links_widget.dart';
 import '../../../surveys/presentation/widgets/surveys_widget.dart';
 import '../../../resale/presentation/widgets/resale_widget.dart';
 import '../../../applications/presentation/widgets/applications_widget.dart';
+import '../../../news/presentation/widgets/news_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -29,6 +30,8 @@ class HomePage extends StatelessWidget {
                   SurveysWidget(),
                   SizedBox(height: 24),
                   ResaleWidget(),
+                  SizedBox(height: 24),
+                  NewsWidget(),
                   SizedBox(height: 24),
                 ],
               ),

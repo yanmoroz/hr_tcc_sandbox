@@ -96,6 +96,31 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         completedAt: DateTime.now().subtract(const Duration(hours: 1)),
         comment: 'Рассмотрено службой безопасности',
       ),
+      // NDFL Certificate mock
+      Application(
+        id: '6',
+        type: ApplicationType.ndflCertificate,
+        purpose: const ApplicationPurpose(
+          id: 'tax_declaration',
+          title: 'Для подачи налоговой декларации',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Ожидает подготовки в бухгалтерии',
+      ),
+      // Employment Record Copy mock
+      Application(
+        id: '7',
+        type: ApplicationType.employmentRecordCopy,
+        purpose: const ApplicationPurpose(
+          id: 'employment_record_copy',
+          title: 'Копия трудовой книжки',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 2)),
+        status: ApplicationStatus.done,
+        completedAt: DateTime.now().subtract(const Duration(hours: 6)),
+        comment: 'Готова к выдаче',
+      ),
     ];
   }
 

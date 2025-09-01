@@ -11,15 +11,32 @@ import '../widgets/forms/employment_certificate_form.dart';
 import '../widgets/forms/parking_form.dart';
 import '../widgets/forms/absence_form.dart';
 import '../widgets/forms/violation_form.dart';
+import '../widgets/forms/ndfl_certificate_form.dart';
+import '../widgets/forms/employment_record_copy_form.dart';
 import '../blocs/forms/employment_certificate_form_cubit.dart';
 import '../blocs/forms/parking_form_cubit.dart';
 import '../blocs/forms/absence_form_cubit.dart';
 import '../blocs/forms/violation_form_cubit.dart';
+import '../blocs/forms/ndfl_certificate_form_cubit.dart';
+import '../blocs/forms/employment_record_copy_form_cubit.dart';
 
-class NewApplicationPage extends StatelessWidget {
+class NewApplicationPage extends StatefulWidget {
   final ApplicationType applicationType;
 
   const NewApplicationPage({super.key, required this.applicationType});
+
+  @override
+  State<NewApplicationPage> createState() => _NewApplicationPageState();
+}
+
+class _NewApplicationPageState extends State<NewApplicationPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<NewApplicationBloc>().add(
+      NewApplicationStarted(widget.applicationType),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,32 +67,37 @@ class NewApplicationPage extends StatelessWidget {
 
             Widget formWidget = const SizedBox.shrink();
 
-            if (applicationType == ApplicationType.employmentCertificate) {
-              formWidget = BlocProvider(
-                create: (_) =>
-                    EmploymentCertificateFormCubit()
-                      ..setPurposes(state.purposes),
-                child:
-                    BlocBuilder<
-                      EmploymentCertificateFormCubit,
-                      EmploymentCertificateFormState
-                    >(
-                      builder: (context, ecState) {
-                        canSubmit = ecState.isValid && !state.isSubmitting;
-                        onSubmit = canSubmit
-                            ? () => context.read<NewApplicationBloc>().add(
-                                EmploymentCertificateSubmitted(
-                                  purposeId: ecState.selectedPurposeId!,
-                                  receiveDate: ecState.receiveDate!,
-                                  copies: ecState.copies,
-                                ),
-                              )
-                            : null;
-                        return EmploymentCertificateForm(state: ecState);
-                      },
-                    ),
-              );
-            } else if (applicationType == ApplicationType.parking) {
+            if (widget.applicationType ==
+                ApplicationType.employmentCertificate) {
+              if (state.isLoading) {
+                formWidget = const Center(child: CircularProgressIndicator());
+              } else {
+                formWidget = BlocProvider(
+                  create: (_) =>
+                      EmploymentCertificateFormCubit()
+                        ..setPurposes(state.purposes),
+                  child:
+                      BlocBuilder<
+                        EmploymentCertificateFormCubit,
+                        EmploymentCertificateFormState
+                      >(
+                        builder: (context, ecState) {
+                          canSubmit = ecState.isValid && !state.isSubmitting;
+                          onSubmit = canSubmit
+                              ? () => context.read<NewApplicationBloc>().add(
+                                  EmploymentCertificateSubmitted(
+                                    purposeId: ecState.selectedPurposeId!,
+                                    receiveDate: ecState.receiveDate!,
+                                    copies: ecState.copies,
+                                  ),
+                                )
+                              : null;
+                          return EmploymentCertificateForm(state: ecState);
+                        },
+                      ),
+                );
+              }
+            } else if (widget.applicationType == ApplicationType.parking) {
               formWidget = BlocProvider(
                 create: (_) => ParkingFormCubit(),
                 child: BlocBuilder<ParkingFormCubit, ParkingFormState>(
@@ -87,7 +109,7 @@ class NewApplicationPage extends StatelessWidget {
                   },
                 ),
               );
-            } else if (applicationType == ApplicationType.absence) {
+            } else if (widget.applicationType == ApplicationType.absence) {
               formWidget = BlocProvider(
                 create: (_) => AbsenceFormCubit(),
                 child: BlocBuilder<AbsenceFormCubit, AbsenceFormState>(
@@ -99,7 +121,7 @@ class NewApplicationPage extends StatelessWidget {
                   },
                 ),
               );
-            } else if (applicationType == ApplicationType.violation) {
+            } else if (widget.applicationType == ApplicationType.violation) {
               formWidget = BlocProvider(
                 create: (_) => ViolationFormCubit(),
                 child: BlocBuilder<ViolationFormCubit, ViolationFormState>(
@@ -110,6 +132,40 @@ class NewApplicationPage extends StatelessWidget {
                     return ViolationForm(state: vState);
                   },
                 ),
+              );
+            } else if (widget.applicationType ==
+                ApplicationType.ndflCertificate) {
+              formWidget = BlocProvider(
+                create: (_) => NdflCertificateFormCubit(),
+                child:
+                    BlocBuilder<
+                      NdflCertificateFormCubit,
+                      NdflCertificateFormState
+                    >(
+                      builder: (context, nState) {
+                        // TODO: Wire submit once endpoint is ready
+                        canSubmit = nState.isValid && !state.isSubmitting;
+                        onSubmit = null; // no submit route yet
+                        return NdflCertificateForm(state: nState);
+                      },
+                    ),
+              );
+            } else if (widget.applicationType ==
+                ApplicationType.employmentRecordCopy) {
+              formWidget = BlocProvider(
+                create: (_) => EmploymentRecordCopyFormCubit(),
+                child:
+                    BlocBuilder<
+                      EmploymentRecordCopyFormCubit,
+                      EmploymentRecordCopyFormState
+                    >(
+                      builder: (context, ercState) {
+                        // TODO: Wire submit once endpoint is ready
+                        canSubmit = ercState.isValid && !state.isSubmitting;
+                        onSubmit = null; // no submit route yet
+                        return EmploymentRecordCopyForm(state: ercState);
+                      },
+                    ),
               );
             }
 
@@ -124,7 +180,7 @@ class NewApplicationPage extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              applicationType.displayName,
+                              widget.applicationType.displayName,
                               style: const TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w700,

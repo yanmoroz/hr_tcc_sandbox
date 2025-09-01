@@ -41,6 +41,7 @@ import '../../features/more/presentation/blocs/more_bloc.dart';
 import '../../features/applications/domain/entities/application_type.dart';
 import '../../features/applications/presentation/blocs/application_detail_bloc.dart';
 import '../../features/applications/presentation/pages/application_detail_page.dart';
+import '../../features/applications/presentation/blocs/applications_widget_cubit.dart';
 
 // Custom page transition that handles direction automatically
 class SlidePageTransition extends CustomTransitionPage {
@@ -211,6 +212,9 @@ class AppRouter {
               ),
               BlocProvider<AddressBookBloc>(
                 create: (context) => getIt<AddressBookBloc>(),
+              ),
+              BlocProvider<ApplicationsWidgetCubit>(
+                create: (context) => getIt<ApplicationsWidgetCubit>(),
               ),
             ],
             child: const MainPage(),

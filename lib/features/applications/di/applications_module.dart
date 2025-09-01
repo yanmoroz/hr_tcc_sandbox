@@ -14,6 +14,7 @@ import '../presentation/blocs/applications_bloc.dart';
 import '../presentation/blocs/new_application_bloc.dart';
 import '../presentation/blocs/applications_list_bloc.dart';
 import '../presentation/blocs/application_detail_bloc.dart';
+import '../presentation/blocs/applications_widget_cubit.dart';
 
 class ApplicationsModule extends DiModule {
   @override
@@ -62,6 +63,12 @@ class ApplicationsModule extends DiModule {
     getIt.registerFactory<ApplicationDetailBloc>(
       () =>
           ApplicationDetailBloc(getApplication: getIt<GetApplicationUseCase>()),
+    );
+    getIt.registerFactory<ApplicationsWidgetCubit>(
+      () => ApplicationsWidgetCubit(
+        getApplications: getIt<GetApplicationsUseCase>(),
+        getTemplates: getIt<GetApplicationTemplatesUseCase>(),
+      ),
     );
   }
 }

@@ -3,6 +3,7 @@ import '../../../../shared/widgets/user_top_bar.dart';
 import '../../../quick_links/presentation/widgets/quick_links_widget.dart';
 import '../../../surveys/presentation/widgets/surveys_widget.dart';
 import '../../../resale/presentation/widgets/resale_widget.dart';
+import '../../../applications/presentation/widgets/applications_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -22,6 +23,7 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: const [
                   SizedBox(height: 8),
+                  ApplicationsWidget(),
                   QuickLinksWidget(),
                   SizedBox(height: 24),
                   SurveysWidget(),

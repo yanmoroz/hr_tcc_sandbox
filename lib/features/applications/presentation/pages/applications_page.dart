@@ -31,77 +31,80 @@ class _ApplicationsPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: true,
-      bottom: false,
-      child: BlocBuilder<ApplicationsListBloc, ApplicationsListState>(
-        builder: (context, state) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const UserTopBar(),
-              FilterBar<ApplicationsFilter>(
-                currentFilter: state.selectedFilter,
-                onFilterChanged: (filter) => context
-                    .read<ApplicationsListBloc>()
-                    .add(ApplicationsListFilterChanged(filter)),
-                options: [
-                  FilterOption(
-                    label: 'Все',
-                    count: state.allApplications.length,
-                    value: ApplicationsFilter.all,
-                  ),
-                  FilterOption(
-                    label: 'В работе',
-                    count: state.allApplications
-                        .where(
-                          (app) => app.status == ApplicationStatus.inProgress,
-                        )
-                        .length,
-                    value: ApplicationsFilter.inProgress,
-                  ),
-                  FilterOption(
-                    label: 'Завершённые',
-                    count: state.allApplications
-                        .where((app) => app.status == ApplicationStatus.done)
-                        .length,
-                    value: ApplicationsFilter.done,
-                  ),
-                ],
-              ),
-              AppSearchBar(
-                initialQuery: state.query,
-                onSearch: (query) => context.read<ApplicationsListBloc>().add(
-                  ApplicationsListSearchChanged(query),
+    return Scaffold(
+      backgroundColor: const Color(0xFFF4F5F7),
+      body: SafeArea(
+        top: true,
+        bottom: false,
+        child: BlocBuilder<ApplicationsListBloc, ApplicationsListState>(
+          builder: (context, state) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const UserTopBar(),
+                FilterBar<ApplicationsFilter>(
+                  currentFilter: state.selectedFilter,
+                  onFilterChanged: (filter) => context
+                      .read<ApplicationsListBloc>()
+                      .add(ApplicationsListFilterChanged(filter)),
+                  options: [
+                    FilterOption(
+                      label: 'Все',
+                      count: state.allApplications.length,
+                      value: ApplicationsFilter.all,
+                    ),
+                    FilterOption(
+                      label: 'В работе',
+                      count: state.allApplications
+                          .where(
+                            (app) => app.status == ApplicationStatus.inProgress,
+                          )
+                          .length,
+                      value: ApplicationsFilter.inProgress,
+                    ),
+                    FilterOption(
+                      label: 'Завершённые',
+                      count: state.allApplications
+                          .where((app) => app.status == ApplicationStatus.done)
+                          .length,
+                      value: ApplicationsFilter.done,
+                    ),
+                  ],
                 ),
-                onClear: () => context.read<ApplicationsListBloc>().add(
-                  ApplicationsListSearchChanged(''),
+                AppSearchBar(
+                  initialQuery: state.query,
+                  onSearch: (query) => context.read<ApplicationsListBloc>().add(
+                    ApplicationsListSearchChanged(query),
+                  ),
+                  onClear: () => context.read<ApplicationsListBloc>().add(
+                    ApplicationsListSearchChanged(''),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: state.isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : state.filteredApplications.isEmpty
-                    ? _buildEmptyState(context)
-                    : _buildApplicationsList(
-                        context,
-                        state.filteredApplications,
-                      ),
-              ),
-              // Pinned button at bottom
-              Padding(
-                padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-                child: AppButton(
-                  text: 'Создать заявку',
-                  onPressed: () => context.push(AppRouter.createApplication),
-                  backgroundColor: const Color(0xFF12369F),
-                  textColor: Colors.white,
-                  height: 56,
+                Expanded(
+                  child: state.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : state.filteredApplications.isEmpty
+                      ? _buildEmptyState(context)
+                      : _buildApplicationsList(
+                          context,
+                          state.filteredApplications,
+                        ),
                 ),
-              ),
-            ],
-          );
-        },
+                // Pinned button at bottom
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                  child: AppButton(
+                    text: 'Создать заявку',
+                    onPressed: () => context.push(AppRouter.createApplication),
+                    backgroundColor: const Color(0xFF12369F),
+                    textColor: Colors.white,
+                    height: 56,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

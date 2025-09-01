@@ -13,12 +13,28 @@ import '../widgets/forms/absence_form.dart';
 import '../widgets/forms/violation_form.dart';
 import '../widgets/forms/ndfl_certificate_form.dart';
 import '../widgets/forms/employment_record_copy_form.dart';
+import '../widgets/forms/referral_program_form.dart';
+import '../widgets/forms/additional_education_form.dart';
+import '../widgets/forms/internal_training_form.dart';
+import '../widgets/forms/alpina_digital_access_form.dart';
+import '../widgets/forms/business_trip_form.dart';
+import '../widgets/forms/access_card_form.dart';
+import '../widgets/forms/courier_delivery_form.dart';
+import '../widgets/forms/unplanned_training_form.dart';
 import '../blocs/forms/employment_certificate_form_cubit.dart';
 import '../blocs/forms/parking_form_cubit.dart';
 import '../blocs/forms/absence_form_cubit.dart';
 import '../blocs/forms/violation_form_cubit.dart';
 import '../blocs/forms/ndfl_certificate_form_cubit.dart';
 import '../blocs/forms/employment_record_copy_form_cubit.dart';
+import '../blocs/forms/referral_program_form_cubit.dart';
+import '../blocs/forms/additional_education_form_cubit.dart';
+import '../blocs/forms/internal_training_form_cubit.dart';
+import '../blocs/forms/alpina_digital_access_form_cubit.dart';
+import '../blocs/forms/business_trip_form_cubit.dart';
+import '../blocs/forms/access_card_form_cubit.dart';
+import '../blocs/forms/courier_delivery_form_cubit.dart';
+import '../blocs/forms/unplanned_training_form_cubit.dart';
 
 class NewApplicationPage extends StatefulWidget {
   final ApplicationType applicationType;
@@ -164,6 +180,130 @@ class _NewApplicationPageState extends State<NewApplicationPage> {
                         canSubmit = ercState.isValid && !state.isSubmitting;
                         onSubmit = null; // no submit route yet
                         return EmploymentRecordCopyForm(state: ercState);
+                      },
+                    ),
+              );
+            } else if (widget.applicationType ==
+                ApplicationType.referralProgram) {
+              formWidget = BlocProvider(
+                create: (_) => ReferralProgramFormCubit(),
+                child:
+                    BlocBuilder<
+                      ReferralProgramFormCubit,
+                      ReferralProgramFormState
+                    >(
+                      builder: (context, rpState) {
+                        // TODO: Wire submit once endpoint is ready
+                        canSubmit = rpState.isValid && !state.isSubmitting;
+                        onSubmit = null; // no submit route yet
+                        return ReferralProgramForm(state: rpState);
+                      },
+                    ),
+              );
+            } else if (widget.applicationType ==
+                ApplicationType.additionalEducation) {
+              formWidget = BlocProvider(
+                create: (_) => AdditionalEducationFormCubit(),
+                child:
+                    BlocBuilder<
+                      AdditionalEducationFormCubit,
+                      AdditionalEducationFormState
+                    >(
+                      builder: (context, aeState) {
+                        // TODO: Wire submit once endpoint is ready
+                        canSubmit = aeState.isValid && !state.isSubmitting;
+                        onSubmit = null; // no submit route yet
+                        return AdditionalEducationForm(state: aeState);
+                      },
+                    ),
+              );
+            } else if (widget.applicationType ==
+                ApplicationType.internalTraining) {
+              formWidget = BlocProvider(
+                create: (_) => InternalTrainingFormCubit(),
+                child:
+                    BlocBuilder<
+                      InternalTrainingFormCubit,
+                      InternalTrainingFormState
+                    >(
+                      builder: (context, itState) {
+                        // TODO: Wire submit once endpoint is ready
+                        canSubmit = itState.isValid && !state.isSubmitting;
+                        onSubmit = null; // no submit route yet
+                        return InternalTrainingForm(state: itState);
+                      },
+                    ),
+              );
+            } else if (widget.applicationType ==
+                ApplicationType.alpinaDigitalAccess) {
+              formWidget = BlocProvider(
+                create: (_) => AlpinaDigitalAccessFormCubit(),
+                child:
+                    BlocBuilder<
+                      AlpinaDigitalAccessFormCubit,
+                      AlpinaDigitalAccessFormState
+                    >(
+                      builder: (context, aState) {
+                        // TODO: Wire submit once endpoint is ready
+                        canSubmit = aState.isValid && !state.isSubmitting;
+                        onSubmit = null; // no submit route yet
+                        return AlpinaDigitalAccessForm(state: aState);
+                      },
+                    ),
+              );
+            } else if (widget.applicationType == ApplicationType.businessTrip) {
+              formWidget = BlocProvider(
+                create: (_) => BusinessTripFormCubit(),
+                child:
+                    BlocBuilder<BusinessTripFormCubit, BusinessTripFormState>(
+                      builder: (context, btState) {
+                        // TODO: Wire submit once endpoint is ready
+                        canSubmit = btState.isValid && !state.isSubmitting;
+                        onSubmit = null; // no submit route yet
+                        return BusinessTripForm(state: btState);
+                      },
+                    ),
+              );
+            } else if (widget.applicationType == ApplicationType.accessCard) {
+              formWidget = BlocProvider(
+                create: (_) => AccessCardFormCubit(),
+                child: BlocBuilder<AccessCardFormCubit, AccessCardFormState>(
+                  builder: (context, acState) {
+                    canSubmit = acState.isValid && !state.isSubmitting;
+                    onSubmit = null;
+                    return AccessCardForm(state: acState);
+                  },
+                ),
+              );
+            } else if (widget.applicationType ==
+                ApplicationType.courierDelivery) {
+              formWidget = BlocProvider(
+                create: (_) => CourierDeliveryFormCubit(),
+                child:
+                    BlocBuilder<
+                      CourierDeliveryFormCubit,
+                      CourierDeliveryFormState
+                    >(
+                      builder: (context, cdState) {
+                        canSubmit = cdState.isValid && !state.isSubmitting;
+                        onSubmit = null; // no submit yet
+                        return CourierDeliveryForm(state: cdState);
+                      },
+                    ),
+              );
+            } else if (widget.applicationType ==
+                ApplicationType.unplannedTraining) {
+              formWidget = BlocProvider(
+                create: (_) => UnplannedTrainingFormCubit(),
+                child:
+                    BlocBuilder<
+                      UnplannedTrainingFormCubit,
+                      UnplannedTrainingFormState
+                    >(
+                      builder: (context, utState) {
+                        canSubmit = utState.isValid && !state.isSubmitting;
+                        onSubmit = null; // no submit yet
+                        return UnplannedTrainingForm(state: utState);
                       },
                     ),
               );

@@ -11,6 +11,14 @@ import '../widgets/detail_sections/absence_detail_section.dart';
 import '../widgets/detail_sections/violation_detail_section.dart';
 import '../widgets/detail_sections/ndfl_certificate_detail_section.dart';
 import '../widgets/detail_sections/employment_record_copy_detail_section.dart';
+import '../widgets/detail_sections/referral_program_detail_section.dart';
+import '../widgets/detail_sections/additional_education_detail_section.dart';
+import '../widgets/detail_sections/internal_training_detail_section.dart';
+import '../widgets/detail_sections/alpina_digital_access_detail_section.dart';
+import '../widgets/detail_sections/business_trip_detail_section.dart';
+import '../widgets/detail_sections/access_card_detail_section.dart';
+import '../widgets/detail_sections/courier_delivery_detail_section.dart';
+import '../widgets/detail_sections/unplanned_training_detail_section.dart';
 import '../../../../shared/widgets/app_top_bar.dart';
 
 class ApplicationDetailPage extends StatelessWidget {
@@ -112,7 +120,25 @@ class _ApplicationDetailContent extends StatelessWidget {
                   NdflCertificateDetailSection(application: application)
                 else if (application.type ==
                     ApplicationType.employmentRecordCopy)
-                  EmploymentRecordCopyDetailSection(application: application),
+                  EmploymentRecordCopyDetailSection(application: application)
+                else if (application.type == ApplicationType.referralProgram)
+                  ReferralProgramDetailSection(application: application)
+                else if (application.type ==
+                    ApplicationType.additionalEducation)
+                  AdditionalEducationDetailSection(application: application)
+                else if (application.type == ApplicationType.internalTraining)
+                  InternalTrainingDetailSection(application: application)
+                else if (application.type ==
+                    ApplicationType.alpinaDigitalAccess)
+                  AlpinaDigitalAccessDetailSection(application: application)
+                else if (application.type == ApplicationType.businessTrip)
+                  BusinessTripDetailSection(application: application)
+                else if (application.type == ApplicationType.accessCard)
+                  AccessCardDetailSection(application: application)
+                else if (application.type == ApplicationType.courierDelivery)
+                  CourierDeliveryDetailSection(application: application)
+                else if (application.type == ApplicationType.unplannedTraining)
+                  UnplannedTrainingDetailSection(application: application),
               ],
             ),
           ),

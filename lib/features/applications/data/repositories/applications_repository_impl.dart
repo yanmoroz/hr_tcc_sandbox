@@ -121,6 +121,101 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         completedAt: DateTime.now().subtract(const Duration(hours: 6)),
         comment: 'Готова к выдаче',
       ),
+      // Referral Program mock
+      Application(
+        id: '8',
+        type: ApplicationType.referralProgram,
+        purpose: const ApplicationPurpose(
+          id: 'referral_program',
+          title: 'Реферальная программа',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        status: ApplicationStatus.done,
+        completedAt: DateTime.now().subtract(const Duration(hours: 2)),
+        comment: 'Кандидат рассмотрен',
+      ),
+      // Additional Education mock
+      Application(
+        id: '9',
+        type: ApplicationType.additionalEducation,
+        purpose: const ApplicationPurpose(
+          id: 'additional_education',
+          title: 'Дополнительное профессиональное образование (ДПО)',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 3)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Ожидает согласования с руководителем',
+      ),
+      // Internal Training mock
+      Application(
+        id: '10',
+        type: ApplicationType.internalTraining,
+        purpose: const ApplicationPurpose(
+          id: 'internal_training',
+          title: 'Внутреннее обучение',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(hours: 10)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Формируется программа обучения',
+      ),
+      // Alpina Digital Access mock
+      Application(
+        id: '11',
+        type: ApplicationType.alpinaDigitalAccess,
+        purpose: const ApplicationPurpose(
+          id: 'alpina',
+          title: 'Доступ к «Альпина Диджитал»',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(hours: 5)),
+        status: ApplicationStatus.done,
+        completedAt: DateTime.now().subtract(const Duration(hours: 1)),
+        comment: 'Активирован доступ',
+      ),
+      // Business Trip mock
+      Application(
+        id: '12',
+        type: ApplicationType.businessTrip,
+        purpose: const ApplicationPurpose(
+          id: 'business_trip',
+          title: 'Командировка',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 4)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Подбор услуг координатором',
+      ),
+      // Access Card mock
+      Application(
+        id: '13',
+        type: ApplicationType.accessCard,
+        purpose: const ApplicationPurpose(id: 'pass', title: 'Пропуск'),
+        createdAt: DateTime.now().subtract(const Duration(hours: 6)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Ожидает согласования СБ',
+      ),
+      // Courier Delivery mock
+      Application(
+        id: '14',
+        type: ApplicationType.courierDelivery,
+        purpose: const ApplicationPurpose(
+          id: 'delivery',
+          title: 'Курьерская доставка',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Курьер назначен',
+      ),
+      // Unplanned Training mock
+      Application(
+        id: '15',
+        type: ApplicationType.unplannedTraining,
+        purpose: const ApplicationPurpose(
+          id: 'unplanned_training',
+          title: 'Незапланированное обучение',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 2)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Ожидает подтверждения организатора',
+      ),
     ];
   }
 

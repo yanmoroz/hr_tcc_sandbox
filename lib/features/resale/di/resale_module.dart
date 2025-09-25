@@ -7,7 +7,8 @@ import '../domain/repositories/resale_repository.dart';
 import '../domain/usecases/get_resale_item_detail.dart';
 import '../domain/usecases/get_resale_items.dart';
 import '../domain/usecases/toggle_booking.dart';
-import '../presentation/blocs/resale_bloc.dart';
+import '../presentation/blocs/list/resale_list_bloc.dart';
+import '../presentation/blocs/detail/resale_detail_bloc.dart';
 
 class ResaleModule extends DiModule {
   @override
@@ -33,10 +34,15 @@ class ResaleModule extends DiModule {
       () => ToggleBookingUseCase(getIt<ResaleRepository>()),
     );
 
-    // Bloc
-    getIt.registerFactory<ResaleBloc>(
-      () => ResaleBloc(
+    // Blocs
+    getIt.registerFactory<ResaleListBloc>(
+      () => ResaleListBloc(
         getItems: getIt<GetResaleItemsUseCase>(),
+        toggleBooking: getIt<ToggleBookingUseCase>(),
+      ),
+    );
+    getIt.registerFactory<ResaleDetailBloc>(
+      () => ResaleDetailBloc(
         getItemDetail: getIt<GetResaleItemDetailUseCase>(),
         toggleBooking: getIt<ToggleBookingUseCase>(),
       ),

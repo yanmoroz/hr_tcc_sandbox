@@ -4,9 +4,9 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../domain/entities/resale_item.dart';
-import '../blocs/resale_bloc.dart';
-import '../blocs/resale_event.dart';
-import '../blocs/resale_state.dart';
+import '../blocs/list/resale_list_bloc.dart';
+import '../blocs/list/resale_list_event.dart' as list_events;
+import '../blocs/list/resale_list_state.dart' as list_state;
 import '../../../../shared/widgets/filter_bar.dart';
 import '../../../../shared/widgets/app_search_bar.dart';
 import '../../../../shared/widgets/app_top_bar.dart';
@@ -21,13 +21,13 @@ class ResaleListPage extends StatefulWidget {
 }
 
 class _ResaleListPageState extends State<ResaleListPage> {
-  late ResaleBloc _bloc;
+  late ResaleListBloc _bloc;
 
   @override
   void initState() {
     super.initState();
-    _bloc = GetIt.instance<ResaleBloc>();
-    _bloc.add(ResaleRequested());
+    _bloc = GetIt.instance<ResaleListBloc>();
+    _bloc.add(list_events.ResaleListRequested());
   }
 
   @override
@@ -38,7 +38,7 @@ class _ResaleListPageState extends State<ResaleListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ResaleBloc, ResaleState>(
+    return BlocBuilder<ResaleListBloc, list_state.ResaleListState>(
       bloc: _bloc,
       builder: (context, state) => Scaffold(
         backgroundColor: Colors.grey[50],
@@ -48,22 +48,22 @@ class _ResaleListPageState extends State<ResaleListPage> {
         ),
         body: Column(
           children: [
-            FilterBar<ResaleFilter>(
+            FilterBar<list_events.ResaleFilter>(
               currentFilter: state.currentFilter,
               onFilterChanged: (filter) =>
-                  _bloc.add(ResaleFilterChanged(filter)),
+                  _bloc.add(list_events.ResaleListFilterChanged(filter)),
               options: [
-                FilterOption<ResaleFilter>(
+                FilterOption<list_events.ResaleFilter>(
                   label: 'Все',
                   count: state.allItems.length,
-                  value: ResaleFilter.all,
+                  value: list_events.ResaleFilter.all,
                 ),
-                FilterOption<ResaleFilter>(
+                FilterOption<list_events.ResaleFilter>(
                   label: 'Забронированные',
                   count: state.allItems
                       .where((e) => e.status == ResaleItemStatus.booked)
                       .length,
-                  value: ResaleFilter.booked,
+                  value: list_events.ResaleFilter.booked,
                 ),
               ],
             ),
@@ -82,17 +82,17 @@ class _ResaleListPageState extends State<ResaleListPage> {
   }
 
   Widget _buildSearchBar() {
-    return BlocBuilder<ResaleBloc, ResaleState>(
+    return BlocBuilder<ResaleListBloc, list_state.ResaleListState>(
       bloc: _bloc,
       builder: (context, state) => AppSearchBar(
         initialQuery: state.searchQuery,
-        onSearch: (q) => _bloc.add(ResaleSearchChanged(q)),
-        onClear: () => _bloc.add(const ResaleSearchChanged('')),
+        onSearch: (q) => _bloc.add(list_events.ResaleListSearchChanged(q)),
+        onClear: () => _bloc.add(const list_events.ResaleListSearchChanged('')),
       ),
     );
   }
 
-  Widget _buildList(ResaleState state) {
+  Widget _buildList(list_state.ResaleListState state) {
     return ListView.builder(
       itemCount: state.filteredItems.length,
       itemBuilder: (context, index) {
@@ -100,7 +100,8 @@ class _ResaleListPageState extends State<ResaleListPage> {
         return ResaleCard(
           item: item,
           onOpen: () => context.push('${AppRouter.resaleDetail}/${item.id}'),
-          onToggleBooking: () => _bloc.add(ResaleToggleBooking(item.id)),
+          onToggleBooking: () =>
+              _bloc.add(list_events.ResaleListToggleBooking(item.id)),
         );
       },
     );

@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/resale_item.dart';
-import 'resale_event.dart';
+import '../../../domain/entities/resale_item.dart';
+import 'resale_list_event.dart';
 
-class ResaleState extends Equatable {
+class ResaleListState extends Equatable {
   final List<ResaleItem> allItems;
   final List<ResaleItem> filteredItems;
   final ResaleFilter currentFilter;
@@ -10,7 +10,7 @@ class ResaleState extends Equatable {
   final bool isLoading;
   final String? error;
 
-  const ResaleState({
+  const ResaleListState({
     this.allItems = const [],
     this.filteredItems = const [],
     this.currentFilter = ResaleFilter.all,
@@ -19,7 +19,7 @@ class ResaleState extends Equatable {
     this.error,
   });
 
-  ResaleState copyWith({
+  ResaleListState copyWith({
     List<ResaleItem>? allItems,
     List<ResaleItem>? filteredItems,
     ResaleFilter? currentFilter,
@@ -27,7 +27,7 @@ class ResaleState extends Equatable {
     bool? isLoading,
     String? error,
   }) {
-    return ResaleState(
+    return ResaleListState(
       allItems: allItems ?? this.allItems,
       filteredItems: filteredItems ?? this.filteredItems,
       currentFilter: currentFilter ?? this.currentFilter,

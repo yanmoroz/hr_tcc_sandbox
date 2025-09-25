@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../domain/entities/resale_item.dart';
-import '../blocs/resale_bloc.dart';
-import '../blocs/resale_event.dart';
-import '../blocs/resale_state.dart';
+import '../blocs/detail/resale_detail_bloc.dart';
+import '../blocs/detail/resale_detail_event.dart';
+import '../blocs/detail/resale_detail_state.dart';
 import '../../../auth/presentation/widgets/app_button.dart';
 import '../../../../shared/widgets/app_top_bar.dart';
 import '../../../../shared/widgets/app_bottom_menu.dart';
@@ -19,14 +19,13 @@ class ResaleDetailPage extends StatefulWidget {
 }
 
 class _ResaleDetailPageState extends State<ResaleDetailPage> {
-  late ResaleBloc _bloc;
+  late ResaleDetailBloc _bloc;
 
   @override
   void initState() {
     super.initState();
-    _bloc = GetIt.instance<ResaleBloc>();
-    _bloc.add(ResaleRequested());
-    _bloc.add(ResaleItemDetailRequested(widget.itemId));
+    _bloc = GetIt.instance<ResaleDetailBloc>();
+    _bloc.add(ResaleDetailRequested(widget.itemId));
   }
 
   @override
@@ -39,24 +38,23 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppTopBar(title: 'Ресейл'),
-      bottomNavigationBar: BlocBuilder<ResaleBloc, ResaleState>(
+      bottomNavigationBar: BlocBuilder<ResaleDetailBloc, ResaleDetailState>(
         bloc: _bloc,
         builder: (context, state) {
-          final item = state.allItems.firstWhere(
-            (e) => e.id == widget.itemId,
-            orElse: () => ResaleItem(
-              id: '',
-              title: '',
-              category: '',
-              priceRub: 0,
-              ownerName: '',
-              updatedAt: DateTime(2000),
-              location: '',
-              description: '',
-              imageUrls: [],
-              status: ResaleItemStatus.forSale,
-            ),
-          );
+          final item =
+              state.item ??
+              ResaleItem(
+                id: '',
+                title: '',
+                category: '',
+                priceRub: 0,
+                ownerName: '',
+                updatedAt: DateTime(2000),
+                location: '',
+                description: '',
+                imageUrls: [],
+                status: ResaleItemStatus.forSale,
+              );
 
           if (item.id.isEmpty) {
             return const SizedBox.shrink();
@@ -71,7 +69,8 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
               backgroundColor: const Color(0xFF12369F),
               textColor: Colors.white,
               borderRadius: 12,
-              onPressed: () => _bloc.add(ResaleToggleBooking(widget.itemId)),
+              onPressed: () =>
+                  _bloc.add(ResaleDetailToggleBooking(widget.itemId)),
               padding: const EdgeInsets.symmetric(vertical: 16),
               leading: Icon(
                 item.status == ResaleItemStatus.booked
@@ -84,24 +83,23 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
           );
         },
       ),
-      body: BlocBuilder<ResaleBloc, ResaleState>(
+      body: BlocBuilder<ResaleDetailBloc, ResaleDetailState>(
         bloc: _bloc,
         builder: (context, state) {
-          final item = state.allItems.firstWhere(
-            (e) => e.id == widget.itemId,
-            orElse: () => ResaleItem(
-              id: '',
-              title: '',
-              category: '',
-              priceRub: 0,
-              ownerName: '',
-              updatedAt: DateTime(2000),
-              location: '',
-              description: '',
-              imageUrls: [],
-              status: ResaleItemStatus.forSale,
-            ),
-          );
+          final item =
+              state.item ??
+              ResaleItem(
+                id: '',
+                title: '',
+                category: '',
+                priceRub: 0,
+                ownerName: '',
+                updatedAt: DateTime(2000),
+                location: '',
+                description: '',
+                imageUrls: [],
+                status: ResaleItemStatus.forSale,
+              );
 
           if (item.id.isEmpty) {
             return const Center(child: CircularProgressIndicator());
@@ -175,19 +173,8 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
                         const SizedBox(height: 12),
                         _buildInfoRow('Тип', item.category),
                         _buildInfoRow('Ответственный', item.ownerName),
-                        item.location.trim().isNotEmpty
-                            ? _buildInfoRow('Расположение', item.location)
-                            : const SizedBox.shrink(),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Описание',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(item.description),
+                        _buildInfoRow('Расположение', item.location),
+                        _buildInfoRow('Описание', item.description),
                       ],
                     ),
                   ),
@@ -218,14 +205,16 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
     );
   }
 
-  Widget _buildInfoRow(String title, String value) {
+  Widget _buildInfoRow(String title, String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: TextStyle(color: Colors.grey[600])),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
+          Text(text, style: const TextStyle(fontWeight: FontWeight.w500)),
         ],
       ),
     );

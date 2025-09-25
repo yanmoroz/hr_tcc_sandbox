@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../blocs/resale_bloc.dart';
-import '../blocs/resale_event.dart';
-import '../blocs/resale_state.dart';
+import '../blocs/list/resale_list_bloc.dart';
+import '../blocs/list/resale_list_event.dart';
+import '../blocs/list/resale_list_state.dart';
 import '../../domain/entities/resale_item.dart';
 import '../../../../app/router/app_router.dart';
 
@@ -19,12 +19,12 @@ class _ResaleWidgetState extends State<ResaleWidget> {
   @override
   void initState() {
     super.initState();
-    context.read<ResaleBloc>().add(ResaleRequested());
+    context.read<ResaleListBloc>().add(ResaleListRequested());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ResaleBloc, ResaleState>(
+    return BlocBuilder<ResaleListBloc, ResaleListState>(
       builder: (context, state) {
         if (state.allItems.isEmpty) return const SizedBox.shrink();
         final List<ResaleItem> items = state.allItems.take(2).toList();

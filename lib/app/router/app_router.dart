@@ -25,7 +25,8 @@ import '../../features/profile/presentation/blocs/kpi_bloc.dart';
 import '../../features/quick_links/presentation/blocs/quick_links_bloc.dart';
 import '../../features/surveys/presentation/blocs/surveys_bloc.dart';
 import '../../features/surveys/presentation/blocs/survey_detail_bloc.dart';
-import '../../features/resale/presentation/blocs/resale_bloc.dart';
+import '../../features/resale/presentation/blocs/list/resale_list_bloc.dart';
+import '../../features/resale/presentation/blocs/detail/resale_detail_bloc.dart';
 import '../../features/resale/presentation/pages/resale_list_page.dart';
 import '../../features/resale/presentation/pages/resale_detail_page.dart';
 import '../../features/news/presentation/pages/news_page.dart';
@@ -211,8 +212,8 @@ class AppRouter {
               BlocProvider<SurveysBloc>(
                 create: (context) => getIt<SurveysBloc>(),
               ),
-              BlocProvider<ResaleBloc>(
-                create: (context) => getIt<ResaleBloc>(),
+              BlocProvider<ResaleListBloc>(
+                create: (context) => getIt<ResaleListBloc>(),
               ),
               BlocProvider<AddressBookBloc>(
                 create: (context) => getIt<AddressBookBloc>(),
@@ -279,8 +280,8 @@ class AppRouter {
         name: 'resale',
         pageBuilder: (context, state) => SlidePageTransition(
           key: state.pageKey,
-          child: BlocProvider<ResaleBloc>(
-            create: (context) => getIt<ResaleBloc>(),
+          child: BlocProvider<ResaleListBloc>(
+            create: (context) => getIt<ResaleListBloc>(),
             child: const ResaleListPage(),
           ),
         ),
@@ -292,8 +293,8 @@ class AppRouter {
           final itemId = state.pathParameters['itemId'] ?? '';
           return SlidePageTransition(
             key: state.pageKey,
-            child: BlocProvider<ResaleBloc>(
-              create: (context) => getIt<ResaleBloc>(),
+            child: BlocProvider<ResaleDetailBloc>(
+              create: (context) => getIt<ResaleDetailBloc>(),
               child: ResaleDetailPage(itemId: itemId),
             ),
           );

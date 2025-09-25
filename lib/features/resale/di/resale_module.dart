@@ -1,7 +1,6 @@
 import 'package:get_it/get_it.dart';
 import '../../../app/di/di_module.dart';
 import '../../../shared/services/network_service.dart';
-import '../../../shared/services/secure_storage_service.dart';
 import '../data/datasources/resale_remote_datasource.dart';
 import '../data/repositories/resale_repository_impl.dart';
 import '../domain/repositories/resale_repository.dart';
@@ -15,10 +14,7 @@ class ResaleModule extends DiModule {
   void register(GetIt getIt) {
     // Data sources
     getIt.registerLazySingleton<ResaleRemoteDataSource>(
-      () => ResaleRemoteDataSourceImpl(
-        getIt<NetworkService>(),
-        getIt<SecureStorageService>(),
-      ),
+      () => ResaleRemoteDataSourceImpl(getIt<NetworkService>()),
     );
 
     // Repository

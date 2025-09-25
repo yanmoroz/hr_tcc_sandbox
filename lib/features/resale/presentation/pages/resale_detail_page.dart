@@ -175,7 +175,9 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
                         const SizedBox(height: 12),
                         _buildInfoRow('Тип', item.category),
                         _buildInfoRow('Ответственный', item.ownerName),
-                        _buildInfoRow('Расположение', item.location),
+                        item.location.trim().isNotEmpty
+                            ? _buildInfoRow('Расположение', item.location)
+                            : const SizedBox.shrink(),
                         const SizedBox(height: 12),
                         const Text(
                           'Описание',

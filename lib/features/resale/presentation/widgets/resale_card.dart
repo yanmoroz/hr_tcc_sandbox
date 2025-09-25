@@ -47,7 +47,7 @@ class ResaleCard extends StatelessWidget {
                             ? item.imageUrls.first
                             : 'https://picsum.photos/200',
                         width: 100,
-                        height: 100,
+                        height: 140,
                         fit: BoxFit.cover,
                       ),
                     ),

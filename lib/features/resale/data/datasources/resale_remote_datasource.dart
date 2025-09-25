@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../../shared/services/network_service.dart';
-import '../../../../shared/services/secure_storage_service.dart';
-import '../../../../shared/utils/auth_constants.dart';
 import '../models/resale_models.dart';
 
 abstract class ResaleRemoteDataSource {
@@ -19,16 +17,8 @@ class ResaleRemoteDataSourceImpl implements ResaleRemoteDataSource {
   static const String _baseUrl =
       'https://dev-memp-hr-tcc-service.stoloto.su/api/v1';
   final NetworkService _network;
-  final SecureStorageService _storage;
 
-  ResaleRemoteDataSourceImpl(this._network, this._storage);
-
-  Future<Map<String, String>> _authHeaders() async {
-    final token = await _storage.getString(AuthConstants.accessTokenKey);
-    return {
-      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
-    };
-  }
+  ResaleRemoteDataSourceImpl(this._network);
 
   @override
   Future<List<ResaleListItemDto>> getItems({
@@ -37,7 +27,6 @@ class ResaleRemoteDataSourceImpl implements ResaleRemoteDataSource {
     int page = 0,
     int pageSize = 20,
   }) async {
-    final headers = await _authHeaders();
     final query = <String, dynamic>{
       'status': status,
       if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
@@ -47,7 +36,6 @@ class ResaleRemoteDataSourceImpl implements ResaleRemoteDataSource {
 
     final http.Response resp = await _network.get(
       '$_baseUrl/resell',
-      headers: headers,
       query: query,
     );
     if (resp.statusCode < 200 || resp.statusCode >= 300) {
@@ -63,11 +51,7 @@ class ResaleRemoteDataSourceImpl implements ResaleRemoteDataSource {
 
   @override
   Future<ResaleDetailDto> getItemDetail(String id) async {
-    final headers = await _authHeaders();
-    final http.Response resp = await _network.get(
-      '$_baseUrl/resell/$id',
-      headers: headers,
-    );
+    final http.Response resp = await _network.get('$_baseUrl/resell/$id');
     if (resp.statusCode < 200 || resp.statusCode >= 300) {
       throw Exception('Failed to load resale item ($id): ${resp.statusCode}');
     }

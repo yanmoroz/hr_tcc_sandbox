@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'logger_service.dart';
+import 'auth_header_provider.dart';
 
 abstract class NetworkService {
   Future<http.Response> post(
@@ -27,9 +28,13 @@ abstract class NetworkService {
 class NetworkServiceImpl implements NetworkService {
   final http.Client _client;
   final LoggerService _logger = LoggerService();
+  final AuthHeaderProvider? _authHeaderProvider;
 
-  NetworkServiceImpl({http.Client? client})
-    : _client = client ?? _createDefaultClient();
+  NetworkServiceImpl({
+    http.Client? client,
+    AuthHeaderProvider? authHeaderProvider,
+  }) : _client = client ?? _createDefaultClient(),
+       _authHeaderProvider = authHeaderProvider;
 
   static http.Client _createDefaultClient() {
     if (kIsWeb) {
@@ -49,10 +54,16 @@ class NetworkServiceImpl implements NetworkService {
     return uri.replace(queryParameters: merged);
   }
 
-  Map<String, String> _mergeHeaders(Map<String, String>? headers) {
+  Future<Map<String, String>> _mergeHeaders(
+    Map<String, String>? headers,
+  ) async {
+    final authHeaders = _authHeaderProvider != null
+        ? await _authHeaderProvider.getHeaders()
+        : const <String, String>{};
     return {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      ...authHeaders,
       if (headers != null) ...headers,
     };
   }
@@ -65,7 +76,7 @@ class NetworkServiceImpl implements NetworkService {
     Map<String, dynamic>? query,
   }) async {
     final uri = _buildUri(url, query);
-    final mergedHeaders = _mergeHeaders(headers);
+    final mergedHeaders = await _mergeHeaders(headers);
     _logger.info('HTTP POST ${uri.toString()}');
     _logger.debug('Headers: $mergedHeaders');
     _logger.debug('Body: ${jsonEncode(body)}');
@@ -85,7 +96,7 @@ class NetworkServiceImpl implements NetworkService {
     Map<String, dynamic>? query,
   }) async {
     final uri = _buildUri(url, query);
-    final mergedHeaders = _mergeHeaders(headers);
+    final mergedHeaders = await _mergeHeaders(headers);
     _logger.info('HTTP GET ${uri.toString()}');
     _logger.debug('Headers: $mergedHeaders');
     final response = await _client.get(uri, headers: mergedHeaders);
@@ -100,7 +111,7 @@ class NetworkServiceImpl implements NetworkService {
     Map<String, dynamic>? query,
   }) async {
     final uri = _buildUri(url, query);
-    final mergedHeaders = _mergeHeaders(headers);
+    final mergedHeaders = await _mergeHeaders(headers);
     _logger.info('HTTP DELETE ${uri.toString()}');
     _logger.debug('Headers: $mergedHeaders');
     final response = await _client.delete(uri, headers: mergedHeaders);

@@ -106,7 +106,7 @@ class MorePage extends StatelessWidget {
                               text: '1 новая',
                               color: Color(0xFF2BB673),
                             ),
-                            onTap: () => _showComingSoon(context),
+                            onTap: () => context.push(AppRouter.news),
                           ),
                           const SizedBox(height: 12),
                           // Льготы и возможности

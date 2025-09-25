@@ -108,7 +108,7 @@ class _TemplateTile extends StatelessWidget {
       child: ListTile(
         leading: Icon(template.icon, size: 28, color: Colors.black87),
         title: Text(
-          template.title,
+          template.type.displayName,
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         trailing: const Icon(Icons.chevron_right),

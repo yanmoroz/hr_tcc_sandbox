@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/new_application_bloc.dart';
-import '../../blocs/new_application_event.dart';
-import '../../blocs/new_application_state.dart';
+import '../../blocs/forms/absence_form_cubit.dart';
 import '../dropdown_field.dart';
 import '../date_field.dart';
 import '../time_field.dart';
 import '../app_text_field.dart';
 
 class AbsenceForm extends StatelessWidget {
-  final NewApplicationState state;
+  final AbsenceFormState state;
 
   const AbsenceForm({super.key, required this.state});
 
@@ -20,36 +18,30 @@ class AbsenceForm extends StatelessWidget {
       children: [
         DropdownField<String>(
           label: 'Тип',
-          value: state.absenceType,
+          value: state.type,
           modalTitle: 'Выберите тип отсутствия',
           items: const ['Ранний уход', 'Опоздание', 'График работы', 'Иное'],
           itemBuilder: (s) => s,
-          onChanged: (v) => context.read<NewApplicationBloc>().add(
-            AbsenceTypeChanged(v ?? ''),
-          ),
+          onChanged: (v) => context.read<AbsenceFormCubit>().setType(v ?? ''),
         ),
 
         DateField(
           label: 'Дата',
-          date: state.absenceDate,
-          onPick: (d) =>
-              context.read<NewApplicationBloc>().add(AbsenceDateChanged(d)),
+          date: state.date,
+          onPick: (d) => context.read<AbsenceFormCubit>().setDate(d),
         ),
 
         TimeField(
-          label: state.absenceType == 'Ранний уход' ? 'Время ухода' : 'Время',
-          time: _parseTime(state.absenceTime),
-          onPick: (t) => context.read<NewApplicationBloc>().add(
-            AbsenceTimeChanged(_format(t)),
-          ),
+          label: state.type == 'Ранний уход' ? 'Время ухода' : 'Время',
+          time: _parseTime(state.time),
+          onPick: (t) => context.read<AbsenceFormCubit>().setTime(_format(t)),
         ),
 
         AppTextField(
           label: 'Причина',
-          value: state.absenceReason,
+          value: state.reason,
           multiline: true,
-          onChanged: (t) =>
-              context.read<NewApplicationBloc>().add(AbsenceReasonChanged(t)),
+          onChanged: (t) => context.read<AbsenceFormCubit>().setReason(t),
         ),
       ],
     );

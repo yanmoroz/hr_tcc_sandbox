@@ -48,7 +48,6 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
       Application(
         id: '1',
         type: ApplicationType.employmentCertificate,
-        title: 'Справка с места работы',
         purpose: mortgagePurpose,
         createdAt: DateTime.now().subtract(const Duration(days: 2)),
         status: ApplicationStatus.inProgress,
@@ -57,7 +56,6 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
       Application(
         id: '2',
         type: ApplicationType.employmentCertificate,
-        title: 'Справка с места работы',
         purpose: rentPurpose,
         createdAt: DateTime.now().subtract(const Duration(days: 1)),
         status: ApplicationStatus.done,
@@ -67,7 +65,6 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
       Application(
         id: '3',
         type: ApplicationType.parking,
-        title: 'Парковка',
         purpose: mortgagePurpose, // Using same purpose for simplicity
         createdAt: DateTime.now().subtract(const Duration(hours: 12)),
         status: ApplicationStatus.inProgress,
@@ -77,7 +74,6 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
       Application(
         id: '4',
         type: ApplicationType.absence,
-        title: 'Отсутствие',
         purpose: const ApplicationPurpose(
           id: 'early_leave',
           title: 'Ранний уход',
@@ -86,6 +82,139 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         status: ApplicationStatus.done,
         completedAt: DateTime.now().subtract(const Duration(days: 2, hours: 4)),
         comment: 'Плохое самочувствие',
+      ),
+      // Violation mock
+      Application(
+        id: '5',
+        type: ApplicationType.violation,
+        purpose: const ApplicationPurpose(
+          id: 'violation_subject',
+          title: 'Нарушение',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(hours: 3)),
+        status: ApplicationStatus.done,
+        completedAt: DateTime.now().subtract(const Duration(hours: 1)),
+        comment: 'Рассмотрено службой безопасности',
+      ),
+      // NDFL Certificate mock
+      Application(
+        id: '6',
+        type: ApplicationType.ndflCertificate,
+        purpose: const ApplicationPurpose(
+          id: 'tax_declaration',
+          title: 'Для подачи налоговой декларации',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Ожидает подготовки в бухгалтерии',
+      ),
+      // Employment Record Copy mock
+      Application(
+        id: '7',
+        type: ApplicationType.employmentRecordCopy,
+        purpose: const ApplicationPurpose(
+          id: 'employment_record_copy',
+          title: 'Копия трудовой книжки',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 2)),
+        status: ApplicationStatus.done,
+        completedAt: DateTime.now().subtract(const Duration(hours: 6)),
+        comment: 'Готова к выдаче',
+      ),
+      // Referral Program mock
+      Application(
+        id: '8',
+        type: ApplicationType.referralProgram,
+        purpose: const ApplicationPurpose(
+          id: 'referral_program',
+          title: 'Реферальная программа',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        status: ApplicationStatus.done,
+        completedAt: DateTime.now().subtract(const Duration(hours: 2)),
+        comment: 'Кандидат рассмотрен',
+      ),
+      // Additional Education mock
+      Application(
+        id: '9',
+        type: ApplicationType.additionalEducation,
+        purpose: const ApplicationPurpose(
+          id: 'additional_education',
+          title: 'Дополнительное профессиональное образование (ДПО)',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 3)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Ожидает согласования с руководителем',
+      ),
+      // Internal Training mock
+      Application(
+        id: '10',
+        type: ApplicationType.internalTraining,
+        purpose: const ApplicationPurpose(
+          id: 'internal_training',
+          title: 'Внутреннее обучение',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(hours: 10)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Формируется программа обучения',
+      ),
+      // Alpina Digital Access mock
+      Application(
+        id: '11',
+        type: ApplicationType.alpinaDigitalAccess,
+        purpose: const ApplicationPurpose(
+          id: 'alpina',
+          title: 'Доступ к «Альпина Диджитал»',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(hours: 5)),
+        status: ApplicationStatus.done,
+        completedAt: DateTime.now().subtract(const Duration(hours: 1)),
+        comment: 'Активирован доступ',
+      ),
+      // Business Trip mock
+      Application(
+        id: '12',
+        type: ApplicationType.businessTrip,
+        purpose: const ApplicationPurpose(
+          id: 'business_trip',
+          title: 'Командировка',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 4)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Подбор услуг координатором',
+      ),
+      // Access Card mock
+      Application(
+        id: '13',
+        type: ApplicationType.accessCard,
+        purpose: const ApplicationPurpose(id: 'pass', title: 'Пропуск'),
+        createdAt: DateTime.now().subtract(const Duration(hours: 6)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Ожидает согласования СБ',
+      ),
+      // Courier Delivery mock
+      Application(
+        id: '14',
+        type: ApplicationType.courierDelivery,
+        purpose: const ApplicationPurpose(
+          id: 'delivery',
+          title: 'Курьерская доставка',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Курьер назначен',
+      ),
+      // Unplanned Training mock
+      Application(
+        id: '15',
+        type: ApplicationType.unplannedTraining,
+        purpose: const ApplicationPurpose(
+          id: 'unplanned_training',
+          title: 'Незапланированное обучение',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 2)),
+        status: ApplicationStatus.inProgress,
+        comment: 'Ожидает подтверждения организатора',
       ),
     ];
   }
@@ -104,7 +233,7 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
   Future<CreatedApplication> create(NewApplicationDraft draft) =>
       _local.create(draft);
 
-  // Helper method to map ApplicationType to templateId
+  // Helper method to map ApplicationType to templateId for local datasource
   String _getTemplateId(ApplicationType applicationType) {
     switch (applicationType) {
       case ApplicationType.employmentCertificate:

@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../shared/widgets/radio_group.dart';
-import '../../blocs/new_application_bloc.dart';
-import '../../blocs/new_application_event.dart';
-import '../../blocs/new_application_state.dart';
+import '../../blocs/forms/parking_form_cubit.dart';
 import '../app_text_field.dart';
 import '../car_number_text_field.dart';
 import '../date_field.dart';
 import '../dropdown_field.dart';
 
 class ParkingForm extends StatelessWidget {
-  final NewApplicationState state;
+  final ParkingFormState state;
 
   const ParkingForm({super.key, required this.state});
 
@@ -21,7 +19,7 @@ class ParkingForm extends StatelessWidget {
       children: [
         RadioGroup<ParkingPassType>(
           label: 'Тип пропуска',
-          value: state.parkingPassType,
+          value: state.passType,
           options: [
             const RadioOption(
               label: 'Гостевой пропуск',
@@ -32,37 +30,31 @@ class ParkingForm extends StatelessWidget {
               value: ParkingPassType.permanent,
             ),
           ],
-          onChanged: (v) =>
-              context.read<NewApplicationBloc>().add(ParkingPassTypeChanged(v)),
+          onChanged: (v) => context.read<ParkingFormCubit>().setPassType(v),
         ),
 
         DropdownField<String>(
           label: 'Цель посещения',
-          value: state.parkingPurpose,
+          value: state.purpose,
           items: const ['Совещание', 'Встреча', 'Поставка', 'Сервис', 'Другое'],
           itemBuilder: (s) => s,
-          onChanged: (v) => context.read<NewApplicationBloc>().add(
-            ParkingPurposeChanged(v ?? ''),
-          ),
+          onChanged: (v) =>
+              context.read<ParkingFormCubit>().setPurpose(v ?? ''),
         ),
 
         DropdownField<int>(
           label: 'Этаж',
-          value: state.parkingFloor,
+          value: state.floor,
           items: List<int>.generate(50, (i) => i + 1),
           itemBuilder: (i) => i.toString(),
-          onChanged: (v) => context.read<NewApplicationBloc>().add(
-            ParkingFloorChanged(v ?? 1),
-          ),
+          onChanged: (v) => context.read<ParkingFormCubit>().setFloor(v ?? 1),
         ),
         DropdownField<int>(
           label: 'Офис',
-          value: state.parkingOffice,
+          value: state.office,
           items: List<int>.generate(10, (i) => i + 1),
           itemBuilder: (i) => i.toString(),
-          onChanged: (v) => context.read<NewApplicationBloc>().add(
-            ParkingOfficeChanged(v ?? 1),
-          ),
+          onChanged: (v) => context.read<ParkingFormCubit>().setOffice(v ?? 1),
         ),
 
         DropdownField<String>(
@@ -82,27 +74,23 @@ class ParkingForm extends StatelessWidget {
             'Kia',
           ],
           itemBuilder: (s) => s,
-          onChanged: (v) => context.read<NewApplicationBloc>().add(
-            ParkingCarBrandChanged(v ?? ''),
-          ),
+          onChanged: (v) =>
+              context.read<ParkingFormCubit>().setCarBrand(v ?? ''),
         ),
         CarNumberTextField(
           label: 'Госномер автомобиля',
           value: state.carPlate,
-          onChanged: (t) =>
-              context.read<NewApplicationBloc>().add(ParkingCarPlateChanged(t)),
+          onChanged: (t) => context.read<ParkingFormCubit>().setCarPlate(t),
         ),
 
         // Date period
         DateField(
           label: 'Дата или период',
           mode: DateFieldMode.range,
-          dateFrom: state.parkingDateFrom,
-          dateTo: state.parkingDateTo,
-          onPickFrom: (d) =>
-              context.read<NewApplicationBloc>().add(ParkingDateFromChanged(d)),
-          onPickTo: (d) =>
-              context.read<NewApplicationBloc>().add(ParkingDateToChanged(d)),
+          dateFrom: state.dateFrom,
+          dateTo: state.dateTo,
+          onPickFrom: (d) => context.read<ParkingFormCubit>().setDateFrom(d),
+          onPickTo: (d) => context.read<ParkingFormCubit>().setDateTo(d),
         ),
 
         // Time from/to
@@ -112,9 +100,8 @@ class ParkingForm extends StatelessWidget {
               child: AppTextField(
                 label: 'Часы «С»',
                 value: state.timeFrom,
-                onChanged: (t) => context.read<NewApplicationBloc>().add(
-                  ParkingTimeFromChanged(t),
-                ),
+                onChanged: (t) =>
+                    context.read<ParkingFormCubit>().setTimeFrom(t),
               ),
             ),
             const Text(
@@ -129,9 +116,7 @@ class ParkingForm extends StatelessWidget {
               child: AppTextField(
                 label: 'Часы «До»',
                 value: state.timeTo,
-                onChanged: (t) => context.read<NewApplicationBloc>().add(
-                  ParkingTimeToChanged(t),
-                ),
+                onChanged: (t) => context.read<ParkingFormCubit>().setTimeTo(t),
               ),
             ),
           ],
@@ -155,9 +140,8 @@ class ParkingForm extends StatelessWidget {
         AppTextField(
           label: 'ФИО',
           value: state.visitors.isNotEmpty ? state.visitors.first : null,
-          onChanged: (t) => context.read<NewApplicationBloc>().add(
-            ParkingVisitorPrimaryChanged(t),
-          ),
+          onChanged: (t) =>
+              context.read<ParkingFormCubit>().setVisitorPrimary(t),
         ),
       ],
     );

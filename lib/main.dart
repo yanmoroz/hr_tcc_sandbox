@@ -17,6 +17,7 @@ import 'features/profile/presentation/blocs/profile_event.dart';
 import 'features/quick_links/di/quick_links_module.dart';
 import 'features/surveys/di/surveys_module.dart';
 import 'features/resale/di/resale_module.dart';
+import 'features/news/di/news_module.dart';
 import 'features/applications/di/applications_module.dart';
 import 'features/more/di/more_module.dart';
 
@@ -40,6 +41,7 @@ void setupDependencies() {
     QuickLinksModule(),
     SurveysModule(),
     ResaleModule(),
+    NewsModule(),
     ApplicationsModule(),
     MoreModule(),
   ];

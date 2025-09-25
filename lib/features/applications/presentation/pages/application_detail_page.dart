@@ -76,8 +76,8 @@ class _ApplicationDetailContent extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: application.status == ApplicationStatus.done
-                            ? Colors.green.withOpacity(0.1)
-                            : Colors.orange.withOpacity(0.1),
+                            ? Colors.green.withValues(alpha: 0.1)
+                            : Colors.orange.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(

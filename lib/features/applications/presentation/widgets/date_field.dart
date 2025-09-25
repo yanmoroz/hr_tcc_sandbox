@@ -6,7 +6,7 @@ class DateField extends StatelessWidget {
   final String label;
   final DateTime? date;
   final ValueChanged<DateTime>? onPick;
-  
+
   // Range mode parameters
   final DateFieldMode mode;
   final DateTime? dateFrom;
@@ -395,7 +395,7 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
         : isSelected
         ? Colors.white
         : Colors.black87;
-    final Color? bgColor = isSelected
+    final Color bgColor = isSelected
         ? _primary
         : (isDisabled ? Colors.transparent : Colors.transparent);
 
@@ -518,10 +518,12 @@ class _DateRangePickerBottomSheet extends StatefulWidget {
   });
 
   @override
-  State<_DateRangePickerBottomSheet> createState() => _DateRangePickerBottomSheetState();
+  State<_DateRangePickerBottomSheet> createState() =>
+      _DateRangePickerBottomSheetState();
 }
 
-class _DateRangePickerBottomSheetState extends State<_DateRangePickerBottomSheet> {
+class _DateRangePickerBottomSheetState
+    extends State<_DateRangePickerBottomSheet> {
   static const Color _primary = Color(0xFF12369F);
 
   late DateTime _visibleMonth;
@@ -701,12 +703,27 @@ class _DateRangePickerBottomSheetState extends State<_DateRangePickerBottomSheet
             ),
           ) ||
           current.isAfter(widget.lastDate);
-      
-      final bool isInRange = _isInRange(current);
-      final bool isStartDate = _isSameDate(current, _selectedDateFrom ?? DateTime.now());
-      final bool isEndDate = _isSameDate(current, _selectedDateTo ?? DateTime.now());
 
-      cells.add(_buildDayCell(day, isDisabled, isInRange, isStartDate, isEndDate, current));
+      final bool isInRange = _isInRange(current);
+      final bool isStartDate = _isSameDate(
+        current,
+        _selectedDateFrom ?? DateTime.now(),
+      );
+      final bool isEndDate = _isSameDate(
+        current,
+        _selectedDateTo ?? DateTime.now(),
+      );
+
+      cells.add(
+        _buildDayCell(
+          day,
+          isDisabled,
+          isInRange,
+          isStartDate,
+          isEndDate,
+          current,
+        ),
+      );
     }
 
     return Padding(
@@ -740,7 +757,7 @@ class _DateRangePickerBottomSheetState extends State<_DateRangePickerBottomSheet
       bgColor = _primary;
     } else if (isInRange) {
       textColor = Colors.black87;
-      bgColor = _primary.withOpacity(0.1);
+      bgColor = _primary.withValues(alpha: 0.1);
     } else {
       textColor = Colors.black87;
       bgColor = Colors.transparent;
@@ -754,7 +771,8 @@ class _DateRangePickerBottomSheetState extends State<_DateRangePickerBottomSheet
             ? null
             : () {
                 setState(() {
-                  if (_selectedDateFrom == null || (_selectedDateFrom != null && _selectedDateTo != null)) {
+                  if (_selectedDateFrom == null ||
+                      (_selectedDateFrom != null && _selectedDateTo != null)) {
                     _selectedDateFrom = current;
                     _selectedDateTo = null;
                   } else {
@@ -801,10 +819,9 @@ class _DateRangePickerBottomSheetState extends State<_DateRangePickerBottomSheet
         height: 52,
         child: ElevatedButton(
           onPressed: canSubmit
-              ? () => Navigator.of(context).pop({
-                    'from': _selectedDateFrom!,
-                    'to': _selectedDateTo!,
-                  })
+              ? () => Navigator.of(
+                  context,
+                ).pop({'from': _selectedDateFrom!, 'to': _selectedDateTo!})
               : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: canSubmit ? Colors.white : Colors.grey[100],

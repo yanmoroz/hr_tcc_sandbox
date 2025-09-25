@@ -179,7 +179,7 @@ class _DropdownModal<T> extends StatelessWidget {
                 final item = items[index];
                 final isSelected = selectedValue == item;
 
-                return Container(
+                return SizedBox(
                   height: 48,
                   child: RadioListTile<T>(
                     title: Text(

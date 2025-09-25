@@ -90,7 +90,7 @@ class MorePage extends StatelessWidget {
                                 title: 'Опросы',
                                 trailing: notCompleted > 0
                                     ? _Badge(
-                                        text: '${notCompleted} не пройдены',
+                                        text: '$notCompleted не пройдены',
                                         color: const Color(0xFFFF9100),
                                       )
                                     : const Icon(Icons.chevron_right),

@@ -131,7 +131,7 @@ class NetworkServiceImpl implements NetworkService {
     try {
       final text = utf8.decode(bodyBytes);
       if (text.length <= maxLength) return text;
-      return text.substring(0, maxLength) + '...';
+      return '${text.substring(0, maxLength)}...';
     } catch (_) {
       return '';
     }

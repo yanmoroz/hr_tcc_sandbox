@@ -66,7 +66,7 @@ class _NewApplicationPageState extends State<NewApplicationPage> {
               showDialog(
                 context: context,
                 barrierDismissible: true,
-                barrierColor: Colors.black.withOpacity(0.5),
+                barrierColor: Colors.black.withValues(alpha: 0.5),
                 builder: (context) => BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                   child: _ApplicationSuccessModal(

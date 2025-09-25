@@ -1,42 +1,128 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
+import 'logger_service.dart';
 
 abstract class NetworkService {
-  Future<http.Response> post(String url, Map<String, dynamic> body);
-  Future<http.Response> get(String url);
-  Future<http.Response> delete(String url);
+  Future<http.Response> post(
+    String url,
+    Map<String, dynamic> body, {
+    Map<String, String>? headers,
+    Map<String, dynamic>? query,
+  });
+  Future<http.Response> get(
+    String url, {
+    Map<String, String>? headers,
+    Map<String, dynamic>? query,
+  });
+  Future<http.Response> delete(
+    String url, {
+    Map<String, String>? headers,
+    Map<String, dynamic>? query,
+  });
 }
 
 class NetworkServiceImpl implements NetworkService {
   final http.Client _client;
+  final LoggerService _logger = LoggerService();
 
-  NetworkServiceImpl({http.Client? client}) : _client = client ?? http.Client();
+  NetworkServiceImpl({http.Client? client})
+    : _client = client ?? _createDefaultClient();
+
+  static http.Client _createDefaultClient() {
+    if (kIsWeb) {
+      return http.Client();
+    }
+    final HttpClient ioHttpClient = HttpClient()
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+    return IOClient(ioHttpClient);
+  }
+
+  Uri _buildUri(String url, Map<String, dynamic>? query) {
+    final uri = Uri.parse(url);
+    if (query == null || query.isEmpty) return uri;
+    final merged = Map<String, dynamic>.from(uri.queryParameters)
+      ..addAll(query.map((k, v) => MapEntry(k, v?.toString() ?? '')));
+    return uri.replace(queryParameters: merged);
+  }
+
+  Map<String, String> _mergeHeaders(Map<String, String>? headers) {
+    return {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      if (headers != null) ...headers,
+    };
+  }
 
   @override
-  Future<http.Response> post(String url, Map<String, dynamic> body) async {
-    return await _client.post(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
+  Future<http.Response> post(
+    String url,
+    Map<String, dynamic> body, {
+    Map<String, String>? headers,
+    Map<String, dynamic>? query,
+  }) async {
+    final uri = _buildUri(url, query);
+    final mergedHeaders = _mergeHeaders(headers);
+    _logger.info('HTTP POST ${uri.toString()}');
+    _logger.debug('Headers: $mergedHeaders');
+    _logger.debug('Body: ${jsonEncode(body)}');
+    final response = await _client.post(
+      uri,
+      headers: mergedHeaders,
       body: jsonEncode(body),
     );
+    _logResponse('POST', uri, response);
+    return response;
   }
 
   @override
-  Future<http.Response> get(String url) async {
-    return await _client.get(
-      Uri.parse(url),
-      headers: {'Accept': 'application/json'},
-    );
+  Future<http.Response> get(
+    String url, {
+    Map<String, String>? headers,
+    Map<String, dynamic>? query,
+  }) async {
+    final uri = _buildUri(url, query);
+    final mergedHeaders = _mergeHeaders(headers);
+    _logger.info('HTTP GET ${uri.toString()}');
+    _logger.debug('Headers: $mergedHeaders');
+    final response = await _client.get(uri, headers: mergedHeaders);
+    _logResponse('GET', uri, response);
+    return response;
   }
 
   @override
-  Future<http.Response> delete(String url) async {
-    return await _client.delete(
-      Uri.parse(url),
-      headers: {'Accept': 'application/json'},
-    );
+  Future<http.Response> delete(
+    String url, {
+    Map<String, String>? headers,
+    Map<String, dynamic>? query,
+  }) async {
+    final uri = _buildUri(url, query);
+    final mergedHeaders = _mergeHeaders(headers);
+    _logger.info('HTTP DELETE ${uri.toString()}');
+    _logger.debug('Headers: $mergedHeaders');
+    final response = await _client.delete(uri, headers: mergedHeaders);
+    _logResponse('DELETE', uri, response);
+    return response;
+  }
+
+  void _logResponse(String method, Uri uri, http.Response response) {
+    final preview = _previewBody(response.bodyBytes);
+    _logger.info('HTTP ${response.statusCode} $method ${uri.toString()}');
+    if (preview.isNotEmpty) {
+      _logger.debug('Response: $preview');
+    }
+  }
+
+  String _previewBody(List<int> bodyBytes, {int maxLength = 800}) {
+    try {
+      final text = utf8.decode(bodyBytes);
+      if (text.length <= maxLength) return text;
+      return text.substring(0, maxLength) + '...';
+    } catch (_) {
+      return '';
+    }
   }
 }

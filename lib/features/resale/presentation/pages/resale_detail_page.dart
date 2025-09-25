@@ -26,6 +26,7 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
     super.initState();
     _bloc = GetIt.instance<ResaleBloc>();
     _bloc.add(ResaleRequested());
+    _bloc.add(ResaleItemDetailRequested(widget.itemId));
   }
 
   @override
@@ -144,7 +145,7 @@ class _ResaleDetailPageState extends State<ResaleDetailPage> {
                     child: Image.network(
                       item.imageUrls.isNotEmpty
                           ? item.imageUrls.first
-                          : 'https://picsum.photos/800/450',
+                          : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png',
                       fit: BoxFit.cover,
                     ),
                   ),

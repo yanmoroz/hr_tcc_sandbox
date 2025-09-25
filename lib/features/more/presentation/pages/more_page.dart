@@ -17,7 +17,8 @@ class MorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<more.MoreBloc>(
-      create: (context) => GetIt.instance<more.MoreBloc>(),
+      create: (context) =>
+          GetIt.instance<more.MoreBloc>()..add(const more.MoreRequested()),
       child: SafeArea(
         top: true,
         bottom: false,
@@ -35,15 +36,7 @@ class MorePage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         children: [
-                          // Trigger aggregate update
-                          BlocBuilder<more.MoreBloc, more.MoreState>(
-                            builder: (context, state) {
-                              context.read<more.MoreBloc>().add(
-                                more.MoreRequested(),
-                              );
-                              return const SizedBox.shrink();
-                            },
-                          ),
+                          // Aggregate is requested once in provider's create
                           // Нарушения
                           _MoreTile(
                             title: 'Нарушения',

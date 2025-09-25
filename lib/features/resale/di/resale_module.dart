@@ -1,6 +1,8 @@
 import 'package:get_it/get_it.dart';
 import '../../../app/di/di_module.dart';
-import '../data/datasources/resale_local_datasource.dart';
+import '../../../shared/services/network_service.dart';
+import '../../../shared/services/secure_storage_service.dart';
+import '../data/datasources/resale_remote_datasource.dart';
 import '../data/repositories/resale_repository_impl.dart';
 import '../domain/repositories/resale_repository.dart';
 import '../domain/usecases/get_resale_item_detail.dart';
@@ -12,13 +14,16 @@ class ResaleModule extends DiModule {
   @override
   void register(GetIt getIt) {
     // Data sources
-    getIt.registerLazySingleton<ResaleLocalDataSource>(
-      () => ResaleLocalDataSourceImpl(),
+    getIt.registerLazySingleton<ResaleRemoteDataSource>(
+      () => ResaleRemoteDataSourceImpl(
+        getIt<NetworkService>(),
+        getIt<SecureStorageService>(),
+      ),
     );
 
     // Repository
     getIt.registerLazySingleton<ResaleRepository>(
-      () => ResaleRepositoryImpl(getIt<ResaleLocalDataSource>()),
+      () => ResaleRepositoryImpl(getIt<ResaleRemoteDataSource>()),
     );
 
     // Use cases
@@ -36,6 +41,7 @@ class ResaleModule extends DiModule {
     getIt.registerFactory<ResaleBloc>(
       () => ResaleBloc(
         getItems: getIt<GetResaleItemsUseCase>(),
+        getItemDetail: getIt<GetResaleItemDetailUseCase>(),
         toggleBooking: getIt<ToggleBookingUseCase>(),
       ),
     );

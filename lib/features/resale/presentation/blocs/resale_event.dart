@@ -30,3 +30,10 @@ class ResaleToggleBooking extends ResaleEvent {
   @override
   List<Object?> get props => [itemId];
 }
+
+class ResaleItemDetailRequested extends ResaleEvent {
+  final String itemId;
+  const ResaleItemDetailRequested(this.itemId);
+  @override
+  List<Object?> get props => [itemId];
+}

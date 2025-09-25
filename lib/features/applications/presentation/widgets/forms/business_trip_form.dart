@@ -102,9 +102,8 @@ class BusinessTripForm extends StatelessWidget {
               value: CoordinatorServiceOption.notRequired,
             ),
           ],
-          onChanged: (v) => context
-              .read<BusinessTripFormCubit>()
-              .setCoordinatorService(v ?? CoordinatorServiceOption.required),
+          onChanged: (v) =>
+              context.read<BusinessTripFormCubit>().setCoordinatorService(v),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),

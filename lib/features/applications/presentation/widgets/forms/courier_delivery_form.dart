@@ -82,9 +82,8 @@ class CourierDeliveryForm extends StatelessWidget {
               value: CourierTripGoal.deliver,
             ),
           ],
-          onChanged: (v) => context
-              .read<CourierDeliveryFormCubit>()
-              .setTripGoal(v ?? CourierTripGoal.deliver),
+          onChanged: (v) =>
+              context.read<CourierDeliveryFormCubit>().setTripGoal(v),
         ),
         const Padding(
           padding: EdgeInsets.fromLTRB(20, 8, 20, 0),

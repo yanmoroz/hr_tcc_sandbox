@@ -23,9 +23,7 @@ class AccessCardForm extends StatelessWidget {
             RadioOption(label: 'Гостевой', value: AccessPassType.guest),
             RadioOption(label: 'Постоянный', value: AccessPassType.permanent),
           ],
-          onChanged: (v) => context.read<AccessCardFormCubit>().setPassType(
-            v ?? AccessPassType.guest,
-          ),
+          onChanged: (v) => context.read<AccessCardFormCubit>().setPassType(v),
         ),
         DropdownField<String>(
           label: 'Цель посещения',

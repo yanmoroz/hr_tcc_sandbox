@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/application.dart';
-import '../../domain/entities/application_type.dart';
 import '../../domain/usecases/get_applications.dart';
 import 'applications_list_event.dart';
 import 'applications_list_state.dart';

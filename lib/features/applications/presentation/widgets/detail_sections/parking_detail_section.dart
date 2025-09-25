@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../domain/entities/application.dart';
-import '../../../domain/entities/application_type.dart';
-import '../../blocs/new_application_state.dart';
 
 class ParkingDetailSection extends StatelessWidget {
   final Application application;

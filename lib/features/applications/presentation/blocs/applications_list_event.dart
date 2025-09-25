@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 enum ApplicationsFilter { all, inProgress, done }
 
 abstract class ApplicationsListEvent {}

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/news.dart';
 
 class CategoryDropdown<T> extends StatelessWidget {
   final String label;

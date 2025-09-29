@@ -1,6 +1,6 @@
 name: flutter_hr_sandbox
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -20,6 +20,7 @@ dependencies:
   url_launcher: ^6.3.2
   logger: ^2.5.0
   file_picker: ^8.0.0+1
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -37,3 +38,4 @@ flutter:
     - assets/icons/quick_links/page/
     - assets/icons/quick_links/widget/
     - assets/images/surveys/
+    - .env

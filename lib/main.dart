@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hr_sandbox/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -26,7 +27,9 @@ import 'shared/services/logger_service.dart';
 
 final GetIt getIt = GetIt.instance;
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
   setupDependencies();
   getIt<LoggerService>().info('HR TCC Sandbox app starting...');
   runApp(const MainApp());

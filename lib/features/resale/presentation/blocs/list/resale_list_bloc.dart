@@ -1,19 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/resale_item.dart';
 import '../../../domain/usecases/get_resale_items.dart';
-import '../../../domain/usecases/toggle_booking.dart';
+import '../../../domain/usecases/book_resale_item.dart';
+import '../../../domain/usecases/cancel_book_resale_item.dart';
 import 'resale_list_event.dart';
 import 'resale_list_state.dart';
 
 class ResaleListBloc extends Bloc<ResaleListEvent, ResaleListState> {
   final GetResaleItemsUseCase _getItems;
-  final ToggleBookingUseCase _toggleBooking;
+  final BookResaleItemUseCase _book;
+  final CancelBookResaleItemUseCase _cancelBook;
 
   ResaleListBloc({
     required GetResaleItemsUseCase getItems,
-    required ToggleBookingUseCase toggleBooking,
+    required BookResaleItemUseCase book,
+    required CancelBookResaleItemUseCase cancelBook,
   }) : _getItems = getItems,
-       _toggleBooking = toggleBooking,
+       _book = book,
+       _cancelBook = cancelBook,
        super(const ResaleListState()) {
     on<ResaleListRequested>(_onRequested);
     on<ResaleListFilterChanged>(_onFilterChanged);
@@ -67,7 +71,26 @@ class ResaleListBloc extends Bloc<ResaleListEvent, ResaleListState> {
     ResaleListToggleBooking event,
     Emitter<ResaleListState> emit,
   ) async {
-    await _toggleBooking(event.itemId);
+    final current = state.allItems.firstWhere(
+      (e) => e.id == event.itemId,
+      orElse: () => ResaleItem(
+        id: '',
+        title: '',
+        category: '',
+        priceRub: 0,
+        ownerName: '',
+        updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
+        location: '',
+        description: '',
+        imageUrls: [],
+        status: ResaleItemStatus.forSale,
+      ),
+    );
+    if (current.status == ResaleItemStatus.forSale) {
+      await _book(event.itemId);
+    } else {
+      await _cancelBook(event.itemId);
+    }
     final updated = state.allItems.map((e) {
       if (e.id != event.itemId) return e;
       final newStatus = e.status == ResaleItemStatus.booked

@@ -25,8 +25,19 @@ class ResaleRepositoryImpl implements ResaleRepository {
   }
 
   @override
-  Future<void> toggleBooking(String id) async {
-    // No API yet; do nothing here. UI handles optimistic updates.
-    return;
+  Future<void> book(String id) async {
+    await _remote.createBooking(id);
+    await _remote.confirmBooking(
+      id,
+      inn: '520205004556',
+      address: 'Тестовая улица 2',
+      employeePlace: 'Рабочее место 2',
+      pickupLotMyself: true,
+    );
+  }
+
+  @override
+  Future<void> cancelBook(String id) async {
+    await _remote.cancelBooking(id);
   }
 }

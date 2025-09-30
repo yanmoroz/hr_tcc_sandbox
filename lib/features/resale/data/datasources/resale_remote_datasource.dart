@@ -11,6 +11,15 @@ abstract class ResaleRemoteDataSource {
     int pageSize = 20,
   });
   Future<ResaleDetailDto> getItemDetail(String id);
+  Future<ResaleDetailDto> createBooking(String id);
+  Future<ResaleDetailDto> confirmBooking(
+    String id, {
+    String? inn,
+    String? address,
+    String? employeePlace,
+    bool? pickupLotMyself,
+  });
+  Future<ResaleDetailDto> cancelBooking(String id);
 }
 
 class ResaleRemoteDataSourceImpl implements ResaleRemoteDataSource {
@@ -54,6 +63,60 @@ class ResaleRemoteDataSourceImpl implements ResaleRemoteDataSource {
     final http.Response resp = await _network.get('$_baseUrl/resell/$id');
     if (resp.statusCode < 200 || resp.statusCode >= 300) {
       throw Exception('Failed to load resale item ($id): ${resp.statusCode}');
+    }
+    final decoded =
+        jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
+    return ResaleDetailDto.fromJson(decoded);
+  }
+
+  @override
+  Future<ResaleDetailDto> createBooking(String id) async {
+    final http.Response resp = await _network.post(
+      '$_baseUrl/resell/$id/booking',
+      const {},
+    );
+    if (resp.statusCode < 200 || resp.statusCode >= 300) {
+      throw Exception('Failed to create booking ($id): ${resp.statusCode}');
+    }
+    final decoded =
+        jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
+    return ResaleDetailDto.fromJson(decoded);
+  }
+
+  @override
+  Future<ResaleDetailDto> confirmBooking(
+    String id, {
+    String? inn,
+    String? address,
+    String? employeePlace,
+    bool? pickupLotMyself,
+  }) async {
+    final body = <String, dynamic>{'transition': 1};
+    if (inn != null) body['inn'] = inn;
+    if (address != null) body['address'] = address;
+    if (employeePlace != null) body['employeePlace'] = employeePlace;
+    if (pickupLotMyself != null) body['pickupLotMyself'] = pickupLotMyself;
+    final http.Response resp = await _network.post(
+      '$_baseUrl/resell/$id/confirm-booking',
+      body,
+    );
+    if (resp.statusCode < 200 || resp.statusCode >= 300) {
+      throw Exception('Failed to confirm booking ($id): ${resp.statusCode}');
+    }
+    final decoded =
+        jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
+    return ResaleDetailDto.fromJson(decoded);
+  }
+
+  @override
+  Future<ResaleDetailDto> cancelBooking(String id) async {
+    final body = <String, dynamic>{'transition': 0};
+    final http.Response resp = await _network.post(
+      '$_baseUrl/resell/$id/confirm-booking',
+      body,
+    );
+    if (resp.statusCode < 200 || resp.statusCode >= 300) {
+      throw Exception('Failed to cancel booking ($id): ${resp.statusCode}');
     }
     final decoded =
         jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;

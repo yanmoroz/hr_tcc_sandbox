@@ -1,19 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/resale_item.dart';
 import '../../../domain/usecases/get_resale_item_detail.dart';
-import '../../../domain/usecases/toggle_booking.dart';
+import '../../../domain/usecases/book_resale_item.dart';
+import '../../../domain/usecases/cancel_book_resale_item.dart';
 import 'resale_detail_event.dart';
 import 'resale_detail_state.dart';
 
 class ResaleDetailBloc extends Bloc<ResaleDetailEvent, ResaleDetailState> {
   final GetResaleItemDetailUseCase _getItemDetail;
-  final ToggleBookingUseCase _toggleBooking;
+  final BookResaleItemUseCase _book;
+  final CancelBookResaleItemUseCase _cancelBook;
 
   ResaleDetailBloc({
     required GetResaleItemDetailUseCase getItemDetail,
-    required ToggleBookingUseCase toggleBooking,
+    required BookResaleItemUseCase book,
+    required CancelBookResaleItemUseCase cancelBook,
   }) : _getItemDetail = getItemDetail,
-       _toggleBooking = toggleBooking,
+       _book = book,
+       _cancelBook = cancelBook,
        super(const ResaleDetailState()) {
     on<ResaleDetailRequested>(_onDetailRequested);
     on<ResaleDetailToggleBooking>(_onToggleBooking);
@@ -40,7 +44,13 @@ class ResaleDetailBloc extends Bloc<ResaleDetailEvent, ResaleDetailState> {
     ResaleDetailToggleBooking event,
     Emitter<ResaleDetailState> emit,
   ) async {
-    await _toggleBooking(event.itemId);
+    final status = state.item?.status;
+    if (status == null) return;
+    if (status == ResaleItemStatus.forSale) {
+      await _book(event.itemId);
+    } else {
+      await _cancelBook(event.itemId);
+    }
     final current = state.item;
     if (current == null) return;
     final newStatus = current.status == ResaleItemStatus.booked

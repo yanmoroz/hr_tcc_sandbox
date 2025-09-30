@@ -6,7 +6,8 @@ import '../data/repositories/resale_repository_impl.dart';
 import '../domain/repositories/resale_repository.dart';
 import '../domain/usecases/get_resale_item_detail.dart';
 import '../domain/usecases/get_resale_items.dart';
-import '../domain/usecases/toggle_booking.dart';
+import '../domain/usecases/book_resale_item.dart';
+import '../domain/usecases/cancel_book_resale_item.dart';
 import '../presentation/blocs/list/resale_list_bloc.dart';
 import '../presentation/blocs/detail/resale_detail_bloc.dart';
 
@@ -30,21 +31,26 @@ class ResaleModule extends DiModule {
     getIt.registerFactory<GetResaleItemDetailUseCase>(
       () => GetResaleItemDetailUseCase(getIt<ResaleRepository>()),
     );
-    getIt.registerFactory<ToggleBookingUseCase>(
-      () => ToggleBookingUseCase(getIt<ResaleRepository>()),
+    getIt.registerFactory<BookResaleItemUseCase>(
+      () => BookResaleItemUseCase(getIt<ResaleRepository>()),
+    );
+    getIt.registerFactory<CancelBookResaleItemUseCase>(
+      () => CancelBookResaleItemUseCase(getIt<ResaleRepository>()),
     );
 
     // Blocs
     getIt.registerFactory<ResaleListBloc>(
       () => ResaleListBloc(
         getItems: getIt<GetResaleItemsUseCase>(),
-        toggleBooking: getIt<ToggleBookingUseCase>(),
+        book: getIt<BookResaleItemUseCase>(),
+        cancelBook: getIt<CancelBookResaleItemUseCase>(),
       ),
     );
     getIt.registerFactory<ResaleDetailBloc>(
       () => ResaleDetailBloc(
         getItemDetail: getIt<GetResaleItemDetailUseCase>(),
-        toggleBooking: getIt<ToggleBookingUseCase>(),
+        book: getIt<BookResaleItemUseCase>(),
+        cancelBook: getIt<CancelBookResaleItemUseCase>(),
       ),
     );
   }

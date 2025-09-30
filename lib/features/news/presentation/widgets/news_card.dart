@@ -29,14 +29,46 @@ class NewsCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (item.imageAsset != null)
+            if (item.imageAsset != null && item.imageAsset!.isNotEmpty)
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  item.imageAsset!,
+                child: Image.network(
+                  _buildImageUrl(item.imageAsset!),
                   width: 56,
                   height: 56,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.article_outlined,
+                        color: Colors.grey,
+                      ),
+                    );
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               )
             else
@@ -75,6 +107,54 @@ class NewsCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                   ),
+                  if (item.authorName != null &&
+                      item.authorName!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      'Автор: ${item.authorName}',
+                      style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                    ),
+                  ],
+                  if (item.likeCount > 0 || item.commentCount > 0) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        if (item.likeCount > 0) ...[
+                          Icon(
+                            Icons.favorite,
+                            size: 14,
+                            color: Colors.red[400],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            item.likeCount.toString(),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                        if (item.likeCount > 0 && item.commentCount > 0) ...[
+                          const SizedBox(width: 12),
+                        ],
+                        if (item.commentCount > 0) ...[
+                          Icon(
+                            Icons.comment,
+                            size: 14,
+                            color: Colors.grey[500],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            item.commentCount.toString(),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -82,6 +162,15 @@ class NewsCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _buildImageUrl(String imagePath) {
+    // If it's already a full URL, return as is
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    // Otherwise, construct the full URL
+    return 'https://dev-memp-hr-tcc-service.stoloto.su$imagePath';
   }
 
   String _formatDate(DateTime dt) {

@@ -16,26 +16,113 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
        _getCategories = getCategories,
        super(const NewsState()) {
     on<NewsStarted>(_onStarted);
+    on<NewsLoadMore>(_onLoadMore);
+    on<NewsRefresh>(_onRefresh);
     on<NewsSearchChanged>(_onSearchChanged);
     on<NewsCategoryChanged>(_onCategoryChanged);
   }
 
   Future<void> _onStarted(NewsStarted event, Emitter<NewsState> emit) async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true, error: null));
     try {
       final categories = await _getCategories();
-      final news = await _getNews();
+      final categoryId = state.selectedCategoryId == 'all'
+          ? null
+          : int.tryParse(state.selectedCategoryId);
+
+      final result = await _getNews(
+        category: categoryId,
+        page: 0,
+        pageSize: 20,
+      );
+
       emit(
-        state.copyWith(isLoading: false, categories: categories, allNews: news),
+        state.copyWith(
+          isLoading: false,
+          categories: categories,
+          allNews: result.items,
+          hasMore: result.hasMore,
+          currentPage: result.currentPage,
+        ),
       );
       _applyFilter(
         emit,
         query: state.query,
         categoryId: state.selectedCategoryId,
-        items: news,
+        items: result.items,
       );
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
+    }
+  }
+
+  Future<void> _onLoadMore(NewsLoadMore event, Emitter<NewsState> emit) async {
+    if (!state.hasMore || state.isLoadingMore) return;
+
+    emit(state.copyWith(isLoadingMore: true));
+    try {
+      final categoryId = state.selectedCategoryId == 'all'
+          ? null
+          : int.tryParse(state.selectedCategoryId);
+
+      final result = await _getNews(
+        category: categoryId,
+        page: state.currentPage + 1,
+        pageSize: 20,
+      );
+
+      final updatedNews = [...state.allNews, ...result.items];
+
+      emit(
+        state.copyWith(
+          isLoadingMore: false,
+          allNews: updatedNews,
+          hasMore: result.hasMore,
+          currentPage: result.currentPage,
+        ),
+      );
+      _applyFilter(
+        emit,
+        query: state.query,
+        categoryId: state.selectedCategoryId,
+        items: updatedNews,
+      );
+    } catch (e) {
+      emit(state.copyWith(isLoadingMore: false, error: e.toString()));
+    }
+  }
+
+  Future<void> _onRefresh(NewsRefresh event, Emitter<NewsState> emit) async {
+    emit(state.copyWith(isRefreshing: true, error: null));
+    try {
+      final categories = await _getCategories();
+      final categoryId = state.selectedCategoryId == 'all'
+          ? null
+          : int.tryParse(state.selectedCategoryId);
+
+      final result = await _getNews(
+        category: categoryId,
+        page: 0,
+        pageSize: 20,
+      );
+
+      emit(
+        state.copyWith(
+          isRefreshing: false,
+          categories: categories,
+          allNews: result.items,
+          hasMore: result.hasMore,
+          currentPage: result.currentPage,
+        ),
+      );
+      _applyFilter(
+        emit,
+        query: state.query,
+        categoryId: state.selectedCategoryId,
+        items: result.items,
+      );
+    } catch (e) {
+      emit(state.copyWith(isRefreshing: false, error: e.toString()));
     }
   }
 

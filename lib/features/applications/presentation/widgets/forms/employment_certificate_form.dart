@@ -14,14 +14,6 @@ class EmploymentCertificateForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Debug logging to verify purposes are loaded
-    print(
-      'EmploymentCertificateForm: purposes count = ${state.purposes.length}',
-    );
-    for (var purpose in state.purposes) {
-      print('EmploymentCertificateForm: purpose = ${purpose.title}');
-    }
-
     return Column(
       children: [
         DropdownField<ApplicationPurpose>(

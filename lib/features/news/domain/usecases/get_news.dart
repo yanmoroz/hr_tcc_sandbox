@@ -6,5 +6,9 @@ class GetNewsUseCase {
 
   const GetNewsUseCase(this._repository);
 
-  Future<List<NewsItem>> call() => _repository.getNews();
+  Future<NewsListResult> call({
+    int? category,
+    int page = 0,
+    int pageSize = 20,
+  }) => _repository.getNews(category: category, page: page, pageSize: pageSize);
 }

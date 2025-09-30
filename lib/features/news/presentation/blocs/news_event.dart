@@ -7,6 +7,10 @@ class NewsEvent extends Equatable {
 
 class NewsStarted extends NewsEvent {}
 
+class NewsLoadMore extends NewsEvent {}
+
+class NewsRefresh extends NewsEvent {}
+
 class NewsSearchChanged extends NewsEvent {
   final String query;
   NewsSearchChanged(this.query);

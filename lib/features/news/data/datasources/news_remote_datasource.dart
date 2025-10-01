@@ -42,13 +42,20 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
 
   @override
   Future<List<NewsCategoryDto>> getCategories() async {
-    // For now, return hardcoded categories based on the API response
-    // In the future, this could be a separate endpoint if available
-    return [
-      NewsCategoryDto(code: 6, name: 'Новости подразделений'),
-      NewsCategoryDto(code: 1, name: 'Общие новости'),
-      NewsCategoryDto(code: 2, name: 'События'),
-      NewsCategoryDto(code: 3, name: 'Объявления'),
-    ];
+    final http.Response resp = await _network.get(
+      '$_baseUrl/dictionaries/news-category',
+    );
+
+    if (resp.statusCode < 200 || resp.statusCode >= 300) {
+      throw Exception('Failed to load news categories (${resp.statusCode})');
+    }
+
+    final decoded =
+        jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
+    final list = decoded['newsCategories'] as List<dynamic>? ?? const [];
+    final categories = list
+        .map((e) => NewsCategoryDto.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return categories;
   }
 }

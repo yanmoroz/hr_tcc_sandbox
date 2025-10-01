@@ -91,19 +91,38 @@ class ResaleListBloc extends Bloc<ResaleListEvent, ResaleListState> {
     } else {
       await _cancelBook(event.itemId);
     }
-    final updated = state.allItems.map((e) {
-      if (e.id != event.itemId) return e;
-      final newStatus = e.status == ResaleItemStatus.booked
-          ? ResaleItemStatus.forSale
-          : ResaleItemStatus.booked;
-      return e.copyWith(status: newStatus);
-    }).toList();
-    emit(state.copyWith(allItems: updated));
-    _applyFilterAndSearch(
-      emit,
-      filter: state.currentFilter,
-      searchQuery: state.searchQuery,
-    );
+    // After a successful toggle, reload the list from backend to ensure consistency
+    emit(state.copyWith(isLoading: true));
+    try {
+      final items = await _getItems();
+      emit(state.copyWith(allItems: items, isLoading: false));
+      _applyFilterAndSearch(
+        emit,
+        filter: state.currentFilter,
+        searchQuery: state.searchQuery,
+      );
+    } catch (e) {
+      // If reload fails, keep local optimistic change as fallback
+      final updated = state.allItems.map((e) {
+        if (e.id != event.itemId) return e;
+        final newStatus = e.status == ResaleItemStatus.booked
+            ? ResaleItemStatus.forSale
+            : ResaleItemStatus.booked;
+        return e.copyWith(status: newStatus);
+      }).toList();
+      emit(
+        state.copyWith(
+          allItems: updated,
+          isLoading: false,
+          error: e.toString(),
+        ),
+      );
+      _applyFilterAndSearch(
+        emit,
+        filter: state.currentFilter,
+        searchQuery: state.searchQuery,
+      );
+    }
   }
 
   void _applyFilterAndSearch(
